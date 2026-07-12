@@ -1,0 +1,49 @@
+# ── Version control ───────────────────────────────────────────
+.git
+.gitignore
+.gitattributes
+
+# ── Dev dependencies (rebuilt in build stages) ────────────────
+node_modules/
+vendor/
+
+# ── Laravel runtime artifacts (generated at container start) ──
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+bootstrap/cache/*.php
+database/database.sqlite
+
+# ── Test & CI ─────────────────────────────────────────────────
+tests/
+.github/
+phpunit.xml
+phpstan.neon
+.phpunit.cache
+.phpunit.result.cache
+
+# ── Local config (injected via env_file at runtime) ───────────
+.env
+.env.backup
+.env.production
+
+# ── Editor / OS ───────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+.nova/
+.zed/
+*.swp
+
+# ── Build artifacts ───────────────────────────────────────────
+public/hot
+public/storage
+public/build
+/bootstrap/ssr
+
+# ── Fat binaries not needed in image (FrankenPHP is in base) ──
+frankenphp
+
+# NOTE: docker/ is intentionally NOT excluded because the
+# Dockerfile COPYs Caddyfile and php/*.ini from it.

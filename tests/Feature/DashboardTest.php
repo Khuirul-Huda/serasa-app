@@ -12,5 +12,19 @@ test('authenticated users can visit the dashboard', function () {
     $this->actingAs($user);
 
     $response = $this->get(route('dashboard'));
-    $response->assertOk();
+    $response->assertRedirect(route('merchant.dashboard'));
+
+    $dashboardResponse = $this->get(route('merchant.dashboard'));
+    $dashboardResponse->assertOk();
+});
+
+test('authenticated admin users are redirected to admin dashboard', function () {
+    $user = User::factory()->admin()->create();
+    $this->actingAs($user);
+
+    $response = $this->get(route('dashboard'));
+    $response->assertRedirect(route('admin.dashboard'));
+
+    $dashboardResponse = $this->get(route('admin.dashboard'));
+    $dashboardResponse->assertOk();
 });

@@ -1,0 +1,45 @@
+#!/bin/sh
+set -e
+
+# Wait for a TCP port with a max-attempts guard.
+# Uses nc (netcat-openbsd) — /dev/tcp is bash-only, not ash.
+wait_for_tcp() {
+    HOST="$1"
+    PORT="$2"
+    MAX=30
+    i=0
+    echo "==> Waiting for ${HOST}:${PORT}..."
+    until nc -z -w 3 "${HOST}" "${PORT}" 2>/dev/null; do
+        i=$((i + 1))
+        if [ "$i" -ge "$MAX" ]; then
+            echo "ERROR: ${HOST}:${PORT} not reachable after ${MAX} attempts. Aborting."
+            exit 1
+        fi
+        echo "    ${HOST}:${PORT} not ready (attempt ${i}/${MAX}), retrying in 2s..."
+        sleep 2
+    done
+    echo "    ${HOST}:${PORT} is up."
+}
+
+wait_for_tcp "${DB_HOST:-postgres}"  "${DB_PORT:-5432}"
+wait_for_tcp "${REDIS_HOST:-redis}"  "${REDIS_PORT:-6379}"
+
+echo "==> Linking storage..."
+php artisan storage:link --force 2>/dev/null || true
+
+echo "==> Running migrations..."
+php artisan migrate --force --no-interaction
+
+echo "==> Warming caches..."
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+
+echo "==> Starting Octane..."
+# exec makes PHP PID 1 so Docker SIGTERM is forwarded correctly.
+exec php artisan octane:frankenphp \
+    --host=0.0.0.0 \
+    --port=8000 \
+    --workers=auto \
+    --max-requests=500

@@ -1,0 +1,166 @@
+name: serasa-app
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  storage-data:
+  caddy-data:
+  caddy-config:
+
+# Base config shared by app / queue / scheduler
+x-app-base: &app-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+    target: runtime
+  image: serasa-app:latest
+  restart: unless-stopped
+  env_file: .env
+  volumes:
+    - storage-data:/app/storage
+  networks:
+    - backend
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+services:
+  # ── PostgreSQL 17 ────────────────────────────────────────────
+  postgres:
+    image: postgres:17.5-alpine3.22
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:          ${POSTGRES_DB:-serasa}
+      POSTGRES_USER:        ${POSTGRES_USER:-serasa}
+      POSTGRES_PASSWORD:    ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-serasa} -d ${POSTGRES_DB:-serasa}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    # ports: ["5432:5432"]  # uncomment for local debugging only
+
+  # ── Redis 7 ──────────────────────────────────────────────────
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    # Use list form so the shell -c string is passed verbatim without
+    # YAML folded-scalar collapsing newlines into spaces (which would
+    # break the if-block syntax).
+    command:
+      - sh
+      - -c
+      - |
+        if [ -n "$$REDIS_PASSWORD" ]; then
+          exec redis-server \
+            --requirepass "$$REDIS_PASSWORD" \
+            --maxmemory 128mb \
+            --maxmemory-policy allkeys-lru \
+            --save 60 1 \
+            --loglevel warning
+        else
+          exec redis-server \
+            --maxmemory 128mb \
+            --maxmemory-policy allkeys-lru \
+            --save 60 1 \
+            --loglevel warning
+        fi
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend
+    healthcheck:
+      # Same reasoning: list form preserves shell if-block newlines
+      test:
+        - sh
+        - -c
+        - |
+          if [ -n "$$REDIS_PASSWORD" ]; then
+            redis-cli -a "$$REDIS_PASSWORD" --no-auth-warning ping | grep -q PONG
+          else
+            redis-cli ping | grep -q PONG
+          fi
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # ports: ["6379:6379"]  # uncomment for local debugging only
+
+  # ── App — FrankenPHP + Octane ─────────────────────────────────
+  app:
+    <<: *app-base
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      # Do NOT redeclare storage-data here — it is already in the anchor.
+      # Only add volumes unique to this service.
+      - caddy-data:/data/caddy
+      - caddy-config:/config/caddy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/up"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
+
+  # ── Queue worker ─────────────────────────────────────────────
+  queue:
+    <<: *app-base
+    entrypoint: ["php", "artisan"]
+    command:
+      - queue:work
+      - redis
+      - --sleep=3
+      - --tries=3
+      - --max-time=3600
+      - --memory=256
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      # pgrep is provided by procps (installed in Dockerfile)
+      test: ["CMD", "pgrep", "-f", "queue:work"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # ── Scheduler ────────────────────────────────────────────────
+  scheduler:
+    <<: *app-base
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        while true; do
+          php artisan schedule:run --no-interaction
+          sleep 60
+        done
+    depends_on:
+      app:
+        condition: service_healthy
+
+  # ── Mailpit — dev mail catcher (opt-in) ──────────────────────
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP
+    networks:
+      - backend
+    profiles:
+      - dev
