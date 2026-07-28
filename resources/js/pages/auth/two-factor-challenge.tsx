@@ -1,3 +1,8 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { Form, Head, setLayoutProps } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { useMemo, useState } from 'react';
@@ -23,18 +28,18 @@ export default function TwoFactorChallenge() {
     }>(() => {
         if (showRecoveryInput) {
             return {
-                title: 'Recovery code',
+                title: 'Kode Pemulihan Darurat',
                 description:
-                    'Please confirm access to your account by entering one of your emergency recovery codes.',
-                toggleText: 'login using an authentication code',
+                    'Konfirmasi akses akun Anda dengan memasukkan salah satu kode pemulihan (recovery code).',
+                toggleText: 'masuk menggunakan kode otentikasi 2FA',
             };
         }
 
         return {
-            title: 'Authentication code',
+            title: 'Kode Otentikasi 2FA',
             description:
-                'Enter the authentication code provided by your authenticator application.',
-            toggleText: 'login using a recovery code',
+                'Masukkan 6-digit kode otentikasi dari aplikasi Authenticator di ponsel Anda.',
+            toggleText: 'masuk menggunakan kode pemulihan darurat',
         };
     }, [showRecoveryInput]);
 
@@ -51,9 +56,9 @@ export default function TwoFactorChallenge() {
 
     return (
         <>
-            <Head title="Two-factor authentication" />
+            <Head title="Verifikasi 2-Faktor - SAMIRONO ETALASE" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 text-xs font-sans text-navy-900">
                 <Form
                     {...store.form()}
                     className="space-y-4"
@@ -67,9 +72,10 @@ export default function TwoFactorChallenge() {
                                     <Input
                                         name="recovery_code"
                                         type="text"
-                                        placeholder="Enter recovery code"
+                                        placeholder="Masukkan kode pemulihan"
                                         autoFocus={showRecoveryInput}
                                         required
+                                        className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
                                     />
                                     <InputError
                                         message={errors.recovery_code}
@@ -106,17 +112,17 @@ export default function TwoFactorChallenge() {
 
                             <Button
                                 type="submit"
-                                className="w-full"
+                                className="w-full h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs cursor-pointer"
                                 disabled={processing}
                             >
-                                Continue
+                                Lanjutkan Masuk
                             </Button>
 
-                            <div className="text-center text-sm text-muted-foreground">
-                                <span>or you can </span>
+                            <div className="text-center text-xs text-navy-500">
+                                <span>atau Anda dapat </span>
                                 <button
                                     type="button"
-                                    className="cursor-pointer text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                                    className="cursor-pointer text-pastel-teal font-bold hover:underline"
                                     onClick={() =>
                                         toggleRecoveryMode(clearErrors)
                                     }

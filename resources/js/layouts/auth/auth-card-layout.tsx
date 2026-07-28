@@ -1,6 +1,11 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { Link } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import AppLogo from '@/components/app-logo';
 import {
     Card,
     CardContent,
@@ -8,7 +13,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { home } from '@/routes';
 
 export default function AuthCardLayout({
     children,
@@ -20,24 +24,22 @@ export default function AuthCardLayout({
     description?: string;
 }>) {
     return (
-        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-navy-50/40 p-6 md:p-10 font-sans text-navy-900">
             <div className="flex w-full max-w-md flex-col gap-6">
                 <Link
-                    href={home()}
-                    className="flex items-center gap-2 self-center font-medium"
+                    href="/"
+                    className="flex items-center gap-2 self-center"
                 >
-                    <div className="flex h-9 w-9 items-center justify-center">
-                        <AppLogoIcon className="size-9 fill-current text-black dark:text-white" />
-                    </div>
+                    <AppLogo />
                 </Link>
 
                 <div className="flex flex-col gap-6">
-                    <Card className="rounded-xl">
-                        <CardHeader className="px-10 pt-8 pb-0 text-center">
-                            <CardTitle className="text-xl">{title}</CardTitle>
-                            <CardDescription>{description}</CardDescription>
+                    <Card className="rounded-3xl border border-navy-200/60 shadow-3xs bg-white">
+                        <CardHeader className="px-8 pt-8 pb-0 text-center space-y-1">
+                            <CardTitle className="text-lg font-black uppercase tracking-wider text-navy-900">{title}</CardTitle>
+                            <CardDescription className="text-xs text-navy-500">{description}</CardDescription>
                         </CardHeader>
-                        <CardContent className="px-10 py-8">
+                        <CardContent className="px-8 py-6">
                             {children}
                         </CardContent>
                     </Card>

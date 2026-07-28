@@ -1,4 +1,8 @@
-// Components
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { Form, Head } from '@inertiajs/react';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -9,28 +13,30 @@ import { send } from '@/routes/verification';
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
         <>
-            <Head title="Email verification" />
+            <Head title="Verifikasi Email - SAMIRONO ETALASE" />
 
             {status === 'verification-link-sent' && (
-                <div className="mb-4 text-center text-sm font-medium text-pastel-mint">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
+                <div className="mb-4 p-3 bg-pastel-teal-light border border-pastel-teal/20 rounded-xl text-center text-xs font-bold text-pastel-teal">
+                    Tautan verifikasi baru telah dikirimkan ke alamat email yang Anda daftarkan.
                 </div>
             )}
 
-            <Form {...send.form()} className="space-y-6 text-center">
+            <Form {...send.form()} className="space-y-6 text-center text-xs font-sans text-navy-900">
                 {({ processing }) => (
                     <>
-                        <Button disabled={processing} variant="secondary">
+                        <Button 
+                            disabled={processing} 
+                            className="w-full h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs cursor-pointer"
+                        >
                             {processing && <Spinner />}
-                            Resend verification email
+                            Kirim Ulang Email Verifikasi
                         </Button>
 
                         <TextLink
                             href={logout()}
-                            className="mx-auto block text-sm"
+                            className="mx-auto block text-xs font-bold text-navy-500 hover:text-pastel-teal"
                         >
-                            Log out
+                            Keluar / Log Out
                         </TextLink>
                     </>
                 )}
@@ -40,7 +46,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
 }
 
 VerifyEmail.layout = {
-    title: 'Email verification',
+    title: 'Verifikasi Alamat Email',
     description:
-        'Please verify your email address by clicking on the link we just emailed to you.',
+        'Silakan periksa email Anda dan klik tautan verifikasi yang kami kirimkan untuk mengaktifkan seluruh fitur toko.',
 };

@@ -1,3 +1,8 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { Form, Head } from '@inertiajs/react';
 import {
     index as confirmOptions,
@@ -14,29 +19,30 @@ import { store } from '@/routes/password/confirm';
 export default function ConfirmPassword() {
     return (
         <>
-            <Head title="Confirm password" />
+            <Head title="Konfirmasi Kata Sandi - SAMIRONO ETALASE" />
 
             <PasskeyVerify
                 routes={{
                     options: confirmOptions(),
                     submit: confirmStore(),
                 }}
-                label="Confirm with passkey"
-                loadingLabel="Confirming..."
-                separator="Or confirm with password"
+                label="Konfirmasi dengan Passkey"
+                loadingLabel="Memverifikasi..."
+                separator="Atau konfirmasi dengan Kata Sandi"
             />
 
             <Form {...store.form()} resetOnSuccess={['password']}>
                 {({ processing, errors }) => (
-                    <div className="space-y-6">
+                    <div className="space-y-6 text-xs font-sans text-navy-900">
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Kata Sandi</Label>
                             <PasswordInput
                                 id="password"
                                 name="password"
-                                placeholder="Password"
+                                placeholder="Masukkan kata sandi Anda"
                                 autoComplete="current-password"
                                 autoFocus
+                                className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
                             />
 
                             <InputError message={errors.password} />
@@ -44,12 +50,12 @@ export default function ConfirmPassword() {
 
                         <div className="flex items-center">
                             <Button
-                                className="w-full"
+                                className="w-full h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs cursor-pointer"
                                 disabled={processing}
                                 data-test="confirm-password-button"
                             >
                                 {processing && <Spinner />}
-                                Confirm password
+                                Konfirmasi Kata Sandi
                             </Button>
                         </div>
                     </div>
@@ -60,7 +66,7 @@ export default function ConfirmPassword() {
 }
 
 ConfirmPassword.layout = {
-    title: 'Confirm password',
+    title: 'Konfirmasi Sandi Akses',
     description:
-        'This is a secure area of the application. Please confirm your password before continuing.',
+        'Area ini memerlukan konfirmasi kata sandi demi keamanan akun pelaku usaha.',
 };

@@ -1,6 +1,10 @@
-import { Link, usePage } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
-import { home } from '@/routes';
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { Link } from '@inertiajs/react';
+import AppLogo from '@/components/app-logo';
 import type { AuthLayoutProps } from '@/types';
 
 export default function AuthSplitLayout({
@@ -8,31 +12,44 @@ export default function AuthSplitLayout({
     title,
     description,
 }: AuthLayoutProps) {
-    const { name } = usePage().props;
-
     return (
-        <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-                <div className="absolute inset-0 bg-zinc-900" />
+        <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0 font-sans text-navy-900 bg-navy-50/40">
+            <div className="relative hidden h-full flex-col bg-navy-900 p-10 text-white lg:flex border-r border-navy-800 justify-between">
                 <Link
-                    href={home()}
-                    className="relative z-20 flex items-center text-lg font-medium"
+                    href="/"
+                    className="relative z-20 flex items-center"
                 >
-                    <AppLogoIcon className="mr-2 size-8 fill-current text-white" />
-                    {name}
+                    <AppLogo />
                 </Link>
+
+                <div className="relative z-20 space-y-2">
+                    <span className="text-xs font-black uppercase tracking-widest text-pastel-peach">
+                        SAMIRONO ETALASE
+                    </span>
+                    <h2 className="text-2xl font-black tracking-tight text-white leading-snug">
+                        Mendikdayakan Pelaku UMKM & Produk Kreatif Desa Samirono
+                    </h2>
+                    <p className="text-xs text-navy-300 leading-relaxed font-normal">
+                        Kecamatan Getasan, Kabupaten Semarang. Hubungkan usaha Anda ke pasar eksternal secara digital.
+                    </p>
+                </div>
+
+                <div className="text-[10px] text-navy-400 font-mono">
+                    © 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO
+                </div>
             </div>
+
             <div className="w-full lg:p-8">
-                <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+                <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[360px] bg-white p-8 rounded-3xl border border-navy-200/60 shadow-3xs">
                     <Link
-                        href={home()}
+                        href="/"
                         className="relative z-20 flex items-center justify-center lg:hidden"
                     >
-                        <AppLogoIcon className="h-10 fill-current text-black sm:h-12" />
+                        <AppLogo />
                     </Link>
-                    <div className="flex flex-col items-start gap-2 text-left sm:items-center sm:text-center">
-                        <h1 className="text-xl font-medium">{title}</h1>
-                        <p className="text-sm text-balance text-muted-foreground">
+                    <div className="flex flex-col items-start gap-1 text-left sm:items-center sm:text-center">
+                        <h1 className="text-base font-black uppercase tracking-wider text-navy-900">{title}</h1>
+                        <p className="text-xs text-navy-500">
                             {description}
                         </p>
                     </div>
