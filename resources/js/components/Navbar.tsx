@@ -103,10 +103,10 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-150 shadow-xs font-sans" id="marketplace-navbar">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200/80 shadow-2xs font-sans transition-all" id="marketplace-navbar">
       
       {/* 1. TOP UTILITY BAR */}
-      <div className="bg-gray-50 border-b border-gray-200 py-1.5 px-4 text-[11px] text-gray-500 hidden sm:block">
+      <div className="bg-stone-100/70 border-b border-stone-200/70 py-1.5 px-4 text-[11px] text-stone-600 hidden sm:block">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           
           {/* Left side links */}
@@ -115,15 +115,11 @@ export default function Navbar({
               <Globe className="w-3.5 h-3.5" />
               <span>{settings.villageName} Getasan</span>
             </span>
-            <span className="text-gray-300">|</span>
+            <span className="text-stone-300">|</span>
             <a href={`https://wa.me/${settings.adminPhone}`} target="_blank" rel="noreferrer" className="hover:text-emerald-600 flex items-center gap-1 transition-all">
               <Phone className="w-3 h-3" />
               <span>Helpline Desa: +{settings.adminPhone}</span>
             </a>
-            <span className="text-gray-300">|</span>
-            <span className="text-gray-400 font-semibold uppercase tracking-wider bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-[8.5px]">
-              Platform Ekonomi Warga
-            </span>
           </div>
 
           {/* Right side links - Real Auth State */}

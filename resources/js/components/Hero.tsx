@@ -118,9 +118,9 @@ export default function Hero({
   ];
 
   return (
-    <div className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-6 pb-10" id="serasa-hero">
-      {/* Background Dots Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[16px_16px] pointer-events-none" />
+    <div className="relative overflow-hidden bg-stone-100/50 border-b border-stone-200/80 pt-6 pb-10 font-sans" id="serasa-hero">
+      {/* Background Subtle Pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(#d6d3d1_1px,transparent_1px)] bg-size-[18px_18px] opacity-40 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
@@ -128,7 +128,7 @@ export default function Hero({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           
           {/* Main Promotions Slider Carousel (Lefthand Column) */}
-          <div className="lg:col-span-8 relative rounded-2xl overflow-hidden shadow-xs border border-gray-200 group/slider h-[280px] sm:h-[340px] bg-emerald-950">
+          <div className="lg:col-span-8 relative rounded-3xl overflow-hidden shadow-xs border border-stone-200/80 group/slider h-[280px] sm:h-[340px] bg-emerald-950">
             {promoSlides.map((slide, index) => (
               <div 
                 key={slide.id}
@@ -143,30 +143,30 @@ export default function Hero({
                   height={340}
                   loading={index === 0 ? "eager" : "lazy"}
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full h-full object-cover opacity-35 transition-transform duration-10000 hover:scale-110"
+                  className="w-full h-full object-cover opacity-40 transition-transform duration-10000 hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
                 
-                <div className="absolute inset-0 bg-linear-to-tr from-emerald-950 via-emerald-950/70 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
+                <div className="absolute inset-0 bg-linear-to-tr from-emerald-950 via-emerald-950/75 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
                   <div className="space-y-2 sm:space-y-3 max-w-lg">
-                    <span className="inline-block px-3 py-1 bg-amber-500 text-emerald-950 text-[9px] font-black uppercase tracking-wider rounded">
+                    <span className="inline-block px-3 py-1 bg-amber-500 text-stone-950 text-[9px] font-black uppercase tracking-wider rounded-md">
                       {slide.badge}
                     </span>
-                    <h2 className="text-xl sm:text-3.5xl font-extrabold tracking-tight leading-tight">
+                    <h2 className="text-xl sm:text-3.5xl font-black tracking-tight leading-tight text-white">
                       {slide.title}
                     </h2>
                     <p className="text-amber-400 font-bold text-xs sm:text-sm">
                       {slide.tagline}
                     </p>
-                    <p className="text-[11px] sm:text-xs text-gray-200 leading-relaxed font-light line-clamp-2">
+                    <p className="text-[11px] sm:text-xs text-stone-200 leading-relaxed font-normal line-clamp-2">
                       {slide.description}
                     </p>
                     <div className="pt-2">
                       <button
                         onClick={() => setSearchQuery(slide.btnQuery)}
-                        className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-[10px] uppercase tracking-wider rounded-lg transition-all shadow-sm cursor-pointer"
+                        className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-md cursor-pointer"
                       >
-                        Temukan Produk
+                        Temukan Produk Warga
                       </button>
                     </div>
                   </div>
@@ -200,24 +200,24 @@ export default function Hero({
             </div>
           </div>
 
-          {/* Tokopedia-Style Countdown & Promo Card (Righthand Column) */}
-          <div className="lg:col-span-4 bg-white rounded-2xl border border-gray-200 p-5 flex flex-col justify-between shadow-3xs h-[280px] sm:h-[340px]">
+          {/* Countdown & Highlight Promo Card */}
+          <div className="lg:col-span-4 bg-white rounded-3xl border border-stone-200/80 p-5 flex flex-col justify-between shadow-2xs h-[280px] sm:h-[340px]">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-red-600">
                   <Flame className="w-5 h-5 fill-red-500 animate-pulse" />
-                  <span className="text-sm font-extrabold tracking-tight">KEJAR DISKON WARGA</span>
+                  <span className="text-xs font-black uppercase tracking-wider">KEJAR DISKON WARGA</span>
                 </div>
                 <div className="flex items-center gap-1 font-mono text-xs">
-                  <span className="px-1.5 py-0.5 bg-gray-900 text-white font-bold rounded">
+                  <span className="px-1.5 py-0.5 bg-stone-900 text-white font-bold rounded-md text-[10px]">
                     {String(timeLeft.hours).padStart(2, "0")}
                   </span>
-                  <span className="text-gray-500">:</span>
-                  <span className="px-1.5 py-0.5 bg-gray-900 text-white font-bold rounded">
+                  <span className="text-stone-400">:</span>
+                  <span className="px-1.5 py-0.5 bg-stone-900 text-white font-bold rounded-md text-[10px]">
                     {String(timeLeft.minutes).padStart(2, "0")}
                   </span>
-                  <span className="text-gray-500">:</span>
-                  <span className="px-1.5 py-0.5 bg-red-600 text-white font-bold rounded animate-pulse">
+                  <span className="text-stone-400">:</span>
+                  <span className="px-1.5 py-0.5 bg-red-600 text-white font-bold rounded-md text-[10px] animate-pulse">
                     {String(timeLeft.seconds).padStart(2, "0")}
                   </span>
                 </div>
@@ -225,9 +225,9 @@ export default function Hero({
 
               <div 
                 onClick={() => router.visit("/products/prod-keju-artisan")}
-                className="flex gap-3.5 p-3 rounded-xl bg-red-50/50 hover:bg-red-50 border border-red-100 hover:border-red-400 transition-all cursor-pointer group/promo"
+                className="flex gap-3.5 p-3 rounded-2xl bg-red-50/50 hover:bg-red-50 border border-red-100 hover:border-red-300 transition-all cursor-pointer group/promo"
               >
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 shrink-0 border border-red-100 group-hover/promo:scale-105 transition-transform duration-300">
+                <div className="w-20 h-20 rounded-xl overflow-hidden bg-stone-100 shrink-0 border border-red-100 group-hover/promo:scale-105 transition-transform duration-300">
                   <img
                     src="https://images.unsplash.com/photo-1559561853-080268185995?auto=format&fit=crop&w=150&q=80"
                     alt="Promo Keju Samirono"
@@ -240,39 +240,39 @@ export default function Hero({
                   />
                 </div>
                 <div className="space-y-1">
-                  <span className="inline-block px-1.5 py-0.5 bg-red-100 text-red-600 text-[8px] font-black uppercase rounded">
+                  <span className="inline-block px-1.5 py-0.5 bg-red-100 text-red-700 text-[8px] font-black uppercase rounded-md">
                     Stok Terbatas
                   </span>
-                  <h4 className="text-[12px] font-bold text-gray-800 line-clamp-1 leading-snug group-hover/promo:text-red-700 transition-colors">
+                  <h4 className="text-[12px] font-bold text-stone-800 line-clamp-1 leading-snug group-hover/promo:text-red-700 transition-colors">
                     Keju Samirono Mozzarella
                   </h4>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-xs font-black text-gray-900">Rp 30.000</span>
-                    <span className="text-[9px] text-gray-400 line-through">Rp 35.000</span>
+                    <span className="text-xs font-black text-stone-900">Rp 30.000</span>
+                    <span className="text-[9px] text-stone-400 line-through">Rp 35.000</span>
                   </div>
                   <span className="text-[10px] text-emerald-600 font-bold block">Hemat Rp 5.000!</span>
                 </div>
               </div>
 
               <div className="space-y-1 pt-1">
-                <div className="flex justify-between text-[10px] text-gray-500 font-bold">
+                <div className="flex justify-between text-[10px] text-stone-500 font-bold">
                   <span>Tersisa 4 pcs</span>
-                  <span className="text-red-500">Hampir Habis (87% Terjual)</span>
+                  <span className="text-red-600">Hampir Habis (87% Terjual)</span>
                 </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
                   <div className="h-full bg-linear-to-r from-red-500 to-amber-500 rounded-full" style={{ width: "87%" }} />
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-gray-100 pt-3 flex justify-between items-center text-[11px] text-gray-500">
+            <div className="border-t border-stone-100 pt-3 flex justify-between items-center text-[11px] text-stone-500 font-medium">
               <div className="flex items-center gap-1">
                 <ThumbsUp className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="font-medium">100% Produk Desa</span>
+                <span>100% Produk Desa</span>
               </div>
               <div className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-amber-500" />
-                <span className="font-medium">Getasan, Semarang</span>
+                <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                <span>Getasan, Semarang</span>
               </div>
             </div>
           </div>
@@ -280,36 +280,36 @@ export default function Hero({
         </div>
 
         {/* E-Commerce Search & Suggestion Bar */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-3xs space-y-4" id="search-filter-panel">
+        <div className="bg-white rounded-3xl border border-stone-200/80 p-5 shadow-2xs space-y-4" id="search-filter-panel">
           
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-stone-400" />
             <input
               type="text"
               placeholder="Cari produk kriya, susu murni, keju mozarella, keripik tempe, atau nama UMKM..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-20 py-3 rounded-xl bg-gray-50 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 border border-gray-200 text-xs font-bold uppercase tracking-wider transition-all"
+              className="w-full pl-11 pr-20 py-3 rounded-2xl bg-stone-50 text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 border border-stone-200/80 text-xs font-semibold transition-all"
               id="search-input"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5 bg-gray-200/50 hover:bg-gray-200 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 p-0.5 bg-stone-200/60 hover:bg-stone-200 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all"
               >
                 Hapus
               </button>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-[10px] text-gray-500">
-            <span className="font-bold uppercase tracking-wider text-[9px] text-gray-400 shrink-0">Pencarian Populer:</span>
+          <div className="flex flex-wrap items-center gap-2 text-[10px] text-stone-500">
+            <span className="font-bold uppercase tracking-wider text-[9px] text-stone-400 shrink-0">Pencarian Populer:</span>
             <div className="flex flex-wrap gap-1.5">
               {hotSearches.map((item, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSearchQuery(item.query)}
-                  className="px-2.5 py-1 rounded-md bg-gray-50 hover:bg-emerald-50 text-gray-600 hover:text-emerald-700 font-medium border border-gray-200 hover:border-emerald-200 transition-all cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-stone-100/70 hover:bg-emerald-50 text-stone-700 hover:text-emerald-700 font-medium border border-stone-200/70 hover:border-emerald-200 transition-all cursor-pointer"
                 >
                   {item.label}
                 </button>
@@ -317,18 +317,14 @@ export default function Hero({
             </div>
           </div>
 
-          <div className="border-t border-gray-100 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5 text-gray-400">
-              <Tag className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-[10px] font-extrabold uppercase tracking-wider">Katalog Sektor Kreatif:</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
+          <div className="border-t border-stone-100 pt-4 flex items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-1.5 w-full">
               <button
                 onClick={() => setSelectedCategory("all")}
-                className={`px-4 py-2 rounded-lg text-[9.5px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
+                className={`px-4 py-2 rounded-xl text-[9.5px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
                   selectedCategory === "all"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-3xs"
-                    : "bg-white text-gray-600 hover:bg-gray-50 border-gray-200"
+                    ? "bg-emerald-700 text-white border-emerald-700 shadow-2xs"
+                    : "bg-white text-stone-600 hover:bg-stone-50 border-stone-200/80"
                 }`}
                 id="category-all"
               >
@@ -338,10 +334,10 @@ export default function Hero({
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-4 py-2 rounded-lg text-[9.5px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
+                  className={`px-4 py-2 rounded-xl text-[9.5px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
                     selectedCategory === cat.id
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-3xs"
-                      : "bg-white text-gray-600 hover:bg-gray-50 border-gray-200"
+                      ? "bg-emerald-700 text-white border-emerald-700 shadow-2xs"
+                      : "bg-white text-stone-600 hover:bg-stone-50 border-stone-200/80"
                   }`}
                   id={`category-${cat.id}`}
                 >
