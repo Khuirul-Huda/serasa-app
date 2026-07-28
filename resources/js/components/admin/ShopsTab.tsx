@@ -60,23 +60,23 @@ export default function ShopsTab({
   };
 
   return (
-    <div className="space-y-6 animate-fade-in" id="admin-shops-subtab">
+    <div className="space-y-6 animate-fade-in font-sans text-navy-900" id="admin-shops-subtab">
       {/* Header & Controls Toolbar */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white border border-navy-200/60 p-5 rounded-3xl shadow-3xs gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white border border-navy-200/60 p-5 sm:p-6 rounded-3xl shadow-3xs gap-4">
         <div>
-          <h3 className="font-extrabold text-navy-900 text-base uppercase tracking-wider">
+          <h3 className="font-extrabold text-navy-900 text-lg uppercase tracking-wider">
             Manajemen Direktori Toko UMKM
           </h3>
-          <p className="text-xs text-navy-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-navy-500 mt-1 font-normal">
             Verifikasi toko warga, kelola legalitas NIB/HALAL, atau impor spreadsheet data desa.
           </p>
         </div>
 
         <Button
           onClick={onOpenImportModal}
-          className="px-5 h-9 bg-pastel-teal hover:bg-pastel-teal/90 text-white text-xs font-extrabold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer"
+          className="px-5 h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer w-full md:w-auto justify-center"
         >
-          <FileSpreadsheet className="w-4 h-4" />
+          <FileSpreadsheet className="w-4 h-4 text-white" />
           <span>Import Spreadsheet Excel</span>
         </Button>
       </div>
@@ -84,20 +84,20 @@ export default function ShopsTab({
       {/* Filter & Search Bar */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" />
           <Input
             type="text"
             placeholder="Cari toko, nama pemilik, atau dusun..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal bg-white"
+            className="pl-10 py-2.5 rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal bg-white text-xs sm:text-sm"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as any)}
-          className="px-4 py-2 text-xs rounded-xl border border-navy-200/60 bg-white text-navy-800 font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal cursor-pointer shadow-3xs"
+          className="px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-navy-200/60 bg-white text-navy-800 font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal cursor-pointer shadow-3xs"
         >
           <option value="all">Semua Status Verification ({shops.length})</option>
           <option value="verified">
@@ -114,7 +114,7 @@ export default function ShopsTab({
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-navy-50 border-b border-navy-100 hover:bg-navy-50/50">
+              <TableRow className="bg-navy-50 border-b border-navy-100 hover:bg-navy-50/50 text-xs font-extrabold uppercase text-navy-600 tracking-wider">
                 <TableHead className="p-4">Identitas Toko & Pemilik</TableHead>
                 <TableHead className="p-4">Lokasi & Kontak</TableHead>
                 <TableHead className="p-4">Legalitas (NIB/PIRT)</TableHead>
@@ -127,7 +127,7 @@ export default function ShopsTab({
                 <TableRow>
                   <TableCell
                     colSpan={5}
-                    className="p-8 text-center text-xs text-navy-400 italic"
+                    className="p-8 text-center text-xs sm:text-sm text-navy-400 italic"
                   >
                     Tidak ada data toko yang cocok dengan filter pencarian.
                   </TableCell>
@@ -144,32 +144,32 @@ export default function ShopsTab({
                         <img
                           src={shop.logo}
                           alt={shop.name}
-                          className="w-10 h-10 rounded-xl object-cover border border-navy-200 shrink-0"
+                          className="w-12 h-12 rounded-xl object-cover border border-navy-200 shrink-0"
                           referrerPolicy="no-referrer"
                         />
                         <div className="min-w-0">
                           <Link
                             href={`/shops/${shop.id}`}
-                            className="font-bold text-navy-900 text-xs hover:text-pastel-teal truncate block"
+                            className="font-extrabold text-navy-900 text-xs sm:text-sm hover:text-pastel-teal truncate block"
                           >
                             {shop.name}
                           </Link>
-                          <span className="text-[10px] text-navy-400 block font-medium">
-                            Pemilik: {shop.ownerName}
+                          <span className="text-xs text-navy-500 block font-normal">
+                            Pemilik: <strong className="font-semibold text-navy-700">{shop.ownerName}</strong>
                           </span>
                         </div>
                       </div>
                     </TableCell>
 
                     {/* Location & Contact */}
-                    <TableCell className="p-4 text-xs">
-                      <div className="space-y-0.5">
-                        <span className="flex items-center gap-1 text-navy-700 font-medium">
-                          <MapPin className="w-3 h-3 text-pastel-teal shrink-0" />
+                    <TableCell className="p-4 text-xs sm:text-sm">
+                      <div className="space-y-1">
+                        <span className="flex items-center gap-1.5 text-navy-800 font-medium">
+                          <MapPin className="w-4 h-4 text-pastel-teal shrink-0" />
                           <span>{shop.dusun}</span>
                         </span>
-                        <span className="flex items-center gap-1 font-mono text-[10px] text-navy-400">
-                          <PhoneCall className="w-3 h-3 text-pastel-teal shrink-0" />
+                        <span className="flex items-center gap-1.5 font-mono text-xs text-navy-500">
+                          <PhoneCall className="w-3.5 h-3.5 text-pastel-teal shrink-0" />
                           <span>{shop.phone}</span>
                         </span>
                       </div>
@@ -177,24 +177,24 @@ export default function ShopsTab({
 
                     {/* Legalities */}
                     <TableCell className="p-4 text-xs">
-                      <div className="flex gap-1 flex-wrap">
+                      <div className="flex gap-1.5 flex-wrap">
                         {shop.nib ? (
-                          <span className="px-1.5 py-0.5 bg-pastel-lavender-light text-pastel-lavender text-[8px] font-black uppercase rounded">
+                          <span className="px-2 py-0.5 bg-pastel-lavender-light text-pastel-lavender text-[10px] font-black uppercase rounded-md border border-pastel-lavender/30">
                             NIB
                           </span>
                         ) : null}
                         {shop.halal ? (
-                          <span className="px-1.5 py-0.5 bg-pastel-teal-light text-pastel-teal text-[8px] font-black uppercase rounded">
+                          <span className="px-2 py-0.5 bg-pastel-teal-light text-pastel-teal text-[10px] font-black uppercase rounded-md border border-pastel-teal/30">
                             HALAL
                           </span>
                         ) : null}
                         {shop.pirt ? (
-                          <span className="px-1.5 py-0.5 bg-pastel-peach-light text-pastel-peach text-[8px] font-black uppercase rounded">
+                          <span className="px-2 py-0.5 bg-pastel-peach-light text-pastel-peach text-[10px] font-black uppercase rounded-md border border-pastel-peach/30">
                             P-IRT
                           </span>
                         ) : null}
                         {!shop.nib && !shop.halal && !shop.pirt && (
-                          <span className="text-[10px] text-navy-400 italic">
+                          <span className="text-xs text-navy-400 italic">
                             -
                           </span>
                         )}
@@ -204,13 +204,13 @@ export default function ShopsTab({
                     {/* Verification Status */}
                     <TableCell className="p-4">
                       {shop.isVerified ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-pastel-teal-light text-pastel-teal text-[9px] font-black uppercase rounded-lg border border-pastel-teal/20">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-pastel-teal-light text-pastel-teal text-xs font-black uppercase rounded-lg border border-pastel-teal/20">
+                          <CheckCircle2 className="w-4 h-4" />
                           Terverifikasi
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-pastel-peach-light text-pastel-peach text-[9px] font-black uppercase rounded-lg border border-pastel-peach/20">
-                          <AlertCircle className="w-3.5 h-3.5" />
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-pastel-peach-light text-pastel-peach text-xs font-black uppercase rounded-lg border border-pastel-peach/20">
+                          <AlertCircle className="w-4 h-4" />
                           Dalam Review
                         </span>
                       )}
@@ -223,13 +223,13 @@ export default function ShopsTab({
                           size="sm"
                           variant="outline"
                           onClick={() => handleToggleVerify(shop.id)}
-                          className={`h-8 rounded-xl text-[9.5px] font-bold uppercase tracking-wider cursor-pointer ${
+                          className={`h-9 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer ${
                             shop.isVerified
                               ? "bg-pastel-peach-light text-pastel-peach border-pastel-peach/20 hover:bg-pastel-peach/20"
                               : "bg-pastel-teal text-white border-pastel-teal hover:bg-pastel-teal/90"
                           }`}
                         >
-                          <ShieldCheck className="w-3.5 h-3.5" />
+                          <ShieldCheck className="w-4 h-4" />
                           <span>
                             {shop.isVerified ? "Batalkan" : "Verifikasi"}
                           </span>
@@ -237,10 +237,10 @@ export default function ShopsTab({
 
                         <button
                           onClick={() => handleDeleteShop(shop.id, shop.name)}
-                          className="p-1.5 rounded-xl text-navy-400 hover:text-pastel-coral hover:bg-pastel-coral-light transition-colors"
+                          className="p-2 rounded-xl text-navy-400 hover:text-pastel-coral hover:bg-pastel-coral-light transition-colors cursor-pointer"
                           title="Hapus Toko"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4.5 h-4.5" />
                         </button>
                       </div>
                     </TableCell>

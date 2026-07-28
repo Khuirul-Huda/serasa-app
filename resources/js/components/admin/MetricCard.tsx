@@ -19,21 +19,21 @@ export default function MetricCard({
   icon,
 }: MetricCardProps) {
   return (
-    <div className="bg-white rounded-3xl border border-navy-200/60 p-5 shadow-3xs flex items-center justify-between hover:border-pastel-teal/30 transition-all">
+    <div className="bg-white rounded-3xl border border-navy-200/60 p-5 shadow-3xs flex items-center justify-between hover:border-pastel-teal transition-all font-sans text-navy-900">
       <div className="space-y-1">
-        <span className="text-[10px] font-bold text-navy-400 uppercase tracking-wider block">
+        <span className="text-xs font-extrabold text-navy-500 uppercase tracking-wider block">
           {label}
         </span>
-        <span className="text-2xl font-black text-navy-900 leading-none block">
+        <span className="text-2xl sm:text-3xl font-black text-navy-900 leading-none block">
           {value}
         </span>
         {subtitle && (
-          <span className="text-[9.5px] text-navy-400 font-medium block">
+          <span className="text-xs text-navy-400 font-normal block pt-0.5">
             {subtitle}
           </span>
         )}
       </div>
-      <div className="w-10 h-10 rounded-2xl bg-navy-50 border border-navy-200/60 flex items-center justify-center text-navy-400 shrink-0">
+      <div className="w-11 h-11 rounded-2xl bg-navy-50 border border-navy-200/60 flex items-center justify-center text-navy-600 shrink-0">
         {icon}
       </div>
     </div>

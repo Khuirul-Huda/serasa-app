@@ -4,7 +4,7 @@
  */
 
 import { useForm, router, Link } from "@inertiajs/react";
-import { ShieldCheck, Activity, Store, Settings } from "lucide-react";
+import { ShieldCheck, Activity, Store, Settings, FileSpreadsheet, CheckCircle2, AlertCircle, ShoppingBag, Grid } from "lucide-react";
 import React, { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 import type { AppSettings, Shop, Product, Category } from "@/types";
@@ -191,69 +191,121 @@ export default function AdminPanel({
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-2 space-y-8 animate-fade-in font-sans text-navy-900" id="admin-workspace">
-      {/* Vercel-Style Premium Header Section */}
-      <div className="bg-white border-b border-navy-200/60 -mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto py-2 space-y-6 animate-fade-in font-sans text-navy-900" id="admin-workspace">
+      
+      {/* Admin Banner & Summary Metric Grid */}
+      <div className="bg-white border border-navy-200/60 rounded-3xl p-6 shadow-3xs space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-pastel-peach-light border border-pastel-peach/20 flex items-center justify-center text-pastel-peach shrink-0 shadow-3xs">
-              <ShieldCheck className="w-7 h-7" />
+            <div className="w-16 h-16 rounded-2xl bg-pastel-peach-light border border-pastel-peach/30 flex items-center justify-center text-pastel-peach shrink-0 shadow-3xs">
+              <ShieldCheck className="w-8 h-8" />
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-xl font-black uppercase tracking-tight text-navy-900 leading-none">
-                  Panel Administrator Desa
-                </h2>
-                <span className="px-2.5 py-0.5 bg-pastel-teal-light text-pastel-teal border border-pastel-teal/20 font-black uppercase text-[8px] tracking-wider rounded-md">
+                <h1 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-navy-900 leading-none">
+                  Panel Moderasi Admin Desa
+                </h1>
+                <span className="px-3 py-1 bg-pastel-teal-light text-pastel-teal border border-pastel-teal/20 font-black uppercase text-xs tracking-wider rounded-lg">
                   Super Admin
                 </span>
               </div>
-              <p className="text-xs text-navy-500 font-normal">
-                Pusat kendali verifikasi toko warga, statistik ekonomi, dan konfigurasi platform {settings.appName}.
+              <p className="text-xs sm:text-sm text-navy-500 font-normal">
+                Pusat kendali verifikasi UMKM, statistik ekonomi warga, dan impor data spreadsheet massal {settings.appName}.
               </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setIsImportModalOpen(true)}
+            className="px-4 py-2.5 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl transition-all shadow-3xs flex items-center gap-2 shrink-0 cursor-pointer"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            <span>Impor Data Excel UMKM</span>
+          </button>
+        </div>
+
+        {/* Admin Quick Metric Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-navy-100">
+          <div className="bg-navy-50/60 rounded-2xl border border-navy-200/50 p-4 flex items-center justify-between">
+            <div>
+              <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-navy-400 block">Total UMKM Warga</span>
+              <span className="text-lg sm:text-xl font-black text-navy-900 mt-0.5 block">{totalShops} Toko</span>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-pastel-teal-light text-pastel-teal flex items-center justify-center border border-pastel-teal/20">
+              <Store className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-navy-50/60 rounded-2xl border border-navy-200/50 p-4 flex items-center justify-between">
+            <div>
+              <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-navy-400 block">Toko Terverifikasi</span>
+              <span className="text-lg sm:text-xl font-black text-pastel-teal mt-0.5 block">{verifiedShops} Toko</span>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-pastel-teal-light text-pastel-teal flex items-center justify-center border border-pastel-teal/20">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-navy-50/60 rounded-2xl border border-navy-200/50 p-4 flex items-center justify-between">
+            <div>
+              <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-navy-400 block">Menunggu Verifikasi</span>
+              <span className="text-lg sm:text-xl font-black text-pastel-peach mt-0.5 block">{pendingShops} Toko</span>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-pastel-peach-light text-pastel-peach flex items-center justify-center border border-pastel-peach/30">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-navy-50/60 rounded-2xl border border-navy-200/50 p-4 flex items-center justify-between">
+            <div>
+              <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-navy-400 block">Total Produk</span>
+              <span className="text-lg sm:text-xl font-black text-navy-900 mt-0.5 block">{products.length} Produk</span>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-pastel-lavender-light text-pastel-lavender flex items-center justify-center border border-pastel-lavender/30">
+              <ShoppingBag className="w-5 h-5" />
             </div>
           </div>
         </div>
 
-        {/* Flat Underlined Tab Switcher */}
+        {/* Underlined Tab Switcher */}
         <div className="flex space-x-6 border-b border-navy-200 pt-2 shrink-0">
           <button
             onClick={() => setActiveSubTab("stats")}
-            className={`pb-3 px-1 border-b-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
               activeSubTab === "stats"
                 ? "border-pastel-teal text-pastel-teal"
                 : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
             }`}
           >
-            <Activity className="w-3.5 h-3.5" />
+            <Activity className="w-4 h-4" />
             <span>Statistik Ekonomi</span>
           </button>
           <button
             onClick={() => setActiveSubTab("shops")}
-            className={`pb-3 px-1 border-b-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
               activeSubTab === "shops"
                 ? "border-pastel-teal text-pastel-teal"
                 : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
             }`}
           >
-            <Store className="w-3.5 h-3.5" />
+            <Store className="w-4 h-4" />
             <span>Kelola UMKM ({totalShops})</span>
             {pendingShops > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 bg-pastel-peach text-navy-900 text-[8px] font-black rounded-full">
+              <span className="ml-1 px-2 py-0.5 bg-pastel-peach text-navy-900 text-xs font-black rounded-full">
                 {pendingShops}
               </span>
             )}
           </button>
           <button
             onClick={() => setActiveSubTab("config")}
-            className={`pb-3 px-1 border-b-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
               activeSubTab === "config"
                 ? "border-pastel-teal text-pastel-teal"
                 : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
             }`}
           >
-            <Settings className="w-3.5 h-3.5" />
+            <Settings className="w-4 h-4" />
             <span>Konfigurasi Platform</span>
           </button>
         </div>

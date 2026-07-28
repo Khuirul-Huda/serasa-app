@@ -53,7 +53,7 @@ export default function ImportModal({
   const conflictCount = importRows.filter((r) => r.isConflict).length;
 
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans text-navy-900">
       <div className="bg-white rounded-3xl border border-navy-200 shadow-2xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden">
         {/* Modal Header */}
         <div className="p-6 border-b border-navy-100 flex justify-between items-center bg-navy-50/50">
@@ -62,17 +62,17 @@ export default function ImportModal({
               <FileSpreadsheet className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-navy-900 text-base uppercase tracking-wider">
+              <h3 className="font-extrabold text-navy-900 text-base sm:text-lg uppercase tracking-wider">
                 Import Massal Data UMKM (Excel)
               </h3>
-              <p className="text-xs text-navy-500 mt-0.5">
+              <p className="text-xs sm:text-sm text-navy-500 mt-0.5 font-normal">
                 Unggah berkas spreadsheet .xlsx / .xls untuk memperbarui direktori toko desa secara otomatis.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-navy-400 hover:text-navy-700 hover:bg-navy-100 transition-colors"
+            className="p-2 rounded-xl text-navy-400 hover:text-navy-700 hover:bg-navy-100 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -90,10 +90,10 @@ export default function ImportModal({
               className="hidden"
             />
             <UploadCloud className="w-10 h-10 text-pastel-teal mx-auto mb-2" />
-            <span className="text-xs font-bold text-navy-800 block">
+            <span className="text-sm font-bold text-navy-800 block">
               Pilih Berkas Excel DATA UMKM
             </span>
-            <span className="text-[10px] text-navy-400 block mt-1">
+            <span className="text-xs text-navy-400 block mt-1">
               Format didukung: .xlsx atau .xls dengan kolom Nama Pemilik, Alamat, No WA, Nama Toko, dll.
             </span>
             <Button
@@ -101,7 +101,7 @@ export default function ImportModal({
               variant="outline"
               disabled={isParsing}
               onClick={() => fileInputRef.current?.click()}
-              className="mt-3 rounded-xl border-navy-200 text-navy-700 hover:bg-pastel-teal-light hover:text-pastel-teal text-xs font-bold uppercase tracking-wider"
+              className="mt-3 rounded-xl border-navy-200 text-navy-700 hover:bg-pastel-teal-light hover:text-pastel-teal text-xs sm:text-sm font-bold uppercase tracking-wider cursor-pointer"
             >
               {isParsing ? "Membaca File..." : "Browse File Excel"}
             </Button>
@@ -110,27 +110,27 @@ export default function ImportModal({
           {/* Parsed Rows Table */}
           {importRows.length > 0 && (
             <div className="space-y-3">
-              <div className="flex justify-between items-center text-xs">
+              <div className="flex justify-between items-center text-xs sm:text-sm">
                 <span className="font-bold text-navy-900 uppercase tracking-wider">
                   Hasil Preview Data ({importRows.length} Baris)
                 </span>
-                <div className="flex gap-3 text-[11px]">
+                <div className="flex gap-4 text-xs font-mono">
                   <span className="text-pastel-teal font-bold flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <CheckCircle2 className="w-4 h-4" />
                     {validCount} Didaftarkan
                   </span>
                   {conflictCount > 0 && (
                     <span className="text-pastel-peach font-bold flex items-center gap-1">
-                      <AlertTriangle className="w-3.5 h-3.5" />
+                      <AlertTriangle className="w-4 h-4" />
                       {conflictCount} Konflik Nama
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="border border-navy-200 rounded-2xl overflow-hidden max-h-64 overflow-y-auto text-xs">
+              <div className="border border-navy-200 rounded-2xl overflow-hidden max-h-64 overflow-y-auto text-xs sm:text-sm">
                 <table className="w-full text-left">
-                  <thead className="bg-navy-50 border-b border-navy-100 text-[10px] uppercase font-bold text-navy-500 tracking-wider">
+                  <thead className="bg-navy-50 border-b border-navy-100 text-xs uppercase font-extrabold text-navy-600 tracking-wider">
                     <tr>
                       <th className="p-3">Baris</th>
                       <th className="p-3">Pemilik</th>
@@ -150,7 +150,7 @@ export default function ImportModal({
                             : "hover:bg-navy-50/50"
                         }
                       >
-                        <td className="p-3 font-mono text-[10px] text-navy-400">
+                        <td className="p-3 font-mono text-xs text-navy-400">
                           #{row.rowNum}
                         </td>
                         <td className="p-3 font-bold text-navy-900">
@@ -159,19 +159,19 @@ export default function ImportModal({
                         <td className="p-3 text-navy-800">
                           {row.name}
                           {row.isConflict && (
-                            <span className="block text-[9px] text-pastel-coral font-bold mt-0.5">
+                            <span className="block text-xs text-pastel-coral font-bold mt-0.5">
                               ⚠️ Konflik: Mirip "{row.conflictShopName}"
                             </span>
                           )}
                         </td>
                         <td className="p-3 text-navy-600">{row.category}</td>
-                        <td className="p-3 font-mono text-[11px] text-navy-600">
+                        <td className="p-3 font-mono text-xs text-navy-600">
                           {row.phone}
                         </td>
                         <td className="p-3">
                           <button
                             onClick={() => onToggleAction(row.rowNum)}
-                            className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider cursor-pointer transition-all ${
+                            className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer transition-all ${
                               row.action === "import"
                                 ? "bg-pastel-teal text-white"
                                 : "bg-navy-200 text-navy-600 hover:bg-navy-300"
@@ -195,7 +195,7 @@ export default function ImportModal({
             type="button"
             variant="outline"
             onClick={onClose}
-            className="rounded-xl border-navy-200 text-navy-600"
+            className="rounded-xl border-navy-200 text-navy-600 text-xs sm:text-sm"
           >
             Batal
           </Button>
@@ -205,11 +205,11 @@ export default function ImportModal({
               type="button"
               disabled={isSubmittingImport || validCount === 0}
               onClick={onSubmitImport}
-              className="bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs flex items-center gap-2"
+              className="bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs sm:text-sm rounded-xl shadow-3xs flex items-center gap-2 cursor-pointer"
             >
               {isSubmittingImport ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-white" />
                   <span>Mengimpor Data...</span>
                 </>
               ) : (

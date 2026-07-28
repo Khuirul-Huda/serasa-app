@@ -26,9 +26,9 @@ export default function StatsTab({ shops, products, categories }: StatsTabProps)
   });
 
   return (
-    <div className="space-y-6 animate-fade-in" id="admin-stats-subtab">
+    <div className="space-y-6 animate-fade-in font-sans text-navy-900" id="admin-stats-subtab">
       {/* 4 Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <MetricCard
           label="Total UMKM Terdaftar"
           value={totalShops}
@@ -44,7 +44,7 @@ export default function StatsTab({ shops, products, categories }: StatsTabProps)
         <MetricCard
           label="Menunggu Review"
           value={pendingShops}
-          subtitle="Perlu Tindakan Admin"
+          subtitle="Perlu Verifikasi Admin"
           icon={<AlertCircle className="w-5 h-5 text-pastel-peach" />}
         />
         <MetricCard
@@ -56,17 +56,17 @@ export default function StatsTab({ shops, products, categories }: StatsTabProps)
       </div>
 
       {/* Sector Category Distribution */}
-      <div className="bg-white rounded-3xl border border-navy-200/60 p-6 shadow-3xs space-y-4">
+      <div className="bg-white rounded-3xl border border-navy-200/60 p-6 sm:p-8 shadow-3xs space-y-5">
         <div>
-          <h3 className="font-extrabold text-navy-900 text-sm uppercase tracking-wider">
+          <h3 className="font-extrabold text-navy-900 text-base uppercase tracking-wider">
             Distribusi Sektor Komoditas UMKM
           </h3>
-          <p className="text-xs text-navy-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-navy-500 mt-1 font-normal">
             Rincian jumlah produk kreatif warga per kategori usaha di Desa Samirono.
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {categoryDistribution.map((cat, idx) => {
             const percentage = totalProducts > 0 ? Math.round((cat.count / totalProducts) * 100) : 0;
             const barColors = [
@@ -79,14 +79,14 @@ export default function StatsTab({ shops, products, categories }: StatsTabProps)
             const barColor = barColors[idx % barColors.length];
 
             return (
-              <div key={cat.id} className="space-y-1 text-xs">
-                <div className="flex justify-between items-center font-bold text-navy-700">
+              <div key={cat.id} className="space-y-1.5 text-xs sm:text-sm">
+                <div className="flex justify-between items-center font-bold text-navy-800">
                   <span>{cat.name}</span>
-                  <span className="font-mono text-navy-500">
+                  <span className="font-mono text-navy-500 text-xs">
                     {cat.count} Produk ({percentage}%)
                   </span>
                 </div>
-                <div className="w-full h-2.5 bg-navy-50 rounded-full overflow-hidden border border-navy-100">
+                <div className="w-full h-3 bg-navy-50 rounded-full overflow-hidden border border-navy-100">
                   <div
                     className={`h-full ${barColor} rounded-full transition-all duration-500`}
                     style={{ width: `${percentage}%` }}
@@ -99,12 +99,12 @@ export default function StatsTab({ shops, products, categories }: StatsTabProps)
       </div>
 
       {/* Info Notice Panel */}
-      <div className="bg-pastel-teal-light/30 border border-pastel-teal/15 rounded-3xl p-5 flex items-start gap-3 text-xs text-navy-700">
-        <div className="w-8 h-8 rounded-xl bg-pastel-teal-light text-pastel-teal flex items-center justify-center shrink-0">
-          <Sparkles className="w-4 h-4" />
+      <div className="bg-pastel-teal-light/30 border border-pastel-teal/20 rounded-3xl p-5 sm:p-6 flex items-start gap-3.5 text-xs sm:text-sm text-navy-700 shadow-3xs">
+        <div className="w-10 h-10 rounded-2xl bg-pastel-teal-light text-pastel-teal flex items-center justify-center shrink-0 border border-pastel-teal/20">
+          <Sparkles className="w-5 h-5" />
         </div>
         <div className="space-y-1">
-          <span className="font-bold uppercase tracking-wider text-[10px] text-pastel-teal block">
+          <span className="font-extrabold uppercase tracking-wider text-xs text-pastel-teal block">
             Informasi Sistem Admin
           </span>
           <p className="leading-relaxed text-navy-600 font-normal">
