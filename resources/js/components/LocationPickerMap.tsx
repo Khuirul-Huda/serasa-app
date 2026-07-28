@@ -41,8 +41,8 @@ return;
         icon: L.divIcon({
           html: `
             <div class="flex flex-col items-center justify-center relative select-none">
-              <div class="absolute w-8 h-8 rounded-full animate-ping bg-emerald-500 opacity-30"></div>
-              <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-white bg-emerald-600 shadow-md border-2 border-white">
+              <div class="absolute w-8 h-8 rounded-full animate-ping bg-pastel-teal opacity-30"></div>
+              <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-white bg-pastel-teal shadow-md border-2 border-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin text-white"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
               </div>
             </div>

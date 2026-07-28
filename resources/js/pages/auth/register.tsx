@@ -24,17 +24,17 @@ export default function Register({ passwordRules }: Props) {
     <>
       <Head title="Daftar Akun - SAMIRONO ETALASE" />
 
-      <div className="space-y-6 font-sans">
+      <div className="space-y-6 font-sans text-navy-900">
         
         {/* Branding header */}
         <div className="text-center space-y-1">
-          <div className="w-10 h-10 bg-emerald-700 text-white rounded-xl flex items-center justify-center mx-auto mb-2 shadow-xs">
+          <div className="w-10 h-10 bg-pastel-teal text-white rounded-xl flex items-center justify-center mx-auto mb-2 shadow-xs">
             <Store className="w-5.5 h-5.5 text-white" />
           </div>
-          <h2 className="text-lg font-black uppercase tracking-tight text-gray-900 leading-none">
-            SAMIRONO <span className="text-emerald-700">ETALASE</span>
+          <h2 className="text-lg font-black uppercase tracking-tight text-navy-900 leading-none">
+            SAMIRONO <span className="text-pastel-teal">ETALASE</span>
           </h2>
-          <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest block font-mono">
+          <span className="text-[9px] text-navy-400 font-bold uppercase tracking-widest block font-mono">
             Platform Ekonomi Warga
           </span>
         </div>
@@ -50,7 +50,7 @@ export default function Register({ passwordRules }: Props) {
               <div className="grid gap-4.5 text-xs">
                 
                 <div className="space-y-1">
-                  <Label htmlFor="name" className="font-bold text-gray-500 uppercase tracking-wider text-[9px]">Nama Lengkap</Label>
+                  <Label htmlFor="name" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Nama Lengkap</Label>
                   <Input
                     id="name"
                     type="text"
@@ -60,13 +60,13 @@ export default function Register({ passwordRules }: Props) {
                     autoComplete="name"
                     name="name"
                     placeholder="Nama lengkap Anda"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-250 focus:border-emerald-600 focus:ring-emerald-500/10 transition-all text-xs"
+                    className="w-full px-4 py-2.5 rounded-xl border border-navy-200/60 focus:border-pastel-teal focus:ring-pastel-teal/20 transition-all text-xs"
                   />
                   <InputError message={errors.name} />
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="email" className="font-bold text-gray-500 uppercase tracking-wider text-[9px]">Alamat Email</Label>
+                  <Label htmlFor="email" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Alamat Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -75,13 +75,13 @@ export default function Register({ passwordRules }: Props) {
                     autoComplete="email"
                     name="email"
                     placeholder="nama@email.com"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-250 focus:border-emerald-600 focus:ring-emerald-500/10 transition-all text-xs"
+                    className="w-full px-4 py-2.5 rounded-xl border border-navy-200/60 focus:border-pastel-teal focus:ring-pastel-teal/20 transition-all text-xs"
                   />
                   <InputError message={errors.email} />
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="password" className="font-bold text-gray-500 uppercase tracking-wider text-[9px]">Kata Sandi</Label>
+                  <Label htmlFor="password" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Kata Sandi</Label>
                   <PasswordInput
                     id="password"
                     required
@@ -90,13 +90,13 @@ export default function Register({ passwordRules }: Props) {
                     name="password"
                     placeholder="Kata sandi minimal 8 karakter"
                     passwordrules={passwordRules}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-250 focus:border-emerald-600 focus:ring-emerald-500/10 transition-all text-xs"
+                    className="w-full px-4 py-2.5 rounded-xl border border-navy-200/60 focus:border-pastel-teal focus:ring-pastel-teal/20 transition-all text-xs"
                   />
                   <InputError message={errors.password} />
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="password_confirmation" className="font-bold text-gray-500 uppercase tracking-wider text-[9px]">Konfirmasi Kata Sandi</Label>
+                  <Label htmlFor="password_confirmation" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Konfirmasi Kata Sandi</Label>
                   <PasswordInput
                     id="password_confirmation"
                     required
@@ -105,7 +105,7 @@ export default function Register({ passwordRules }: Props) {
                     name="password_confirmation"
                     placeholder="Ketik ulang kata sandi"
                     passwordrules={passwordRules}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-250 focus:border-emerald-600 focus:ring-emerald-500/10 transition-all text-xs"
+                    className="w-full px-4 py-2.5 rounded-xl border border-navy-200/60 focus:border-pastel-teal focus:ring-pastel-teal/20 transition-all text-xs"
                   />
                   <InputError message={errors.password_confirmation} />
                 </div>
@@ -113,7 +113,7 @@ export default function Register({ passwordRules }: Props) {
                 <Button
                   type="submit"
                   disabled={processing}
-                  className="mt-2 w-full py-3.5 bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold uppercase tracking-wider text-[10px] rounded-xl cursor-pointer disabled:opacity-50 transition-all"
+                  className="mt-2 w-full py-3.5 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-[10px] rounded-xl cursor-pointer disabled:opacity-50 transition-all shadow-3xs"
                   tabIndex={5}
                 >
                   {processing && <Spinner />}
@@ -121,9 +121,9 @@ export default function Register({ passwordRules }: Props) {
                 </Button>
               </div>
 
-              <div className="text-center text-[11px] text-gray-400 font-medium">
+              <div className="text-center text-[11px] text-navy-400 font-medium">
                 Sudah memiliki akun?{" "}
-                <Link href={login()} className="text-emerald-700 font-bold hover:underline" tabIndex={6}>
+                <Link href={login()} className="text-pastel-teal font-bold hover:underline" tabIndex={6}>
                   Masuk
                 </Link>
               </div>

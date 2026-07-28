@@ -22,8 +22,8 @@ interface ShopMapProps {
   villageName?: string;
 }
 
-// Custom DivIcon marker generator using SVG matching our clean emerald theme
-const createCustomMarker = (color: string = "#10b981", isSelected: boolean = false) => {
+// Custom DivIcon marker generator using SVG matching soft pastel teal theme
+const createCustomMarker = (color: string = "#00B4D8", isSelected: boolean = false) => {
   return L.divIcon({
     html: `
       <div class="flex flex-col items-center justify-center relative select-none">
@@ -71,8 +71,8 @@ export default function ShopMap({ shops, villageName = "Desa Samirono" }: ShopMa
   // Initialize Leaflet Map
   useEffect(() => {
     if (!mapContainerRef.current) {
-return;
-}
+      return;
+    }
 
     if (!mapInstanceRef.current) {
       // Center of Desa Samirono (Getasan)
@@ -106,8 +106,8 @@ return;
     const map = mapInstanceRef.current;
 
     if (!map || !mapContainerRef.current) {
-return;
-}
+      return;
+    }
 
     const resizeObserver = new ResizeObserver(() => {
       map.invalidateSize();
@@ -126,14 +126,14 @@ return;
     const markersLayer = markersLayerRef.current;
 
     if (!map || !markersLayer) {
-return;
-}
+      return;
+    }
 
     markersLayer.clearLayers();
 
     mapShops.forEach((shop) => {
       const isSelected = activePin?.id === shop.id;
-      const color = isSelected ? "#f59e0b" : "#10b981"; // amber-500 or emerald-500
+      const color = isSelected ? "#F07167" : "#00B4D8"; // coral for selected, teal for default
 
       const marker = L.marker([shop.lat, shop.lng], {
         icon: createCustomMarker(color, isSelected)
@@ -164,33 +164,33 @@ return;
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-3xs overflow-hidden" id="serasa-village-map">
+    <div className="bg-white rounded-3xl border border-navy-200/60 shadow-3xs overflow-hidden font-sans text-navy-900" id="serasa-village-map">
       {/* Map Control Bar */}
-      <div className="p-5 border-b border-gray-200 bg-gray-50 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
+      <div className="p-5 border-b border-navy-200/60 bg-navy-50/50 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
         <div>
-          <h2 className="text-[15px] font-bold text-gray-800 flex items-center gap-2 uppercase tracking-wide">
-            <Compass className="w-5 h-5 text-emerald-600" />
+          <h2 className="text-[15px] font-bold text-navy-900 flex items-center gap-2 uppercase tracking-wide">
+            <Compass className="w-5 h-5 text-pastel-teal" />
             <span>Peta Geografis UMKM {villageName}</span>
           </h2>
-          <p className="text-xs text-gray-500">Klik pin toko atau daftar di samping untuk melihat letak akurat, kontak, jam operasional, dan etalase digital.</p>
+          <p className="text-xs text-navy-500">Klik pin toko atau daftar di samping untuk melihat letak akurat, kontak, jam operasional, dan etalase digital.</p>
         </div>
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Map Search */}
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-navy-400" />
             <input
               type="text"
               placeholder="Cari UMKM di peta..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-14 py-2 text-xs rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-medium"
+              className="w-full pl-9 pr-14 py-2 text-xs rounded-xl border border-navy-200/60 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal font-medium"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] bg-gray-100 hover:bg-emerald-600 text-gray-600 hover:text-white px-2 py-0.5 rounded font-bold uppercase tracking-wider"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] bg-navy-100 hover:bg-pastel-teal text-navy-600 hover:text-white px-2 py-0.5 rounded-md font-bold uppercase tracking-wider transition-colors"
               >
                 Clear
               </button>
@@ -201,7 +201,7 @@ return;
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-2 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-bold text-gray-700 uppercase tracking-wider cursor-pointer"
+            className="px-4 py-2 text-xs bg-white border border-navy-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal font-bold text-navy-700 uppercase tracking-wider cursor-pointer shadow-3xs"
           >
             <option value="all">Semua Kategori</option>
             {categories.filter(c => c !== "all").map((cat) => (
@@ -216,18 +216,18 @@ return;
       {/* Map Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12">
         {/* Leaflet Map Div Container */}
-        <div className="lg:col-span-8 relative aspect-16/10 sm:aspect-16/9 md:aspect-21/9 lg:aspect-16/10 border-b lg:border-b-0 lg:border-r border-gray-200 overflow-hidden z-0">
+        <div className="lg:col-span-8 relative aspect-16/10 sm:aspect-16/9 md:aspect-21/9 lg:aspect-16/10 border-b lg:border-b-0 lg:border-r border-navy-200/60 overflow-hidden z-0">
           <div ref={mapContainerRef} className="w-full h-full" style={{ minHeight: "450px" }} />
 
           {/* ACTIVE PIN DETAIL PANEL */}
           {activePin && (
             <div 
-              className="absolute bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-96 bg-white rounded-2xl border border-gray-200 shadow-lg p-5 flex items-start gap-3.5 animate-fade-in z-[1001]"
+              className="absolute bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-96 bg-white rounded-2xl border border-navy-200/60 shadow-lg p-5 flex items-start gap-3.5 animate-fade-in z-[1001]"
               id="map-detail-card"
             >
               <button 
                 onClick={() => setActivePin(null)}
-                className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-gray-800 border border-transparent hover:border-gray-100 rounded-full cursor-pointer hover:bg-gray-50"
+                className="absolute top-3 right-3 p-1.5 text-navy-400 hover:text-navy-800 border border-transparent hover:border-navy-100 rounded-full cursor-pointer hover:bg-navy-50 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -235,43 +235,43 @@ return;
               <img
                 src={activePin.logo}
                 alt={activePin.name}
-                className="w-12 h-12 rounded-xl object-cover shrink-0 border border-gray-200 shadow-3xs"
+                className="w-12 h-12 rounded-xl object-cover shrink-0 border border-navy-200 shadow-3xs"
                 referrerPolicy="no-referrer"
               />
 
               <div className="space-y-1 flex-1 pr-4">
-                <span className="text-[8px] font-bold text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded inline-block uppercase tracking-wider">
+                <span className="text-[8px] font-bold text-navy-500 bg-navy-100 border border-navy-200/60 px-2 py-0.5 rounded inline-block uppercase tracking-wider">
                   {activePin.category}
                 </span>
                 
-                <h4 className="text-gray-800 text-sm flex items-center gap-1 leading-tight font-bold">
+                <h4 className="text-navy-900 text-sm flex items-center gap-1 leading-tight font-bold">
                   {activePin.name}
                   {activePin.isVerified && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 fill-emerald-100 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-pastel-mint fill-pastel-mint-light shrink-0" />
                   )}
                 </h4>
 
-                <p className="text-[9.5px] uppercase tracking-wider text-gray-400 font-bold">
-                  Pemilik: <span className="text-gray-600 font-extrabold">{activePin.ownerName}</span>
+                <p className="text-[9.5px] uppercase tracking-wider text-navy-400 font-bold">
+                  Pemilik: <span className="text-navy-700 font-extrabold">{activePin.ownerName}</span>
                 </p>
 
                 {activePin.jamKerja && (
-                  <p className="text-[10px] text-gray-500 flex items-center gap-1 font-bold pt-0.5">
-                    <Clock className="w-3 h-3 text-emerald-600 shrink-0" />
+                  <p className="text-[10px] text-navy-500 flex items-center gap-1 font-bold pt-0.5">
+                    <Clock className="w-3 h-3 text-pastel-teal shrink-0" />
                     <span>Jam Kerja: </span>
-                    <span className="text-emerald-700 font-extrabold">{activePin.jamKerja}</span>
+                    <span className="text-pastel-teal font-extrabold">{activePin.jamKerja}</span>
                   </p>
                 )}
 
-                <p className="text-[10px] text-gray-500 flex items-start gap-1 leading-normal pt-0.5">
-                  <MapPin className="w-3 h-3 text-emerald-600 shrink-0 mt-0.5" />
+                <p className="text-[10px] text-navy-500 flex items-start gap-1 leading-normal pt-0.5">
+                  <MapPin className="w-3 h-3 text-pastel-teal shrink-0 mt-0.5" />
                   <span>{activePin.address}</span>
                 </p>
 
                 <div className="pt-2.5 flex items-center gap-1.5">
                   <button
                     onClick={() => router.visit(`/shops/${activePin.id}`)}
-                    className="flex-1 py-1.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-[9px] font-bold uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-3xs"
+                    className="flex-1 py-1.5 px-3 bg-pastel-teal hover:bg-pastel-teal/90 text-white text-[9px] font-bold uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-3xs"
                   >
                     <span>Buka Katalog Toko</span>
                   </button>
@@ -282,13 +282,13 @@ return;
         </div>
 
         {/* Sidebar Shop Selection List */}
-        <div className="lg:col-span-4 max-h-[450px] lg:max-h-[600px] overflow-y-auto p-4 space-y-3 bg-gray-50 border-l border-gray-200">
-          <div className="sticky top-0 bg-gray-50 backdrop-blur-xs z-10 pb-2 border-b border-gray-200 flex justify-between items-center">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Daftar UMKM ({mapShops.length})</span>
+        <div className="lg:col-span-4 max-h-[450px] lg:max-h-[600px] overflow-y-auto p-4 space-y-3 bg-navy-50/50 border-l border-navy-200/60">
+          <div className="sticky top-0 bg-navy-50/90 backdrop-blur-xs z-10 pb-2 border-b border-navy-200/60 flex justify-between items-center">
+            <span className="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Daftar UMKM ({mapShops.length})</span>
             {selectedCategory !== "all" && (
               <button 
                 onClick={() => setSelectedCategory("all")}
-                className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider hover:text-emerald-500 cursor-pointer"
+                className="text-[9px] font-bold text-pastel-teal uppercase tracking-wider hover:text-pastel-teal/80 cursor-pointer"
               >
                 Reset Filter
               </button>
@@ -297,8 +297,8 @@ return;
 
           {mapShops.length === 0 ? (
             <div className="text-center py-12">
-              <Store className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-              <p className="text-xs text-gray-400 italic">Tidak ada UMKM yang cocok dengan filter pencarian peta Anda.</p>
+              <Store className="w-8 h-8 text-navy-300 mx-auto mb-2" />
+              <p className="text-xs text-navy-400 italic">Tidak ada UMKM yang cocok dengan filter pencarian peta Anda.</p>
             </div>
           ) : (
             mapShops.map((shop) => {
@@ -308,31 +308,31 @@ return;
                 <div
                   key={shop.id}
                   onClick={() => handleSelectShopFromSidebar(shop)}
-                  className={`p-3 rounded-xl border transition-all cursor-pointer flex gap-3 text-left ${
+                  className={`p-3 rounded-2xl border transition-all cursor-pointer flex gap-3 text-left ${
                     isActive
-                      ? "bg-white border-emerald-600 shadow-3xs ring-1 ring-emerald-600/30"
-                      : "bg-white border-gray-200 hover:border-emerald-600/50"
+                      ? "bg-white border-pastel-teal shadow-3xs ring-1 ring-pastel-teal/30"
+                      : "bg-white border-navy-200/60 hover:border-pastel-teal/50"
                   }`}
                   id={`map-sidebar-shop-${shop.id}`}
                 >
                   <img
                     src={shop.logo}
                     alt={shop.name}
-                    className="w-10 h-10 rounded-lg object-cover border border-gray-200 shrink-0 shadow-3xs"
+                    className="w-10 h-10 rounded-xl object-cover border border-navy-200 shrink-0 shadow-3xs"
                     referrerPolicy="no-referrer"
                   />
                   <div className="space-y-0.5">
-                    <h4 className="text-gray-800 text-xs font-bold leading-tight hover:text-emerald-600 transition-colors">
+                    <h4 className="text-navy-900 text-xs font-bold leading-tight hover:text-pastel-teal transition-colors">
                       {shop.name}
                     </h4>
-                    <p className="text-[10px] text-gray-400 font-medium">Pemilik: {shop.ownerName}</p>
+                    <p className="text-[10px] text-navy-400 font-medium">Pemilik: {shop.ownerName}</p>
                     {shop.jamKerja && (
-                      <p className="text-[9px] text-gray-500 flex items-center gap-0.5 font-medium">
-                        <Clock className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
+                      <p className="text-[9px] text-navy-500 flex items-center gap-0.5 font-medium">
+                        <Clock className="w-2.5 h-2.5 text-pastel-teal shrink-0" />
                         <span>{shop.jamKerja}</span>
                       </p>
                     )}
-                    <span className="inline-block text-[8px] font-bold text-emerald-600 uppercase tracking-wider">
+                    <span className="inline-block text-[8px] font-bold text-pastel-teal uppercase tracking-wider">
                       {shop.dusun}
                     </span>
                   </div>
