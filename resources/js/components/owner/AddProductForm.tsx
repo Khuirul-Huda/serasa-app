@@ -23,32 +23,32 @@ export default function AddProductForm({
   onCancel,
 }: AddProductFormProps) {
   return (
-    <div className="bg-white border border-navy-200/60 p-6 rounded-3xl shadow-3xs space-y-4">
+    <div className="bg-white border border-navy-200/60 p-6 rounded-3xl shadow-3xs space-y-4 font-sans text-navy-900">
       <div>
-        <h4 className="font-extrabold text-navy-900 text-sm uppercase tracking-wide">Rincian Produk Baru</h4>
-        <p className="text-[11px] text-navy-400 mt-0.5">Lengkapi parameters berikut untuk menampilkan produk di etalase utama.</p>
+        <h4 className="font-extrabold text-navy-900 text-base uppercase tracking-wide">Rincian Produk Baru</h4>
+        <p className="text-xs sm:text-sm text-navy-500 mt-0.5 font-normal">Lengkapi parameters berikut untuk menampilkan produk di etalase utama.</p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-4 text-xs">
+      <form onSubmit={onSubmit} className="space-y-4 text-xs sm:text-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Label className="font-bold text-navy-400 uppercase tracking-wider text-[9px] block">Nama Produk</Label>
+          <div className="space-y-1.5">
+            <Label className="font-bold text-navy-500 uppercase tracking-wider text-xs block">Nama Produk</Label>
             <Input
               type="text"
               required
               placeholder="Contoh: Susu Stroberi Segar"
               value={form.data.name}
               onChange={(e) => form.setData("name", e.target.value)}
-              className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
+              className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal text-xs sm:text-sm"
             />
           </div>
 
-          <div className="space-y-1">
-            <Label className="font-bold text-navy-400 uppercase tracking-wider text-[9px] block">Kategori Komoditas</Label>
+          <div className="space-y-1.5">
+            <Label className="font-bold text-navy-500 uppercase tracking-wider text-xs block">Kategori Komoditas</Label>
             <select
               value={form.data.categoryId}
               onChange={(e) => form.setData("categoryId", e.target.value)}
-              className="w-full px-4 py-2.5 text-xs rounded-xl border border-navy-200/60 bg-white text-navy-800 font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal cursor-pointer shadow-3xs"
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-navy-200/60 bg-white text-navy-800 font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal cursor-pointer shadow-3xs"
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -60,49 +60,49 @@ export default function AddProductForm({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="space-y-1 sm:col-span-2">
-            <Label className="font-bold text-navy-400 uppercase tracking-wider text-[9px] block">Harga Jual (Rupiah)</Label>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label className="font-bold text-navy-500 uppercase tracking-wider text-xs block">Harga Jual (Rupiah)</Label>
             <Input
               type="number"
               required
               placeholder="Contoh: 15000"
               value={form.data.price}
               onChange={(e) => form.setData("price", e.target.value)}
-              className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
+              className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal text-xs sm:text-sm"
             />
           </div>
 
-          <div className="space-y-1">
-            <Label className="font-bold text-navy-400 uppercase tracking-wider text-[9px] block">Satuan Takaran</Label>
+          <div className="space-y-1.5">
+            <Label className="font-bold text-navy-500 uppercase tracking-wider text-xs block">Satuan Takaran</Label>
             <Input
               type="text"
               required
               placeholder="Pcs, Liter, Kg, Botol"
               value={form.data.unit}
               onChange={(e) => form.setData("unit", e.target.value)}
-              className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
+              className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal text-xs sm:text-sm"
             />
           </div>
         </div>
 
-        <div className="space-y-1">
-          <Label className="font-bold text-navy-400 uppercase tracking-wider text-[9px] block">Foto Produk (File Upload)</Label>
+        <div className="space-y-1.5">
+          <Label className="font-bold text-navy-500 uppercase tracking-wider text-xs block">Foto Produk (File Upload)</Label>
           <Input
             type="file"
             accept="image/*"
             onChange={(e) => form.setData("image", e.target.files?.[0] || null)}
-            className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal cursor-pointer text-navy-400 text-[10px] py-1 bg-white"
+            className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal cursor-pointer text-navy-500 text-xs py-1 bg-white"
           />
         </div>
 
-        <div className="space-y-1">
-          <Label className="font-bold text-navy-400 uppercase tracking-wider text-[9px] block">Deskripsi Uraian Produk</Label>
+        <div className="space-y-1.5">
+          <Label className="font-bold text-navy-500 uppercase tracking-wider text-xs block">Deskripsi Uraian Produk</Label>
           <textarea
             rows={3}
             placeholder="Jelaskan spesifikasi keunikan rasa susu, bahan baku bambu anyaman, atau cita rasa produk kuliner Anda..."
             value={form.data.description}
             onChange={(e) => form.setData("description", e.target.value)}
-            className="w-full px-4 py-2.5 text-xs rounded-xl border border-navy-200/60 bg-white text-navy-800 font-medium focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal resize-none transition-all shadow-3xs"
+            className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-navy-200/60 bg-white text-navy-800 font-medium focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal resize-none transition-all shadow-3xs"
           />
         </div>
 
@@ -111,14 +111,14 @@ export default function AddProductForm({
             type="button"
             variant="outline"
             onClick={onCancel}
-            className="rounded-xl h-9 text-navy-500 border-navy-200"
+            className="rounded-xl h-10 text-navy-600 border-navy-200 text-xs sm:text-sm"
           >
             Batal
           </Button>
           <Button
             type="submit"
             disabled={form.processing}
-            className="bg-pastel-teal hover:bg-pastel-teal/90 text-white rounded-xl h-9 font-extrabold uppercase tracking-wider shadow-3xs transition-all cursor-pointer"
+            className="bg-pastel-teal hover:bg-pastel-teal/90 text-white rounded-xl h-10 px-5 text-xs sm:text-sm font-extrabold uppercase tracking-wider shadow-3xs transition-all cursor-pointer"
           >
             {form.processing ? "Menyimpan..." : "Luncurkan Produk"}
           </Button>
