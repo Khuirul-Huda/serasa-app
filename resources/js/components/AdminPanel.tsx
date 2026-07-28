@@ -18,9 +18,15 @@ import {
   Search,
   Eye,
   MapPin,
-  PhoneCall
+  PhoneCall,
+  FileSpreadsheet,
+  UploadCloud,
+  X,
+  RefreshCw,
+  AlertTriangle
 } from "lucide-react";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
+import * as XLSX from "xlsx";
 import {
   Table,
   TableHeader,
@@ -38,6 +44,22 @@ interface AdminPanelProps {
   categories: Category[];
 }
 
+interface ParsedImportRow {
+  rowNum: number;
+  ownerName: string;
+  address: string;
+  dusun: string;
+  phone: string;
+  name: string;
+  category: string;
+  nib: boolean;
+  halal: boolean;
+  pirt: boolean;
+  isConflict: boolean;
+  conflictShopName?: string;
+  action: "import" | "skip";
+}
+
 export default function AdminPanel({
   settings,
   shops,
@@ -48,6 +70,13 @@ export default function AdminPanel({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [searchShopQuery, setSearchShopQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "verified" | "pending">("all");
+
+  // Excel Import state
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importRows, setImportRows] = useState<ParsedImportRow[]>([]);
+  const [isParsing, setIsParsing] = useState(false);
+  const [isSubmittingImport, setIsSubmittingImport] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Inertia Form for app settings
   const { data, setData, post, processing } = useForm({
@@ -102,6 +131,144 @@ export default function AdminPanel({
     if (confirm("Apakah Anda yakin ingin menghapus toko ini beserta seluruh produknya secara permanen dari sistem desa?")) {
       router.delete(`/admin/shops/${shopId}`);
     }
+  };
+
+  // Parse Excel File
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsParsing(true);
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      try {
+        const buffer = event.target?.result;
+        const workbook = XLSX.read(buffer, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const rawRows = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1 });
+
+        const parsed: ParsedImportRow[] = [];
+
+        // Data rows start from row index 4 (0: title, 1: year, 2: update date, 3: header 1, 4: header 2, 5+: data)
+        for (let i = 5; i < rawRows.length; i++) {
+          const row = rawRows[i];
+          if (!row || row.length === 0) continue;
+
+          const no = row[0];
+          const ownerName = row[1] ? String(row[1]).trim() : "";
+          const address = row[2] ? String(row[2]).trim() : "";
+          const phone = row[3] ? String(row[3]).trim() : "";
+          let businessName = row[4] ? String(row[4]).trim() : "";
+          const businessType = row[5] ? String(row[5]).trim() : "";
+
+          // Skip completely empty rows
+          if (!ownerName && !businessName && !businessType) continue;
+
+          // Auto-fill fallback rule: if nama usaha is null/empty, get from jenis usaha
+          if (!businessName && businessType) {
+            businessName = businessType;
+          }
+
+          // Extract dusun from address if possible, default to Desa Samirono
+          let dusun = "Desa Samirono";
+          if (address.toLowerCase().includes("pongangan")) dusun = "Dusun Pongangan";
+          else if (address.toLowerCase().includes("tawang")) dusun = "Dusun Tawang";
+          else if (address.toLowerCase().includes("samirono")) dusun = "Dusun Samirono";
+          else if (address.toLowerCase().includes("bentar")) dusun = "Dusun Bentar";
+          else if (address.toLowerCase().includes("surowono")) dusun = "Dusun Surowono";
+
+          // Parse Permit Booleans (checking for 'v', 'V', '1', checkmarks)
+          const nibVal = row[6] ? String(row[6]).trim().toLowerCase() : "";
+          const halalVal = row[7] ? String(row[7]).trim().toLowerCase() : "";
+          const pirtVal = row[8] ? String(row[8]).trim().toLowerCase() : "";
+
+          const nib = nibVal === "v" || nibVal === "1" || nibVal === "true";
+          const halal = halalVal === "v" || halalVal === "1" || halalVal === "true";
+          const pirt = pirtVal === "v" || pirtVal === "1" || pirtVal === "false" ? (pirtVal === "v" || pirtVal === "1") : false;
+
+          // Conflict resolution check against existing loaded shops
+          const existingMatch = shops.find(
+            (s) => s.name.toLowerCase() === businessName.toLowerCase() ||
+                   s.ownerName.toLowerCase() === ownerName.toLowerCase()
+          );
+
+          parsed.push({
+            rowNum: i + 1,
+            ownerName: ownerName || "Pemilik Samirono",
+            address: address || "Desa Samirono",
+            dusun,
+            phone: phone || "6285725912345",
+            name: businessName || "UMKM Samirono",
+            category: businessType || "Kuliner & Olahan",
+            nib,
+            halal,
+            pirt,
+            isConflict: !!existingMatch,
+            conflictShopName: existingMatch ? existingMatch.name : undefined,
+            action: "import",
+          });
+        }
+
+        setImportRows(parsed);
+      } catch (err) {
+        alert("Gagal membaca file Excel. Pastikan format file .xlsx valid.");
+      } finally {
+        setIsParsing(false);
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleToggleRowAction = (index: number) => {
+    setImportRows((prev) => {
+      const next = [...prev];
+      next[index].action = next[index].action === "import" ? "skip" : "import";
+      return next;
+    });
+  };
+
+  const handleSubmitImport = () => {
+    const toImport = importRows.filter((r) => r.action === "import");
+    if (toImport.length === 0) {
+      alert("Tidak ada data UMKM yang dipilih untuk diimpor.");
+      return;
+    }
+
+    setIsSubmittingImport(true);
+
+    const payloadShops = toImport.map((r) => ({
+      name: r.name,
+      owner_name: r.ownerName,
+      address: r.address,
+      dusun: r.dusun,
+      phone: r.phone,
+      category: r.category,
+      description: `UMKM ${r.name} di ${r.dusun}, Desa Samirono. Jenis Usaha: ${r.category}.`,
+      nib: r.nib,
+      halal: r.halal,
+      pirt: r.pirt,
+      is_verified: true,
+    }));
+
+    router.post(
+      "/admin/shops/bulk-import",
+      { shops: payloadShops },
+      {
+        onSuccess: () => {
+          setIsSubmittingImport(false);
+          setIsImportModalOpen(false);
+          setImportRows([]);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        },
+        onError: () => {
+          setIsSubmittingImport(false);
+          alert("Gagal menyimpan data impor ke server.");
+        },
+      }
+    );
   };
 
   return (
@@ -171,7 +338,7 @@ export default function AdminPanel({
       {activeSubTab === "stats" && (
         <div className="space-y-6 animate-fade-in" id="admin-subtab-stats">
           
-          {/* Key Metrics Widgets (Vercel Metrics Style) */}
+          {/* Key Metrics Widgets */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-3xs flex flex-col justify-between h-32 hover:border-emerald-600/30 hover:shadow-xs transition-all duration-200">
@@ -305,14 +472,22 @@ export default function AdminPanel({
       {activeSubTab === "shops" && (
         <div className="bg-white border border-slate-200 rounded-3xl shadow-3xs p-6 space-y-6 animate-fade-in" id="admin-subtab-verification">
           
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
             <div>
               <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider">Verifikasi Legalitas Usaha</h3>
               <p className="text-xs text-slate-500 mt-0.5">Validasi legalitas rumah produksi warga sebelum diaktifkan pada katalog utama.</p>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
-              <div className="relative w-full sm:w-64">
+            <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+              <button
+                onClick={() => setIsImportModalOpen(true)}
+                className="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-wider rounded-xl flex items-center gap-1.5 transition-all shadow-3xs cursor-pointer"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>Import UMKM (Excel)</span>
+              </button>
+
+              <div className="relative flex-1 sm:w-64">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
@@ -342,6 +517,8 @@ export default function AdminPanel({
                   <TableHead className="p-4">Pemilik & Kontak</TableHead>
                   <TableHead className="p-4">Lokasi Dusun</TableHead>
                   <TableHead className="p-4">Kategori Utama</TableHead>
+
+                  <TableHead className="p-4">Izin Legalitas</TableHead>
                   <TableHead className="p-4">Status</TableHead>
                   <TableHead className="p-4 text-center">Tindakan</TableHead>
                 </TableRow>
@@ -349,7 +526,7 @@ export default function AdminPanel({
               <TableBody>
                 {filteredShopsTable.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-16 text-slate-400 italic">
+                    <TableCell colSpan={7} className="text-center py-16 text-slate-400 italic">
                       Tidak ada toko terdaftar yang cocok dengan kriteria pencarian Anda.
                     </TableCell>
                   </TableRow>
@@ -396,6 +573,29 @@ export default function AdminPanel({
                         <span className="inline-block px-2.5 py-0.5 bg-slate-100 text-slate-600 rounded border border-slate-200/60 font-bold text-[8.5px] uppercase tracking-wider">
                           {shop.category}
                         </span>
+                      </TableCell>
+
+                      <TableCell className="p-4">
+                        <div className="flex items-center gap-1 flex-wrap">
+                          {shop.nib ? (
+                            <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[8px] font-black rounded border border-blue-200">
+                              NIB
+                            </span>
+                          ) : null}
+                          {shop.halal ? (
+                            <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[8px] font-black rounded border border-emerald-200">
+                              HALAL
+                            </span>
+                          ) : null}
+                          {shop.pirt ? (
+                            <span className="px-1.5 py-0.5 bg-purple-50 text-purple-700 text-[8px] font-black rounded border border-purple-200">
+                              P-IRT
+                            </span>
+                          ) : null}
+                          {!shop.nib && !shop.halal && !shop.pirt && (
+                            <span className="text-[10px] text-slate-400 font-mono italic">-</span>
+                          )}
+                        </div>
                       </TableCell>
 
                       <TableCell className="p-4">
@@ -635,6 +835,202 @@ export default function AdminPanel({
             </div>
           </div>
 
+        </div>
+      )}
+
+      {/* 3. EXCEL IMPORT MODAL WITH CONFLICT RESOLUTION */}
+      {isImportModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
+            
+            {/* Modal Header */}
+            <div className="px-6 py-5 border-b border-slate-150 flex justify-between items-center bg-slate-50/50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-800 border border-emerald-200">
+                  <FileSpreadsheet className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">Import Data UMKM dari Excel</h3>
+                  <p className="text-[11px] text-slate-500">Unggah file spreadsheet DATA UMKM 2026 (.xlsx) untuk ditinjau & diimpor secara otomatis.</p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setIsImportModalOpen(false);
+                  setImportRows([]);
+                }}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-6 flex-1">
+              
+              {/* File Dropzone */}
+              <div className="border-2 border-dashed border-slate-200 hover:border-emerald-500 bg-slate-50/50 hover:bg-emerald-50/30 rounded-2xl p-6 text-center transition-all">
+                <input
+                  type="file"
+                  accept=".xlsx, .xls"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="excel-file-input"
+                />
+                <label htmlFor="excel-file-input" className="cursor-pointer space-y-2 block">
+                  <UploadCloud className="w-10 h-10 text-emerald-600 mx-auto" />
+                  <div className="space-y-1">
+                    <span className="text-xs font-extrabold text-slate-800 block uppercase tracking-wider">
+                      Klik untuk Memilih File Excel (.xlsx)
+                    </span>
+                    <span className="text-[10px] text-slate-400 block font-mono">
+                      Mendukung format DATA UMKM 2026.xlsx
+                    </span>
+                  </div>
+                </label>
+              </div>
+
+              {isParsing && (
+                <div className="py-8 text-center space-y-2">
+                  <RefreshCw className="w-6 h-6 text-emerald-600 animate-spin mx-auto" />
+                  <p className="text-xs font-bold text-slate-600 uppercase tracking-wider">Membaca & Memproses Lembar Kerja Excel...</p>
+                </div>
+              )}
+
+              {/* Preview & Conflict Review Table */}
+              {!isParsing && importRows.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-900">
+                        Hasil Peninjauan Data ({importRows.length} Baris Ditemukan)
+                      </h4>
+                      <p className="text-[10px] text-slate-500">
+                        Sistem telah menerapkan aturan fallback (Nama Usaha diambil dari Jenis Usaha jika kosong) & mengecek potensi konflik.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-[10px] font-bold font-mono">
+                      <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded">
+                        Baru: {importRows.filter((r) => !r.isConflict).length}
+                      </span>
+                      <span className="px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded">
+                        Konflik/Sama: {importRows.filter((r) => r.isConflict).length}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto border border-slate-200 rounded-2xl max-h-72">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-slate-50 border-b border-slate-200">
+                          <TableHead className="p-3 text-[10px]">Pilih</TableHead>
+                          <TableHead className="p-3 text-[10px]">Baris</TableHead>
+                          <TableHead className="p-3 text-[10px]">Nama Usaha (UMKM)</TableHead>
+                          <TableHead className="p-3 text-[10px]">Pemilik & Dusun</TableHead>
+                          <TableHead className="p-3 text-[10px]">Kategori</TableHead>
+                          <TableHead className="p-3 text-[10px]">Permit Legalitas</TableHead>
+                          <TableHead className="p-3 text-[10px]">Status Konflik</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {importRows.map((row, idx) => (
+                          <TableRow
+                            key={idx}
+                            className={row.isConflict ? "bg-amber-50/30" : "hover:bg-slate-50/50"}
+                          >
+                            <TableCell className="p-3">
+                              <input
+                                type="checkbox"
+                                checked={row.action === "import"}
+                                onChange={() => handleToggleRowAction(idx)}
+                                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                              />
+                            </TableCell>
+
+                            <TableCell className="p-3 font-mono text-[10px] text-slate-500">
+                              #{row.rowNum}
+                            </TableCell>
+
+                            <TableCell className="p-3">
+                              <span className="font-extrabold text-xs text-slate-900 block">{row.name}</span>
+                              <span className="text-[9px] text-slate-400 block font-mono">{row.phone}</span>
+                            </TableCell>
+
+                            <TableCell className="p-3 text-xs">
+                              <span className="font-bold text-slate-700 block">{row.ownerName}</span>
+                              <span className="text-[9.5px] text-slate-400 font-mono block">{row.dusun}</span>
+                            </TableCell>
+
+                            <TableCell className="p-3">
+                              <span className="px-2 py-0.5 bg-slate-100 text-slate-700 text-[8.5px] font-bold rounded border border-slate-200">
+                                {row.category}
+                              </span>
+                            </TableCell>
+
+                            <TableCell className="p-3">
+                              <div className="flex items-center gap-1">
+                                {row.nib && <span className="px-1 py-0.5 bg-blue-50 text-blue-700 text-[7px] font-bold rounded border border-blue-200">NIB</span>}
+                                {row.halal && <span className="px-1 py-0.5 bg-emerald-50 text-emerald-700 text-[7px] font-bold rounded border border-emerald-200">HALAL</span>}
+                                {row.pirt && <span className="px-1 py-0.5 bg-purple-50 text-purple-700 text-[7px] font-bold rounded border border-purple-200">P-IRT</span>}
+                                {!row.nib && !row.halal && !row.pirt && <span className="text-[9px] text-slate-300 italic">-</span>}
+                              </div>
+                            </TableCell>
+
+                            <TableCell className="p-3">
+                              {row.isConflict ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 text-[8px] font-black uppercase rounded border border-amber-200">
+                                  <AlertTriangle className="w-3 h-3 text-amber-600" />
+                                  <span>Update Toko Sama</span>
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[8px] font-black uppercase rounded border border-emerald-200">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                  <span>Baru</span>
+                                </span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-slate-150 bg-slate-50/50 flex justify-between items-center">
+              <span className="text-[10px] text-slate-500 font-mono">
+                {importRows.filter((r) => r.action === "import").length} item dipilih untuk disimpan
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setIsImportModalOpen(false);
+                    setImportRows([]);
+                  }}
+                  className="px-4 py-2.5 text-slate-600 hover:bg-slate-200 font-bold text-xs rounded-xl uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+
+                <button
+                  onClick={handleSubmitImport}
+                  disabled={isSubmittingImport || importRows.filter((r) => r.action === "import").length === 0}
+                  className="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{isSubmittingImport ? "Menyimpan..." : "Simpan Data ke Server"}</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
         </div>
       )}
 

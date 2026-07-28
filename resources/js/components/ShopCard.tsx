@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MapPin, Phone, CheckCircle2, ShoppingBag, ArrowRight, Clock } from "lucide-react";
+import { MapPin, Phone, CheckCircle2, ShoppingBag, ArrowRight, Clock, Award } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import React from "react";
 import type { Shop } from "@/types";
@@ -75,9 +75,26 @@ export default function ShopCard({
           </div>
 
           <div className="pt-8 space-y-2">
-            <span className="inline-block text-[8px] font-bold text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded uppercase tracking-wider">
-              {shop.category}
-            </span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="inline-block text-[8px] font-bold text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded uppercase tracking-wider">
+                {shop.category}
+              </span>
+              {shop.nib && (
+                <span className="px-1.5 py-0.5 bg-blue-50 text-blue-800 text-[7.5px] font-black uppercase rounded border border-blue-200">
+                  NIB
+                </span>
+              )}
+              {shop.halal && (
+                <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-800 text-[7.5px] font-black uppercase rounded border border-emerald-200">
+                  HALAL
+                </span>
+              )}
+              {shop.pirt && (
+                <span className="px-1.5 py-0.5 bg-purple-50 text-purple-800 text-[7.5px] font-black uppercase rounded border border-purple-200">
+                  P-IRT
+                </span>
+              )}
+            </div>
 
             <h3 className="font-sans text-[15px] text-gray-800 group-hover:text-emerald-600 transition-colors flex items-center gap-1 leading-snug font-bold">
               <Link href={`/shops/${shop.id}`}>{shop.name}</Link>

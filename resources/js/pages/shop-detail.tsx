@@ -10,7 +10,8 @@ import {
   CheckCircle2, 
   Clock, 
   ArrowLeft,
-  ShoppingBag
+  ShoppingBag,
+  Award
 } from "lucide-react";
 import React from "react";
 import ProductCard from "@/components/ProductCard";
@@ -111,6 +112,24 @@ export default function ShopDetail({
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-800 text-[8px] font-extrabold tracking-wider uppercase">
                       <CheckCircle2 className="w-3 h-3 text-emerald-600 fill-emerald-50" />
                       <span>Terverifikasi</span>
+                    </span>
+                  )}
+                  {shop.nib && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-50 border border-blue-100 text-blue-800 text-[8px] font-black tracking-wider uppercase">
+                      <Award className="w-3 h-3 text-blue-600" />
+                      <span>Izin NIB</span>
+                    </span>
+                  )}
+                  {shop.halal && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-800 text-[8px] font-black tracking-wider uppercase">
+                      <Award className="w-3 h-3 text-emerald-600" />
+                      <span>Sertifikat Halal</span>
+                    </span>
+                  )}
+                  {shop.pirt && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-purple-50 border border-purple-100 text-purple-800 text-[8px] font-black tracking-wider uppercase">
+                      <Award className="w-3 h-3 text-purple-600" />
+                      <span>Izin P-IRT</span>
                     </span>
                   )}
                 </div>
