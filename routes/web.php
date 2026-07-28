@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::post('/admin/shops/{id}/verify', [AdminDashboardController::class, 'toggleVerifyShop'])->name('admin.shops.verify');
     Route::delete('/admin/shops/{id}', [AdminDashboardController::class, 'deleteShop'])->name('admin.shops.delete');
+    Route::post('/admin/shops/bulk-import', [AdminDashboardController::class, 'bulkImport'])->name('admin.shops.bulk-import');
     Route::post('/admin/settings', [AdminDashboardController::class, 'saveSettings'])->name('admin.settings.save');
 });
 
