@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import React, { useState } from "react";
-import type { AppSettings, Category, Product } from "@/types";
+import type { AppSettings, Category, Product, Shop } from "@/types";
 import TopBar from "./navbar/TopBar";
 import CartDropdown from "./navbar/CartDropdown";
 import NotificationDropdown from "./navbar/NotificationDropdown";
@@ -27,6 +27,7 @@ interface NavbarProps {
   setSelectedCategory?: (cat: string) => void;
   categories: Category[];
   products: Product[];
+  shops?: Shop[];
   onSelectProduct?: (product: Product) => void;
 }
 
@@ -35,6 +36,7 @@ export default function Navbar({
   activeTab,
   searchQuery = "",
   setSearchQuery,
+  shops = [],
 }: NavbarProps) {
   const { auth } = usePage().props as any;
   const user = auth?.user;
@@ -58,29 +60,27 @@ export default function Navbar({
 
       {/* 2. MAIN HEADER BAR */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4 justify-between">
-        {/* Brand Logo & Desktop Primary Navigation Links */}
+        {/* Brand Logo & Main Nav Tabs */}
         <div className="flex items-center gap-6 shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-2 text-left group cursor-pointer"
-            id="brand-logo"
+            className="flex items-center gap-2.5 group cursor-pointer"
           >
-            <div className="w-10 h-10 bg-pastel-teal rounded-xl flex items-center justify-center text-white shadow-xs group-hover:bg-pastel-teal/90 transition-all duration-300 transform group-hover:scale-105">
-              <Store className="w-5.5 h-5.5 text-white" />
+            <div className="w-9 h-9 bg-pastel-teal rounded-2xl flex items-center justify-center text-white font-black text-base shadow-2xs group-hover:scale-105 transition-all duration-300">
+              S
             </div>
-            <div className="hidden lg:block">
-              <span className="text-base font-sans text-navy-900 tracking-tight block font-black uppercase">
-                SAMIRONO{" "}
-                <span className="text-pastel-teal">ETALASE</span>
+            <div className="flex flex-col">
+              <span className="text-navy-900 font-black text-base tracking-tight uppercase leading-none group-hover:text-pastel-teal transition-colors">
+                SAMIRONO <span className="text-pastel-teal">ETALASE</span>
               </span>
-              <span className="text-[9px] text-navy-400 font-bold tracking-widest uppercase block -mt-1 font-mono">
-                SENTRA UMKM DESA
+              <span className="text-[9px] text-navy-400 font-bold uppercase tracking-widest leading-tight mt-0.5">
+                Sentra UMKM Digital
               </span>
             </div>
           </Link>
 
-          {/* Desktop Integrated Navigation */}
-          <nav className="hidden md:flex items-center gap-1 border-l border-navy-200 pl-4">
+          {/* Desktop Navigation Link Pills */}
+          <nav className="hidden lg:flex items-center gap-1 bg-navy-50/70 p-1 rounded-xl border border-navy-200/50">
             <Link
               href="/"
               prefetch="hover"
@@ -90,7 +90,7 @@ export default function Navbar({
                   : "text-navy-600 hover:text-pastel-teal hover:bg-navy-50"
               }`}
             >
-              Etalase Warga
+              Katalog Produk
             </Link>
             <Link
               href="/shops"
@@ -180,26 +180,27 @@ export default function Navbar({
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-navy-500 hover:bg-navy-100 focus:outline-none"
-            aria-label="Toggle Menu"
-            id="mobile-menu-toggle"
+            className="lg:hidden p-2 text-navy-600 hover:text-pastel-teal rounded-xl hover:bg-navy-50 transition-colors cursor-pointer"
+            aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             )}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <MobileMenu
-        settings={settings}
-        activeTab={activeTab}
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-      />
+      {/* 3. MOBILE MENU DROPDOWN */}
+      {isMobileMenuOpen && (
+        <MobileMenu
+          activeTab={activeTab}
+          settings={settings}
+          user={user}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
+      )}
     </header>
   );
 }

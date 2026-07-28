@@ -5,13 +5,12 @@
 
 import React from "react";
 import Navbar from "@/components/Navbar";
-import { AppSettings, Category, Product } from "@/types";
+import type { AppSettings, Category, Product, Shop } from "@/types";
 import { 
   Phone, 
-  Globe,
   Heart
 } from "lucide-react";
-import { Link, router } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 
 interface MarketplaceLayoutProps {
   children: React.ReactNode;
@@ -19,6 +18,7 @@ interface MarketplaceLayoutProps {
   activeTab: "katalog" | "shops" | "map" | "merchant" | "admin" | "detail";
   categories: Category[];
   products: Product[];
+  shops?: Shop[];
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   selectedCategory?: string;
@@ -31,6 +31,7 @@ export default function MarketplaceLayout({
   activeTab,
   categories,
   products,
+  shops = [],
   searchQuery = "",
   setSearchQuery,
   selectedCategory = "all",
@@ -48,6 +49,7 @@ export default function MarketplaceLayout({
         setSelectedCategory={setSelectedCategory}
         categories={categories}
         products={products}
+        shops={shops}
       />
 
       {/* Main Content Area */}
