@@ -38,7 +38,7 @@ export default function MapPage({
         <Suspense
           fallback={
             <div
-              className="animate-pulse bg-gray-100 rounded-2xl w-full"
+              className="animate-pulse bg-navy-50 border border-navy-200/60 rounded-2xl w-full"
               style={{ height: 500 }}
               aria-label="Memuat peta..."
               role="status"
