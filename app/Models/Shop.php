@@ -18,12 +18,16 @@ class Shop extends Model
         'id', 'name', 'owner_name', 'description', 'category',
         'phone', 'address', 'dusun', 'image', 'logo',
         'is_verified', 'lat', 'lng', 'working_hours', 'user_id',
+        'nib', 'halal', 'pirt',
     ];
 
     protected $casts = [
         'is_verified' => 'boolean',
         'lat' => 'double',
         'lng' => 'double',
+        'nib' => 'boolean',
+        'halal' => 'boolean',
+        'pirt' => 'boolean',
     ];
 
     public function user(): BelongsTo

@@ -106,6 +106,9 @@ abstract class Controller
             'lng' => (float) $shop->lng,
             'jamKerja' => $shop->working_hours,
             'userId' => $shop->user_id,
+            'nib' => (bool) $shop->nib,
+            'halal' => (bool) $shop->halal,
+            'pirt' => (bool) $shop->pirt,
         ];
     }
 }

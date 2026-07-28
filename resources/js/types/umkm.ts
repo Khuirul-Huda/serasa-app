@@ -34,6 +34,9 @@ export interface Shop {
   lng: number;
   jamKerja?: string;
   userId?: number | null;
+  nib?: boolean;
+  halal?: boolean;
+  pirt?: boolean;
 }
 
 export interface Category {
