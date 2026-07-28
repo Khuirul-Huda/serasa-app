@@ -26,6 +26,7 @@ import {
   AlertTriangle
 } from "lucide-react";
 import React, { useState, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import * as XLSX from "xlsx";
 import {
   Table,
@@ -151,12 +152,11 @@ export default function AdminPanel({
 
         const parsed: ParsedImportRow[] = [];
 
-        // Data rows start from row index 4 (0: title, 1: year, 2: update date, 3: header 1, 4: header 2, 5+: data)
+        // Data rows start from row index 5
         for (let i = 5; i < rawRows.length; i++) {
           const row = rawRows[i];
           if (!row || row.length === 0) continue;
 
-          const no = row[0];
           const ownerName = row[1] ? String(row[1]).trim() : "";
           const address = row[2] ? String(row[2]).trim() : "";
           const phone = row[3] ? String(row[3]).trim() : "";
@@ -179,14 +179,14 @@ export default function AdminPanel({
           else if (address.toLowerCase().includes("bentar")) dusun = "Dusun Bentar";
           else if (address.toLowerCase().includes("surowono")) dusun = "Dusun Surowono";
 
-          // Parse Permit Booleans (checking for 'v', 'V', '1', checkmarks)
+          // Parse Permit Booleans
           const nibVal = row[6] ? String(row[6]).trim().toLowerCase() : "";
           const halalVal = row[7] ? String(row[7]).trim().toLowerCase() : "";
           const pirtVal = row[8] ? String(row[8]).trim().toLowerCase() : "";
 
           const nib = nibVal === "v" || nibVal === "1" || nibVal === "true";
           const halal = halalVal === "v" || halalVal === "1" || halalVal === "true";
-          const pirt = pirtVal === "v" || pirtVal === "1" || pirtVal === "false" ? (pirtVal === "v" || pirtVal === "1") : false;
+          const pirt = pirtVal === "v" || pirtVal === "1" || pirtVal === "true";
 
           // Conflict resolution check against existing loaded shops
           const existingMatch = shops.find(
@@ -838,8 +838,8 @@ export default function AdminPanel({
         </div>
       )}
 
-      {/* 3. EXCEL IMPORT MODAL WITH CONFLICT RESOLUTION */}
-      {isImportModalOpen && (
+      {/* 3. EXCEL IMPORT MODAL WITH CONFLICT RESOLUTION (PORTALED TO DOCUMENT.BODY) */}
+      {isImportModalOpen && typeof document !== "undefined" && createPortal(
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
             
@@ -1031,7 +1031,8 @@ export default function AdminPanel({
             </div>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
