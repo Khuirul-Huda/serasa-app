@@ -45,19 +45,6 @@ export default function Login({ status, canResetPassword }: Props) {
       <Head title="Masuk ke Portal - SAMIRONO ETALASE" />
 
       <div className="space-y-6 font-sans text-navy-900">
-        
-        {/* Branding header */}
-        <div className="text-center space-y-1">
-          <div className="w-10 h-10 bg-pastel-teal text-white rounded-xl flex items-center justify-center mx-auto mb-2 shadow-xs">
-            <Store className="w-5.5 h-5.5 text-white" />
-          </div>
-          <h2 className="text-lg font-black uppercase tracking-tight text-navy-900 leading-none">
-            SAMIRONO <span className="text-pastel-teal">ETALASE</span>
-          </h2>
-          <span className="text-[9px] text-navy-400 font-bold uppercase tracking-widest block font-mono">
-            Platform Ekonomi Warga
-          </span>
-        </div>
 
         {/* Demo Mode Quick Access Card */}
         <div className="bg-pastel-teal-light/30 border border-pastel-teal/20 rounded-2xl p-4.5 space-y-3.5 shadow-2xs">

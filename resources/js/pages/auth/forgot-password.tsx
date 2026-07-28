@@ -25,19 +25,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
       )}
 
       <div className="space-y-6 font-sans text-navy-900">
-        
-        {/* Branding header */}
-        <div className="text-center space-y-1">
-          <div className="w-10 h-10 bg-pastel-teal text-white rounded-xl flex items-center justify-center mx-auto mb-2 shadow-xs">
-            <Store className="w-5.5 h-5.5 text-white" />
-          </div>
-          <h2 className="text-lg font-black uppercase tracking-tight text-navy-900 leading-none">
-            SAMIRONO <span className="text-pastel-teal">ETALASE</span>
-          </h2>
-          <span className="text-[9px] text-navy-400 font-bold uppercase tracking-widest block font-mono">
-            Platform Ekonomi Warga
-          </span>
-        </div>
 
         <Form {...email.form()}>
           {({ processing, errors }) => (
