@@ -47,28 +47,28 @@ export default function ProductCard({
           />
           {shop && (
             <figcaption className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-navy-900/80 to-transparent px-3 py-1.5 text-white flex items-center gap-1">
-              <MapPin className="w-3 h-3 text-pastel-peach shrink-0" />
-              <span className="text-[9px] font-bold uppercase tracking-wide truncate">{shop.dusun}</span>
+              <MapPin className="w-3.5 h-3.5 text-pastel-peach shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-wide truncate">{shop.dusun}</span>
             </figcaption>
           )}
         </figure>
 
         {hasDiscount && (
-          <div className="absolute top-2.5 left-2.5 px-2 py-1 bg-pastel-coral text-white font-black text-[9px] uppercase tracking-wide rounded-md shadow-xs flex items-center gap-0.5" aria-label={`Diskon ${discountPercent}%`}>
+          <div className="absolute top-2.5 left-2.5 px-2.5 py-1 bg-pastel-coral text-white font-black text-xs uppercase tracking-wide rounded-md shadow-xs flex items-center gap-0.5" aria-label={`Diskon ${discountPercent}%`}>
             <span>{discountPercent}%</span>
-            <span className="text-[8px] font-normal opacity-90">OFF</span>
+            <span className="text-[10px] font-normal opacity-90">OFF</span>
           </div>
         )}
 
         {category && (
-          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-navy-900/60 text-white backdrop-blur-xs">
+          <span className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-navy-900/70 text-white backdrop-blur-xs">
             {category.name}
           </span>
         )}
 
         {!product.isAvailable && (
           <div className="absolute inset-0 bg-navy-900/80 backdrop-blur-3xs flex items-center justify-center" role="status" aria-label="Stok habis">
-            <span className="px-3.5 py-1.5 bg-pastel-coral text-white text-[9px] uppercase tracking-widest font-extrabold rounded-full border border-pastel-coral/80">
+            <span className="px-3.5 py-1.5 bg-pastel-coral text-white text-xs uppercase tracking-widest font-extrabold rounded-full border border-pastel-coral/80">
               Stok Habis
             </span>
           </div>
@@ -82,58 +82,58 @@ export default function ProductCard({
               <img 
                 src={shop.logo} 
                 alt={shop.name} 
-                width={18}
-                height={18}
+                width={20}
+                height={20}
                 loading="lazy"
-                className="w-4.5 h-4.5 rounded-full object-cover border border-navy-200"
+                className="w-5 h-5 rounded-full object-cover border border-navy-200"
                 referrerPolicy="no-referrer"
               />
               <Link
                 href={`/shops/${shop.id}`}
                 onClick={(e) => e.stopPropagation()}
-                className="text-[9.5px] font-bold text-navy-500 hover:text-pastel-teal flex items-center gap-1 truncate"
+                className="text-xs font-bold text-navy-500 hover:text-pastel-teal flex items-center gap-1 truncate"
               >
                 <span>{shop.name}</span>
                 {shop.isVerified && (
-                  <CheckCircle2 className="w-3 h-3 text-pastel-teal fill-pastel-teal-light shrink-0" aria-label="Terverifikasi" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-pastel-teal fill-pastel-teal-light shrink-0" aria-label="Terverifikasi" />
                 )}
               </Link>
             </div>
           )}
 
-          <h3 className="font-sans text-xs md:text-[13px] font-bold text-navy-800 group-hover:text-pastel-teal transition-colors line-clamp-2 leading-tight min-h-[32px] pt-0.5">
+          <h3 className="font-sans text-sm md:text-base font-bold text-navy-800 group-hover:text-pastel-teal transition-colors line-clamp-2 leading-snug min-h-[38px] pt-0.5">
             <Link href={`/products/${product.id}`}>{product.name}</Link>
           </h3>
 
           <div className="pt-0.5">
             <div className="flex items-baseline gap-1.5 flex-wrap">
-              <data value={product.price} className="text-sm md:text-base font-black text-navy-900">
+              <data value={product.price} className="text-base md:text-lg font-black text-navy-900">
                 {formatIDR(product.price)}
               </data>
-              <span className="text-[9px] text-navy-400 font-normal">/ {product.unit}</span>
+              <span className="text-xs text-navy-400 font-normal">/ {product.unit}</span>
             </div>
             {hasDiscount && originalPrice && (
               <div className="flex items-center gap-1.5 mt-0.5">
-                <s className="text-[10px] text-navy-400">{formatIDR(originalPrice)}</s>
-                <mark className="text-[8px] text-pastel-coral bg-pastel-coral-light font-extrabold px-1 rounded not-italic">-{discountPercent}%</mark>
+                <s className="text-xs text-navy-400">{formatIDR(originalPrice)}</s>
+                <mark className="text-[10px] text-pastel-coral bg-pastel-coral-light font-extrabold px-1.5 rounded not-italic">-{discountPercent}%</mark>
               </div>
             )}
           </div>
         </div>
 
         <footer className="pt-2 border-t border-navy-100 flex items-center justify-between gap-1">
-          <div className="flex items-center gap-1 text-[10px] text-navy-500" role="img" aria-label={`Rating ${product.rating} bintang, terjual ${salesCount}+`}>
+          <div className="flex items-center gap-1.5 text-xs text-navy-500" role="img" aria-label={`Rating ${product.rating} bintang, terjual ${salesCount}+`}>
             <div className="flex items-center gap-0.5">
-              <Star className="w-3 h-3 fill-pastel-peach text-pastel-peach" aria-hidden="true" />
+              <Star className="w-3.5 h-3.5 fill-pastel-peach text-pastel-peach" aria-hidden="true" />
               <span className="font-bold text-navy-700">{product.rating}</span>
             </div>
             <span className="text-navy-300" aria-hidden="true">|</span>
-            <span className="text-[9px] truncate">Terjual {salesCount}+</span>
+            <span className="text-[11px] truncate">Terjual {salesCount}+</span>
           </div>
 
           <Link
             href={`/products/${product.id}`}
-            className="px-3 py-1 bg-pastel-coral hover:bg-pastel-coral/90 text-white text-[9.5px] font-bold uppercase tracking-wider rounded-lg transition-all shadow-3xs"
+            className="px-3.5 py-1.5 bg-pastel-coral hover:bg-pastel-coral/90 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-3xs"
           >
             Beli
           </Link>

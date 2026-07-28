@@ -1,11 +1,11 @@
 /**
  * @license
- * SPDX-License-Identifier: Apache-2.5
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import React from "react";
 import { Form, Head, Link } from "@inertiajs/react";
-import { LoaderCircle, Store } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import InputError from "@/components/input-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,51 +25,49 @@ export default function ForgotPassword({ status }: { status?: string }) {
       )}
 
       <div className="space-y-6 font-sans text-navy-900">
-
         <Form {...email.form()}>
           {({ processing, errors }) => (
             <>
-              <div className="grid gap-4.5 text-xs">
-                <div className="space-y-1">
-                  <Label htmlFor="email" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Alamat Email</Label>
+              <div className="grid gap-4 text-xs sm:text-sm">
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="font-bold text-navy-500 uppercase tracking-wider text-xs block">Alamat Email Terdaftar</Label>
                   <Input
                     id="email"
                     type="email"
-                    name="email"
-                    autoComplete="off"
+                    required
                     autoFocus
+                    autoComplete="email"
                     placeholder="nama@email.com"
-                    className="w-full px-4 py-2.5 rounded-xl border border-navy-200/60 focus:border-pastel-teal focus:ring-pastel-teal/20 transition-all text-xs"
+                    className="w-full px-4 py-2.5 rounded-xl border border-navy-200/60 focus:border-pastel-teal focus:ring-pastel-teal/20 transition-all text-xs sm:text-sm"
                   />
                   <InputError message={errors.email} />
                 </div>
+              </div>
 
-                <Button
-                  className="w-full py-3.5 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-[10px] rounded-xl cursor-pointer disabled:opacity-50 transition-all shadow-3xs"
-                  disabled={processing}
+              <Button
+                type="submit"
+                disabled={processing}
+                className="w-full py-3.5 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl cursor-pointer disabled:opacity-50 transition-all shadow-3xs mt-2"
+              >
+                {processing && (
+                  <LoaderCircle className="w-4 h-4 animate-spin text-white mr-1.5" />
+                )}
+                Kirim Tautan Atur Ulang Sandi
+              </Button>
+
+              <div className="text-center text-xs text-navy-400 font-medium pt-1">
+                Kembali ke halaman{" "}
+                <Link
+                  href={login()}
+                  className="text-pastel-teal font-bold hover:underline"
                 >
-                  {processing && (
-                    <LoaderCircle className="h-4 w-4 animate-spin text-white" />
-                  )}
-                  Kirim Tautan Pemulihan
-                </Button>
+                  Masuk Akun
+                </Link>
               </div>
             </>
           )}
         </Form>
-
-        <div className="text-center text-[11px] text-navy-400 font-medium">
-          Kembali ke halaman{" "}
-          <Link href={login()} className="text-pastel-teal font-bold hover:underline">
-            Masuk
-          </Link>
-        </div>
       </div>
     </>
   );
 }
-
-ForgotPassword.layout = {
-  title: "Lupa Kata Sandi",
-  description: "Masukkan email terdaftar Anda untuk menerima tautan pemulihan kata sandi.",
-};
