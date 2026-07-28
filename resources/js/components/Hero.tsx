@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
-import { 
-  Search, 
-  MapPin, 
-  ChevronLeft, 
-  ChevronRight, 
-  Flame, 
+import { router } from "@inertiajs/react";
+import {
+  Search,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
   ThumbsUp,
   Tag
 } from "lucide-react";
-import { AppSettings, Category } from "@/types";
+import React, { useState, useEffect } from "react";
+import type { AppSettings, Category } from "@/types";
 
 interface HeroProps {
   settings: AppSettings;
@@ -57,13 +58,15 @@ const promoSlides = [
 ];
 
 export default function Hero({
-  settings,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  settings: _settings,
   categories,
   selectedCategory,
   setSelectedCategory,
   searchQuery,
   setSearchQuery,
-  totalShops,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  totalShops: _totalShops,
   totalProducts,
 }: HeroProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -74,6 +77,7 @@ export default function Hero({
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % promoSlides.length);
     }, 5500);
+
     return () => clearInterval(slideInterval);
   }, []);
 
@@ -92,6 +96,7 @@ export default function Hero({
         }
       });
     }, 1000);
+
     return () => clearInterval(timer);
   }, []);
 
@@ -115,7 +120,7 @@ export default function Hero({
   return (
     <div className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-6 pb-10" id="serasa-hero">
       {/* Background Dots Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[16px_16px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
@@ -134,11 +139,15 @@ export default function Hero({
                 <img
                   src={slide.image}
                   alt={slide.title}
+                  width={800}
+                  height={340}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="w-full h-full object-cover opacity-35 transition-transform duration-10000 hover:scale-110"
                   referrerPolicy="no-referrer"
                 />
                 
-                <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950 via-emerald-950/70 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
+                <div className="absolute inset-0 bg-linear-to-tr from-emerald-950 via-emerald-950/70 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
                   <div className="space-y-2 sm:space-y-3 max-w-lg">
                     <span className="inline-block px-3 py-1 bg-amber-500 text-emerald-950 text-[9px] font-black uppercase tracking-wider rounded">
                       {slide.badge}
@@ -214,11 +223,18 @@ export default function Hero({
                 </div>
               </div>
 
-              <div className="flex gap-3.5 p-3 rounded-xl bg-red-50/50 border border-red-100">
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+              <div 
+                onClick={() => router.visit("/products/prod-keju-artisan")}
+                className="flex gap-3.5 p-3 rounded-xl bg-red-50/50 hover:bg-red-50 border border-red-100 hover:border-red-400 transition-all cursor-pointer group/promo"
+              >
+                <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 shrink-0 border border-red-100 group-hover/promo:scale-105 transition-transform duration-300">
                   <img
                     src="https://images.unsplash.com/photo-1559561853-080268185995?auto=format&fit=crop&w=150&q=80"
                     alt="Promo Keju Samirono"
+                    width={80}
+                    height={80}
+                    loading="lazy"
+                    sizes="80px"
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
@@ -227,7 +243,7 @@ export default function Hero({
                   <span className="inline-block px-1.5 py-0.5 bg-red-100 text-red-600 text-[8px] font-black uppercase rounded">
                     Stok Terbatas
                   </span>
-                  <h4 className="text-[12px] font-bold text-gray-800 line-clamp-1 leading-snug">
+                  <h4 className="text-[12px] font-bold text-gray-800 line-clamp-1 leading-snug group-hover/promo:text-red-700 transition-colors">
                     Keju Samirono Mozzarella
                   </h4>
                   <div className="flex items-baseline gap-1">
@@ -244,7 +260,7 @@ export default function Hero({
                   <span className="text-red-500">Hampir Habis (87% Terjual)</span>
                 </div>
                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-red-500 to-amber-500 rounded-full" style={{ width: "87%" }} />
+                  <div className="h-full bg-linear-to-r from-red-500 to-amber-500 rounded-full" style={{ width: "87%" }} />
                 </div>
               </div>
             </div>

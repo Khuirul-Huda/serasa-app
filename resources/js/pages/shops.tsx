@@ -1,14 +1,9 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.5
- */
-
+import { Store, Search } from "lucide-react";
 import React, { useState, useMemo } from "react";
-import { Head } from "@inertiajs/react";
-import MarketplaceLayout from "@/layouts/marketplace-layout";
+import SEOHead from "@/components/SEOHead";
 import ShopCard from "@/components/ShopCard";
-import { AppSettings, Category, Product, Shop } from "@/types";
-import { Store, MapPin, Search } from "lucide-react";
+import MarketplaceLayout from "@/layouts/marketplace-layout";
+import type { AppSettings, Category, Product, Shop } from "@/types";
 
 interface ShopsProps {
   settings: AppSettings;
@@ -47,7 +42,13 @@ export default function Shops({
       products={products}
       activeTab="shops"
     >
-      <Head title={`Daftar UMKM Warga - ${settings.appName}`} />
+      <SEOHead
+        title={`Daftar UMKM Warga - ${settings.appName}`}
+        description={`Direktori lengkap Pelaku Usaha Mikro Kecil dan Menengah (UMKM) Desa Samirono. Temukan rumah produksi, detail kontak, dan lokasi geografis mitra ekonomi desa.`}
+        keywords="Direktori UMKM, Daftar Toko Desa Samirono, Pelaku Ekonomi Kreatif, Getasan, Semarang, Profil Rumah Produksi Warga"
+        image={settings.heroBanner}
+        siteName={settings.appName}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         
@@ -64,15 +65,16 @@ export default function Shops({
           </div>
 
           {/* Search and filter tools */}
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <search className="flex flex-wrap items-center gap-2 w-full md:w-auto" role="search" aria-label="Cari toko UMKM">
             <div className="relative w-full sm:w-60">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
               <input
-                type="text"
+                type="search"
                 placeholder="Cari toko / nama pemilik..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-gray-200 bg-gray-55 focus:bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-600 font-medium"
+                aria-label="Nama toko atau pemilik"
               />
             </div>
 
@@ -80,6 +82,7 @@ export default function Shops({
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="px-4 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-600 font-bold text-gray-700 uppercase tracking-wider cursor-pointer"
+              aria-label="Filter kategori toko"
             >
               <option value="all">Semua Kategori</option>
               {categories.map((cat) => (
@@ -88,14 +91,14 @@ export default function Shops({
                 </option>
               ))}
             </select>
-          </div>
+          </search>
         </div>
 
         {/* Directory Listings Grid */}
         {filteredShops.length === 0 ? (
           <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center shadow-3xs max-w-lg mx-auto">
-            <Store className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="font-bold text-gray-700 text-sm">Toko Tidak Ditemukan</h3>
+            <Store className="w-12 h-12 text-gray-300 mx-auto mb-4" aria-hidden="true" />
+            <h2 className="font-bold text-gray-700 text-sm">Toko Tidak Ditemukan</h2>
             <p className="text-xs text-gray-500 mt-1">Kami tidak menemukan toko yang cocok dengan filter pencarian Anda. Silakan cari dengan kata kunci lain.</p>
             <button
               onClick={() => {
@@ -108,15 +111,16 @@ export default function Shops({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0">
             {filteredShops.map((shop) => (
-              <ShopCard
-                key={shop.id}
-                shop={shop}
-                productCount={shop.productCount || 0}
-              />
+              <li key={shop.id}>
+                <ShopCard
+                  shop={shop}
+                  productCount={shop.productCount || 0}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
       </div>

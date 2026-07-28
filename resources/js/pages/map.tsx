@@ -1,13 +1,10 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.5
- */
-
-import React from "react";
-import { Head } from "@inertiajs/react";
+import SEOHead from "@/components/SEOHead";
 import MarketplaceLayout from "@/layouts/marketplace-layout";
-import ShopMap from "@/components/ShopMap";
-import { AppSettings, Category, Product, Shop } from "@/types";
+import React, { lazy, Suspense } from "react";
+import type { AppSettings, Category, Product, Shop } from "@/types";
+
+// Lazy-loaded: Leaflet + ShopMap chunk is only downloaded when visiting /map
+const ShopMap = lazy(() => import("@/components/ShopMap"));
 
 interface MapPageProps {
   settings: AppSettings;
@@ -29,10 +26,27 @@ export default function MapPage({
       products={products}
       activeTab="map"
     >
-      <Head title={`Peta Geografis UMKM - ${settings.appName}`} />
+      <SEOHead
+        title={`Peta Geografis UMKM - ${settings.appName}`}
+        description={`Peta geografis persebaran sentra industri kreatif dan UMKM Desa Samirono. Telusuri sebaran toko lokal secara spasial.`}
+        keywords="Peta UMKM, Lokasi Toko Samirono, Spasial Getasan, Peta Geografis, Rute Rumah Produksi"
+        image={settings.heroBanner}
+        siteName={settings.appName}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <ShopMap shops={shops} />
+        <Suspense
+          fallback={
+            <div
+              className="animate-pulse bg-gray-100 rounded-2xl w-full"
+              style={{ height: 500 }}
+              aria-label="Memuat peta..."
+              role="status"
+            />
+          }
+        >
+          <ShopMap shops={shops} villageName={settings.villageName} />
+        </Suspense>
       </div>
     </MarketplaceLayout>
   );

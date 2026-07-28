@@ -7,12 +7,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddProductRequest;
+use App\Http\Requests\RegisterShopRequest;
+use App\Http\Requests\UpdateShopRequest;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\Setting;
 use App\Models\Shop;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,20 +28,29 @@ class MerchantController extends Controller
         $this->authorizeOwner();
 
         $user = auth()->user();
-        $shop = Shop::where('user_id', $user->id)->first();
+        $shop = Shop::select([
+            'id', 'name', 'owner_name', 'description', 'category', 'phone',
+            'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
+            'working_hours', 'user_id',
+        ])->where('user_id', $user->id)->first();
 
         $myShop = null;
         $myProducts = [];
 
         if ($shop) {
             $myShop = $this->mapShop($shop);
-            $myProducts = Product::where('shop_id', $shop->id)
+            $myProducts = Product::select([
+                'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+                'unit', 'image', 'rating', 'reviews_count', 'is_available',
+            ])->where('shop_id', $shop->id)
                 ->get()
                 ->map(fn ($p) => $this->mapProduct($p))
                 ->toArray();
         }
 
-        $categories = Category::all()->map(fn ($c) => $this->mapCategory($c));
+        $categories = Category::select([
+            'id', 'name', 'icon_name', 'description', 'color',
+        ])->get()->map(fn ($c) => $this->mapCategory($c));
 
         return Inertia::render('merchant-dashboard', [
             'settings' => $this->getAppSettings(),
@@ -53,7 +63,7 @@ class MerchantController extends Controller
     /**
      * Register a new shop.
      */
-    public function registerShop(Request $request): RedirectResponse
+    public function registerShop(RegisterShopRequest $request): RedirectResponse
     {
         $this->authorizeOwner();
 
@@ -63,20 +73,23 @@ class MerchantController extends Controller
             return redirect()->back()->withErrors(['message' => 'Anda sudah memiliki toko terdaftar.']);
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'ownerName' => 'required|string|max:255',
-            'phone' => 'required|string|max:30',
-            'address' => 'required|string|max:255',
-            'dusun' => 'required|string|max:100',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'category' => 'required|string|max:100',
-        ]);
-
         $id = 'shop-'.Str::slug($request->name).'-'.rand(100, 999);
-        $image = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800';
+
         $logo = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150';
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('shops/logos', 'public');
+            $logo = asset('storage/'.$path);
+        } elseif ($request->logo) {
+            $logo = $request->logo;
+        }
+
+        $image = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800';
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('shops/banners', 'public');
+            $image = asset('storage/'.$path);
+        } elseif ($request->image) {
+            $image = $request->image;
+        }
 
         Shop::create([
             'id' => $id,
@@ -102,24 +115,14 @@ class MerchantController extends Controller
     /**
      * Update existing shop profile details.
      */
-    public function updateShop(Request $request): RedirectResponse
+    public function updateShop(UpdateShopRequest $request): RedirectResponse
     {
         $this->authorizeOwner();
 
         $user = auth()->user();
         $shop = Shop::where('user_id', $user->id)->firstOrFail();
 
-        $request->validate([
-            'phone' => 'required|string|max:30',
-            'address' => 'required|string|max:255',
-            'dusun' => 'required|string|max:100',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'description' => 'required|string',
-            'jamKerja' => 'required|string|max:100',
-        ]);
-
-        $shop->update([
+        $data = [
             'phone' => $request->phone,
             'address' => $request->address,
             'dusun' => $request->dusun,
@@ -127,7 +130,19 @@ class MerchantController extends Controller
             'lng' => $request->lng,
             'description' => $request->description,
             'working_hours' => $request->jamKerja,
-        ]);
+        ];
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('shops/logos', 'public');
+            $data['logo'] = asset('storage/'.$path);
+        }
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('shops/banners', 'public');
+            $data['image'] = asset('storage/'.$path);
+        }
+
+        $shop->update($data);
 
         return redirect()->back();
     }
@@ -135,19 +150,12 @@ class MerchantController extends Controller
     /**
      * Add a product to the shop inventory.
      */
-    public function addProduct(Request $request): RedirectResponse
+    public function addProduct(AddProductRequest $request): RedirectResponse
     {
         $this->authorizeOwner();
 
         $user = auth()->user();
         $shop = Shop::where('user_id', $user->id)->firstOrFail();
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'unit' => 'required|string|max:50',
-            'categoryId' => 'required|string|exists:categories,id',
-        ]);
 
         $fallbackImages = [
             'cat-kuliner' => 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&q=80&w=600',
@@ -158,6 +166,12 @@ class MerchantController extends Controller
         ];
 
         $image = $request->image ?: ($fallbackImages[$request->categoryId] ?? 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600');
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $image = asset('storage/'.$path);
+        }
+
         $id = 'prod-'.Str::slug($request->name).'-'.rand(100, 999);
 
         Product::create([
@@ -218,70 +232,5 @@ class MerchantController extends Controller
         if (auth()->user()->role !== 'owner') {
             abort(403, 'Hanya Pemilik Toko (Merchant) yang dapat mengakses halaman ini.');
         }
-    }
-
-    /* MAPPING HELPERS */
-
-    private function getAppSettings(): array
-    {
-        $settings = Setting::pluck('value', 'key')->toArray();
-
-        return [
-            'appName' => $settings['app_name'] ?? 'Samirono Etalase',
-            'tagline' => $settings['tagline'] ?? 'Platform UMKM Warga',
-            'villageName' => $settings['village_name'] ?? 'Desa Samirono',
-            'description' => $settings['description'] ?? 'Platform digitalisasi kreatif',
-            'adminPhone' => $settings['admin_phone'] ?? '6285725912345',
-            'heroBanner' => $settings['hero_banner'] ?? 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1200&q=80',
-        ];
-    }
-
-    private function mapCategory(Category $category): array
-    {
-        return [
-            'id' => $category->id,
-            'name' => $category->name,
-            'iconName' => $category->icon_name,
-            'description' => $category->description,
-            'color' => $category->color,
-        ];
-    }
-
-    private function mapProduct(Product $product): array
-    {
-        return [
-            'id' => $product->id,
-            'shopId' => $product->shop_id,
-            'categoryId' => $product->category_id,
-            'name' => $product->name,
-            'description' => $product->description,
-            'price' => (float) $product->price,
-            'unit' => $product->unit,
-            'image' => $product->image,
-            'rating' => (float) $product->rating,
-            'reviewsCount' => (int) $product->reviews_count,
-            'isAvailable' => (bool) $product->is_available,
-        ];
-    }
-
-    private function mapShop(Shop $shop): array
-    {
-        return [
-            'id' => $shop->id,
-            'name' => $shop->name,
-            'ownerName' => $shop->owner_name,
-            'description' => $shop->description,
-            'category' => $shop->category,
-            'phone' => $shop->phone,
-            'address' => $shop->address,
-            'dusun' => $shop->dusun,
-            'image' => $shop->image,
-            'logo' => $shop->logo,
-            'isVerified' => (bool) $shop->is_verified,
-            'lat' => (float) $shop->lat,
-            'lng' => (float) $shop->lng,
-            'jamKerja' => $shop->working_hours,
-            'userId' => $shop->user_id,
-        ];
     }
 }

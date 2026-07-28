@@ -3,23 +3,33 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
-import { useForm, router } from "@inertiajs/react";
+import { useForm, router, Link } from "@inertiajs/react";
 import { 
-  BarChart3, 
   CheckCircle2, 
   Trash2, 
   Save, 
   Store, 
   Sparkles,
-  Layout,
   AlertCircle,
   Award,
   Package,
   Activity,
-  UserCheck
+  UserCheck,
+  Search,
+  Eye,
+  MapPin,
+  PhoneCall
 } from "lucide-react";
-import { AppSettings, Shop, Product, Category } from "@/types";
+import React, { useState, useMemo } from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell
+} from "@/components/ui/table";
+import type { AppSettings, Shop, Product, Category } from "@/types";
 
 interface AdminPanelProps {
   settings: AppSettings;
@@ -36,6 +46,8 @@ export default function AdminPanel({
 }: AdminPanelProps) {
   const [activeSubTab, setActiveSubTab] = useState<"stats" | "shops" | "config">("stats");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [searchShopQuery, setSearchShopQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "verified" | "pending">("all");
 
   // Inertia Form for app settings
   const { data, setData, post, processing } = useForm({
@@ -54,8 +66,23 @@ export default function AdminPanel({
 
   const categoryDistribution = categories.map((cat) => {
     const count = products.filter((p) => p.categoryId === cat.id).length;
-    return { name: cat.name, count, color: cat.color };
+
+    return { id: cat.id, name: cat.name, count, color: cat.color };
   });
+
+  const filteredShopsTable = useMemo(() => {
+    return shops.filter((s) => {
+      const matchesSearch = s.name.toLowerCase().includes(searchShopQuery.toLowerCase()) ||
+        s.ownerName.toLowerCase().includes(searchShopQuery.toLowerCase()) ||
+        s.dusun.toLowerCase().includes(searchShopQuery.toLowerCase());
+      
+      const matchesStatus = statusFilter === "all" || 
+        (statusFilter === "verified" && s.isVerified) || 
+        (statusFilter === "pending" && !s.isVerified);
+        
+      return matchesSearch && matchesStatus;
+    });
+  }, [shops, searchShopQuery, statusFilter]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,147 +105,165 @@ export default function AdminPanel({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in" id="serasa-admin-panel">
+    <div className="max-w-7xl mx-auto py-2 space-y-8 animate-fade-in font-sans text-slate-800">
       
-      {/* Panel Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 text-[9px] font-extrabold uppercase rounded-md border border-emerald-100 tracking-wider">
-              Pemerintah Desa
-            </span>
-            <span className="inline-flex items-center gap-1 text-amber-600 font-mono text-[9px] uppercase tracking-widest font-extrabold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">
-              <UserCheck className="w-3 h-3" />
-              <span>Admin Panel</span>
-            </span>
+      {/* 1. Vercel-Style Premium Header Section */}
+      <div className="bg-white border-b border-slate-200/80 -mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-8 space-y-6 shrink-0">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-800 text-[9px] font-black uppercase rounded-md tracking-wider">
+                Pemerintah Desa
+              </span>
+              <span className="inline-flex items-center gap-1 text-slate-600 font-mono text-[9px] uppercase tracking-widest font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
+                <UserCheck className="w-3 h-3 text-slate-500" />
+                <span>Admin Console</span>
+              </span>
+            </div>
+            
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-none">
+              Portal Admin <span className="text-emerald-700">Etalase Warga</span>
+            </h1>
+            <p className="text-xs text-slate-500 font-normal max-w-2xl leading-relaxed">
+              Atur identitas etalase desa, verifikasi legalitas UMKM warga, dan pantau perkembangan ekonomi lokal di wilayah administratif Samirono.
+            </p>
           </div>
-          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight mt-2">
-            Sistem Informasi & Digitalisasi UMKM Samirono
-          </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            Kelola identitas etalase desa, verifikasi legalitas pelaku usaha warga, dan pantau perkembangan ekonomi lokal.
-          </p>
         </div>
 
-        {/* Sub-Tabs Selector */}
-        <div className="flex bg-gray-100 p-1.5 rounded-xl border border-gray-200 w-full lg:w-auto">
+        {/* Vercel-Style Flat Underlined Tab Switcher */}
+        <div className="flex space-x-6 border-b border-slate-200 pt-2 shrink-0">
           <button
             onClick={() => setActiveSubTab("stats")}
-            className={`flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
+            className={`pb-3 px-1 border-b-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
               activeSubTab === "stats"
-                ? "bg-white text-emerald-700 shadow-3xs border border-gray-200"
-                : "text-gray-500 hover:text-emerald-600"
+                ? "border-emerald-600 text-emerald-800"
+                : "border-transparent text-slate-400 hover:text-slate-700 hover:border-slate-300"
             }`}
           >
-            <BarChart3 className="w-4 h-4" />
-            <span>Dasbor Statistik</span>
+            Dasbor Statistik
           </button>
           <button
             onClick={() => setActiveSubTab("shops")}
-            className={`flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
+            className={`pb-3 px-1 border-b-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
               activeSubTab === "shops"
-                ? "bg-white text-emerald-700 shadow-3xs border border-gray-200"
-                : "text-gray-500 hover:text-emerald-600"
+                ? "border-emerald-600 text-emerald-800"
+                : "border-transparent text-slate-400 hover:text-slate-700 hover:border-slate-300"
             }`}
           >
-            <Store className="w-4 h-4" />
-            <span>Verifikasi Toko ({pendingShops})</span>
+            Verifikasi Toko ({pendingShops})
           </button>
           <button
             onClick={() => setActiveSubTab("config")}
-            className={`flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
+            className={`pb-3 px-1 border-b-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
               activeSubTab === "config"
-                ? "bg-white text-emerald-700 shadow-3xs border border-gray-200"
-                : "text-gray-500 hover:text-emerald-600"
+                ? "border-emerald-600 text-emerald-800"
+                : "border-transparent text-slate-400 hover:text-slate-700 hover:border-slate-300"
             }`}
           >
-            <Layout className="w-4 h-4" />
-            <span>Konfigurasi Portal</span>
+            Konfigurasi Portal
           </button>
         </div>
       </div>
 
-      {/* Main Content Areas */}
+      {/* 2. Main Workspaces */}
+      
+      {/* Dasbor Statistik Tab */}
       {activeSubTab === "stats" && (
         <div className="space-y-6 animate-fade-in" id="admin-subtab-stats">
-          {/* Key Metrics Widgets */}
+          
+          {/* Key Metrics Widgets (Vercel Metrics Style) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-gray-200 p-5 rounded-2xl shadow-3xs flex justify-between items-start">
-              <div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total UMKM Samirono</span>
-                <div className="flex items-baseline gap-1.5 mt-2">
-                  <span className="text-3xl font-bold text-gray-900 tracking-tight">{totalShops}</span>
-                  <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Usaha</span>
-                </div>
+            
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-3xs flex flex-col justify-between h-32 hover:border-emerald-600/30 hover:shadow-xs transition-all duration-200">
+              <div className="flex justify-between items-center">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest font-mono">Mitra UMKM</span>
+                <Store className="w-4 h-4 text-slate-400" />
               </div>
-              <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                <Store className="w-4.5 h-4.5" />
-              </div>
-            </div>
-
-            <div className="bg-white border border-gray-200 p-5 rounded-2xl shadow-3xs flex justify-between items-start">
-              <div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Terverifikasi Desa</span>
-                <div className="flex items-baseline gap-1.5 mt-2">
-                  <span className="text-3xl font-bold text-emerald-600 tracking-tight">{verifiedShops}</span>
-                  <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">dari {totalShops}</span>
-                </div>
-              </div>
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                <Award className="w-4.5 h-4.5" />
+              <div className="space-y-1">
+                <div className="text-3xl font-black text-slate-900 tracking-tight leading-none">{totalShops}</div>
+                <p className="text-[10px] text-slate-400 font-medium">Rumah produksi terdaftar</p>
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 p-5 rounded-2xl shadow-3xs flex justify-between items-start">
-              <div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Katalog Produk Aktif</span>
-                <div className="flex items-baseline gap-1.5 mt-2">
-                  <span className="text-3xl font-bold text-gray-900 tracking-tight">{totalProducts}</span>
-                  <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Item</span>
-                </div>
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-3xs flex flex-col justify-between h-32 hover:border-emerald-600/30 hover:shadow-xs transition-all duration-200">
+              <div className="flex justify-between items-center">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest font-mono">Verifikasi</span>
+                <Award className="w-4 h-4 text-slate-400" />
               </div>
-              <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                <Package className="w-4.5 h-4.5" />
+              <div className="space-y-1">
+                <div className="text-3xl font-black text-slate-900 tracking-tight leading-none">{verifiedShops}</div>
+                <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden mt-1.5">
+                  <div 
+                    className="h-full bg-emerald-600 rounded-full" 
+                    style={{ width: `${totalShops > 0 ? (verifiedShops / totalShops) * 100 : 0}%` }}
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 p-5 rounded-2xl shadow-3xs flex justify-between items-start">
-              <div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Status Sinkronisasi</span>
-                <div className="flex items-baseline gap-1.5 mt-2">
-                  <span className="text-xl font-bold text-emerald-700 tracking-tight">STABIL</span>
-                  <span className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Aktif</span>
-                </div>
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-3xs flex flex-col justify-between h-32 hover:border-emerald-600/30 hover:shadow-xs transition-all duration-200">
+              <div className="flex justify-between items-center">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest font-mono">Katalog Produk</span>
+                <Package className="w-4 h-4 text-slate-400" />
               </div>
-              <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0">
-                <Activity className="w-4.5 h-4.5" />
+              <div className="space-y-1">
+                <div className="text-3xl font-black text-slate-900 tracking-tight leading-none">{totalProducts}</div>
+                <p className="text-[10px] text-slate-400 font-medium">Item produk aktif di web</p>
               </div>
             </div>
+
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-3xs flex flex-col justify-between h-32 hover:border-emerald-600/30 hover:shadow-xs transition-all duration-200">
+              <div className="flex justify-between items-center">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest font-mono">Sistem Sync</span>
+                <Activity className="w-4 h-4 text-slate-400" />
+              </div>
+              <div className="space-y-1">
+                <div className="text-xl font-black text-emerald-700 tracking-tight leading-none">FRANKENPHP</div>
+                <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mt-1">Octane Worker Mode</p>
+              </div>
+            </div>
+
           </div>
 
-          {/* Visual Sector Analysis */}
+          {/* Sektor Distribution Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white border border-gray-200 p-6 rounded-2xl shadow-3xs space-y-4">
+            
+            {/* Sektor Progress Bars */}
+            <div className="lg:col-span-7 bg-white border border-slate-200 p-6 rounded-3xl shadow-3xs space-y-6">
               <div>
-                <h3 className="font-bold text-lg text-gray-900 tracking-tight">Sebaran Produk Berdasarkan Sektor Kreatif</h3>
-                <p className="text-xs text-gray-500 mt-0.5">Menganalisis diversifikasi jenis produk yang diproduksi warga.</p>
+                <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider">Distribusi Sektor Kreatif</h3>
+                <p className="text-xs text-slate-500">Grafik perbandingan sebaran produk ekonomi warga berdasarkan kategori.</p>
               </div>
 
-              <div className="space-y-4 pt-2">
+              <div className="space-y-5">
                 {categoryDistribution.map((item) => {
                   const maxCount = Math.max(...categoryDistribution.map((c) => c.count), 1);
                   const percentage = (item.count / maxCount) * 100;
+                  
+                  const colorMap: Record<string, string> = {
+                    "cat-kuliner": "bg-rose-500",
+                    "cat-pertanian": "bg-emerald-600",
+                    "cat-kerajinan": "bg-amber-600",
+                    "cat-wisata": "bg-sky-600",
+                    "cat-fashion": "bg-purple-600"
+                  };
+                  const barColor = colorMap[item.id] || "bg-emerald-600";
+
                   return (
                     <div key={item.name} className="space-y-1.5">
                       <div className="flex justify-between items-center text-xs">
-                        <span className="font-bold text-gray-700">{item.name}</span>
-                        <span className="font-mono text-[9.5px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-100/70 px-2 py-0.5 rounded">
-                          {item.count} Produk
+                        <span className="font-bold text-slate-700 flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${barColor}`} />
+                          {item.name}
+                        </span>
+                        <span className="font-mono text-[9.5px] font-black text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200/50">
+                          {item.count} Item
                         </span>
                       </div>
-                      <div className="h-3 bg-gray-100 rounded-full overflow-hidden border border-gray-200/40">
+                      
+                      <div className="h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-150 p-0.5">
                         <div 
-                          className="h-full bg-emerald-600 rounded-full transition-all duration-500"
+                          className={`h-full ${barColor} rounded-full transition-all duration-700 ease-out`}
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
@@ -228,239 +273,371 @@ export default function AdminPanel({
               </div>
             </div>
 
-            <div className="lg:col-span-5 bg-emerald-950 text-white p-6 rounded-2xl shadow-3xs space-y-4 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/60 to-slate-950/90 z-0" />
-              
-              <div className="space-y-4 relative z-10">
-                <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20">
-                  <Sparkles className="w-5 h-5 text-emerald-400" />
+            {/* Premium Info Panel */}
+            <div className="lg:col-span-5 bg-emerald-50/40 border border-emerald-100 rounded-3xl p-6 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-800 border border-emerald-200">
+                  <Sparkles className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-bold text-white tracking-tight">Digitalisasi Ekonomi Samirono</h3>
-                <p className="text-xs text-gray-300 leading-relaxed">
-                  Portal <strong className="font-bold text-white">SAMIRONO ETALASE</strong> didesain untuk menyatukan seluruh pelaku UMKM dalam satu portal interaktif yang modern.
-                </p>
-                <p className="text-xs text-gray-300 leading-relaxed">
-                  Sebagai admin desa, Anda bertanggung jawab dalam memverifikasi keaslian dan legalitas toko baru, mengontrol branding utama portal, serta memantau statistik sebaran produk kreatif Samirono secara real-time.
-                </p>
+                <div className="space-y-2">
+                  <h3 className="text-sm font-black text-emerald-950 uppercase tracking-wider">Digitalisasi Samirono</h3>
+                  <p className="text-xs text-emerald-900/80 leading-relaxed font-light">
+                    Sistem administrasi portal ini memudahkan kontrol informasi produk warga, meningkatkan reputasi legalitas UMKM, serta menjamin keaslian data.
+                  </p>
+                  <p className="text-xs text-emerald-900/80 leading-relaxed font-light">
+                    Sebagai admin desa, pastikan Anda memverifikasi setiap toko baru yang didaftarkan oleh warga untuk menjaga keamanan bertransaksi.
+                  </p>
+                </div>
               </div>
 
-              <div className="border-t border-white/10 pt-4 flex justify-between items-center text-[9px] font-bold uppercase tracking-wider text-emerald-400 relative z-10">
-                <span>Samirono Digital Portal</span>
-                <span>v1.0 (Stabil)</span>
+              <div className="border-t border-emerald-200/70 pt-4 flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-emerald-700 font-mono">
+                <span>Dikelola Pemerintah Desa</span>
+                <span>Version 1.2 (Stabil)</span>
               </div>
             </div>
+
           </div>
+
         </div>
       )}
 
-      {/* Verification Manager Tab */}
+      {/* Verifikasi Toko Tab */}
       {activeSubTab === "shops" && (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-3xs p-6 space-y-4 animate-fade-in" id="admin-subtab-verification">
-          <div>
-            <h3 className="font-bold text-lg text-gray-900 uppercase tracking-wide">Persetujuan & Manajemen UMKM Desa</h3>
-            <p className="text-xs text-gray-500 mt-0.5">Validasi toko digital milik warga desa sebelum ditampilkan di daftar utama dengan lencana verifikasi.</p>
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-3xs p-6 space-y-6 animate-fade-in" id="admin-subtab-verification">
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div>
+              <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider">Verifikasi Legalitas Usaha</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Validasi legalitas rumah produksi warga sebelum diaktifkan pada katalog utama.</p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari toko, pemilik, dusun..."
+                  value={searchShopQuery}
+                  onChange={(e) => setSearchShopQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-55/40 border border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                />
+              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                className="px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 cursor-pointer shadow-3xs text-[10px]"
+              >
+                <option value="all">Semua Status</option>
+                <option value="verified">Aktif (Verified)</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 font-bold tracking-wider text-[10px] uppercase">
-                  <th className="p-4">Nama Toko UMKM</th>
-                  <th className="p-4">Pemilik & Kontak</th>
-                  <th className="p-4">Lokasi Dusun</th>
-                  <th className="p-4">Kategori Utama</th>
-                  <th className="p-4">Status Legalitas</th>
-                  <th className="p-4 text-right">Opsi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {shops.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-center py-16 text-gray-400 italic">
-                      Belum ada toko yang terdaftar di dalam sistem.
-                    </td>
-                  </tr>
+          <div className="overflow-x-auto border border-slate-150 rounded-2xl">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-slate-50 border-b border-slate-150 hover:bg-slate-50/50">
+                  <TableHead className="p-4">Toko UMKM</TableHead>
+                  <TableHead className="p-4">Pemilik & Kontak</TableHead>
+                  <TableHead className="p-4">Lokasi Dusun</TableHead>
+                  <TableHead className="p-4">Kategori Utama</TableHead>
+                  <TableHead className="p-4">Status</TableHead>
+                  <TableHead className="p-4 text-center">Tindakan</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredShopsTable.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-16 text-slate-400 italic">
+                      Tidak ada toko terdaftar yang cocok dengan kriteria pencarian Anda.
+                    </TableCell>
+                  </TableRow>
                 ) : (
-                  shops.map((shop) => (
-                    <tr key={shop.id} className="hover:bg-emerald-50/10 transition-colors">
-                      <td className="p-4 font-bold text-gray-800">
+                  filteredShopsTable.map((shop) => (
+                    <TableRow key={shop.id}>
+                      
+                      <TableCell className="p-4">
                         <div className="flex items-center gap-3">
                           <img
                             src={shop.logo}
                             alt={shop.name}
-                            className="w-9 h-9 rounded-lg object-cover border border-gray-200 shadow-3xs shrink-0"
+                            className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0 bg-slate-50"
                             referrerPolicy="no-referrer"
                           />
-                          <div>
-                            <span className="block text-xs font-bold text-gray-900">{shop.name}</span>
-                            <span className="text-[10px] text-gray-400 font-medium">{shop.address}</span>
+                          <div className="space-y-0.5">
+                            <span className="block font-extrabold text-slate-900 text-xs">{shop.name}</span>
+                            <span className="text-[10px] text-slate-400 font-medium block truncate max-w-[180px]">{shop.address}</span>
                           </div>
                         </div>
-                      </td>
-                      <td className="p-4">
-                        <span className="block font-bold text-gray-700">{shop.ownerName}</span>
+                      </TableCell>
+
+                      <TableCell className="p-4">
+                        <span className="block font-bold text-slate-700">{shop.ownerName}</span>
                         <a 
                           href={`https://wa.me/${shop.phone}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] text-emerald-600 hover:underline font-bold"
+                          className="inline-flex items-center gap-1 text-[10px] text-emerald-700 hover:underline font-extrabold uppercase tracking-wide mt-0.5 font-mono"
                         >
-                          +{shop.phone}
+                          <PhoneCall className="w-3 h-3 text-emerald-600 shrink-0" />
+                          <span>+{shop.phone}</span>
                         </a>
-                      </td>
-                      <td className="p-4 font-bold text-gray-600 uppercase tracking-wider text-[9px]">{shop.dusun}</td>
-                      <td className="p-4">
-                        <span className="px-2.5 py-0.5 bg-gray-100 text-gray-600 rounded border border-gray-200 font-bold text-[8px] uppercase tracking-wider">
+                      </TableCell>
+
+                      <TableCell className="p-4 font-mono font-bold text-slate-600 uppercase tracking-widest text-[9.5px]">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>{shop.dusun}</span>
+                        </div>
+                      </TableCell>
+
+                      <TableCell className="p-4">
+                        <span className="inline-block px-2.5 py-0.5 bg-slate-100 text-slate-600 rounded border border-slate-200/60 font-bold text-[8.5px] uppercase tracking-wider">
                           {shop.category}
                         </span>
-                      </td>
-                      <td className="p-4">
+                      </TableCell>
+
+                      <TableCell className="p-4">
                         {shop.isVerified ? (
-                          <span className="inline-flex items-center gap-1 text-emerald-800 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-md font-extrabold text-[8px] uppercase tracking-wider">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600 fill-emerald-50" />
-                            <span>Terverifikasi</span>
+                          <span className="inline-flex items-center gap-1 text-emerald-800 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-lg font-black text-[8px] uppercase tracking-wider">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 fill-emerald-50" />
+                            <span>AKTIF</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-amber-800 bg-amber-50 border border-amber-100 px-2.5 py-0.5 rounded-md font-extrabold text-[8px] uppercase tracking-wider">
-                            <AlertCircle className="w-3 h-3 text-amber-600" />
-                            <span>Pending</span>
+                          <span className="inline-flex items-center gap-1 text-amber-800 bg-amber-50 border border-amber-100 px-2.5 py-0.5 rounded-lg font-black text-[8px] uppercase tracking-wider">
+                            <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
+                            <span>PENDING</span>
                           </span>
                         )}
-                      </td>
-                      <td className="p-4 text-right">
-                        <div className="inline-flex items-center gap-2">
+                      </TableCell>
+
+                      <TableCell className="p-4 text-center">
+                        <div className="inline-flex items-center gap-1.5">
                           <button
                             onClick={() => handleToggleVerifyShop(shop.id)}
-                            className={`px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition-all text-[8px] cursor-pointer ${
+                            className={`px-3 py-2 rounded-xl font-extrabold uppercase tracking-wider transition-all text-[8.5px] cursor-pointer border ${
                               shop.isVerified
-                                ? "bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-200"
-                                : "bg-emerald-600 text-white hover:bg-emerald-500 shadow-xs hover:shadow-md"
+                                ? "bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200"
+                                : "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600 shadow-3xs"
                             }`}
                           >
                             {shop.isVerified ? "Cabut Verifikasi" : "Verifikasi Toko"}
                           </button>
+                          
+                          <Link
+                            href={`/shops/${shop.id}`}
+                            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all"
+                            title="Buka Toko"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </Link>
+
                           <button
                             onClick={() => handleDeleteShop(shop.id)}
-                            className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-transparent hover:border-red-100 rounded-xl transition-all cursor-pointer"
+                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-150 hover:border-red-200 rounded-xl transition-all cursor-pointer"
                             title="Hapus Toko"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+
+                    </TableRow>
                   ))
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}
 
-      {/* Portal Configurations */}
+      {/* Konfigurasi Portal Tab */}
       {activeSubTab === "config" && (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-3xs p-6 space-y-6 animate-fade-in" id="admin-subtab-config">
-          <div>
-            <h3 className="font-bold text-lg text-gray-900 uppercase tracking-wide border-b border-gray-100 pb-2.5">
-              Konfigurasi Identitas Portal Digital
-            </h3>
-            <p className="text-xs text-gray-500 mt-1.5">Edit nama aplikasi, tagline, dan deskripsi wilayah Samirono secara dinamis. Hasil perubahan langsung ter-update di seluruh website.</p>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in" id="admin-subtab-config">
+          
+          {/* Config Forms */}
+          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
+            <div className="border-b border-slate-100 pb-3">
+              <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider">Identitas Portal Utama</h3>
+              <p className="text-xs text-slate-500">Edit data visual yang ditampilkan pada halaman depan web secara dinamis.</p>
+            </div>
+
+            <form onSubmit={handleSave} className="space-y-5">
+              {saveSuccess && (
+                <div className="p-4 bg-emerald-50 border border-emerald-100 text-emerald-800 text-[10px] font-bold rounded-xl flex items-center gap-2 uppercase tracking-wider animate-fade-in shadow-3xs">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                  Branding Berhasil Diperbarui! Parameter visual disimpan di database utama.
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Nama Aplikasi Portal</label>
+                  <input
+                    type="text"
+                    required
+                    value={data.appName}
+                    onChange={(e) => setData("appName", e.target.value)}
+                    className="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all shadow-3xs"
+                    id="admin-input-appname"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Wilayah Administratif Desa</label>
+                  <input
+                    type="text"
+                    required
+                    value={data.villageName}
+                    onChange={(e) => setData("villageName", e.target.value)}
+                    className="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all shadow-3xs"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Slogan / Tagline Utama</label>
+                <input
+                  type="text"
+                  required
+                  value={data.tagline}
+                  onChange={(e) => setData("tagline", e.target.value)}
+                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all shadow-3xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Deskripsi Naratif Etalase Desa</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={data.description}
+                  onChange={(e) => setData("description", e.target.value)}
+                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 resize-none transition-all shadow-3xs"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">WhatsApp Kontak Bantuan</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: 6285725912345"
+                    value={data.adminPhone}
+                    onChange={(e) => setData("adminPhone", e.target.value)}
+                    className="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all shadow-3xs"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Foto Banner Utama (Unsplash URL)</label>
+                  <input
+                    type="url"
+                    required
+                    value={data.heroBanner}
+                    onChange={(e) => setData("heroBanner", e.target.value)}
+                    className="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all shadow-3xs"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-2 border-t border-slate-100">
+                <button
+                  type="submit"
+                  disabled={processing}
+                  className="px-6 py-3.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  id="admin-save-btn"
+                >
+                  <Save className="w-4 h-4 text-white" />
+                  <span>{processing ? "Menyimpan..." : "Simpan Perubahan"}</span>
+                </button>
+              </div>
+            </form>
           </div>
 
-          <form onSubmit={handleSave} className="space-y-5">
-            {saveSuccess && (
-              <div className="p-4 bg-emerald-50 border border-emerald-100 text-emerald-800 text-[10px] font-bold rounded-xl flex items-center gap-2 uppercase tracking-wider animate-fade-in">
-                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
-                Sistem Berhasil Diperbarui! Nama aplikasi dan parameter visual disimpan di database utama.
-              </div>
-            )}
+          {/* Right panel: Live Mockup Preview */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="flex items-center gap-1.5 text-slate-400 pl-1">
+              <Eye className="w-4 h-4 text-slate-500" />
+              <span className="text-[10px] font-extrabold uppercase tracking-wider">Tampilan Pratinjau Halaman Depan</span>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Nama Aplikasi Portal</label>
-                <input
-                  type="text"
-                  required
-                  value={data.appName}
-                  onChange={(e) => setData("appName", e.target.value)}
-                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-gray-200 bg-white font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                  id="admin-input-appname"
+            <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-3xs flex flex-col h-[480px]">
+              
+              {/* Header mockup navbar */}
+              <div className="bg-white border-b border-slate-100 px-4 py-3 flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-6 h-6 bg-emerald-700 rounded-lg flex items-center justify-center">
+                    <Store className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tight text-slate-800">
+                    {data.appName || "SAMIRONO ETALASE"}
+                  </span>
+                </div>
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+
+              {/* Banner mockup section */}
+              <div className="relative h-44 shrink-0 bg-slate-900 overflow-hidden">
+                <img
+                  src={data.heroBanner}
+                  alt="Live Preview Banner"
+                  className="w-full h-full object-cover opacity-35"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80";
+                  }}
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent flex flex-col justify-end p-4 text-white">
+                  <div className="space-y-1">
+                    <span className="inline-block px-1.5 py-0.5 bg-amber-500 text-slate-950 text-[7px] font-extrabold uppercase tracking-wider rounded">
+                      {data.villageName || "DESA SAMIRONO"}
+                    </span>
+                    <h4 className="text-[14px] font-extrabold tracking-tight leading-snug line-clamp-1">
+                      {data.appName || "Samirono Etalase"}
+                    </h4>
+                    <p className="text-amber-400 font-bold text-[9px] line-clamp-1 leading-none">
+                      {data.tagline || "Platform Ekonomi Warga"}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Wilayah Administratif Desa</label>
-                <input
-                  type="text"
-                  required
-                  value={data.villageName}
-                  onChange={(e) => setData("villageName", e.target.value)}
-                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-gray-200 bg-white font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                />
-              </div>
-            </div>
+              {/* Description mockup body */}
+              <div className="p-4 flex-1 overflow-y-auto space-y-4 bg-slate-50/30">
+                <div className="space-y-1.5">
+                  <span className="text-[8px] font-extrabold uppercase tracking-widest text-slate-400 block font-mono">Tentang Etalase</span>
+                  <p className="text-[11px] text-slate-600 leading-relaxed font-light line-clamp-4">
+                    {data.description || "Digitalisasi etalase produk warga."}
+                  </p>
+                </div>
 
-            <div className="space-y-1">
-              <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Slogan / Tagline Utama</label>
-              <input
-                type="text"
-                required
-                value={data.tagline}
-                onChange={(e) => setData("tagline", e.target.value)}
-                className="w-full px-4 py-2.5 text-xs rounded-xl border border-gray-200 bg-white font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Deskripsi Naratif Etalase Desa</label>
-              <textarea
-                required
-                rows={4}
-                value={data.description}
-                onChange={(e) => setData("description", e.target.value)}
-                className="w-full px-4 py-2.5 text-xs rounded-xl border border-gray-200 bg-white font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 resize-none transition-all"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">WhatsApp Kontak Bantuan Desa</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Contoh: 6285725912345"
-                  value={data.adminPhone}
-                  onChange={(e) => setData("adminPhone", e.target.value)}
-                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-gray-200 bg-white font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                />
+                <div className="border-t border-slate-150 pt-3.5 space-y-2">
+                  <span className="text-[8px] font-extrabold uppercase tracking-widest text-slate-400 block font-mono">Kontak Bantuan</span>
+                  <div className="flex items-center gap-2 p-2 bg-white border border-slate-150 rounded-xl">
+                    <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center text-slate-700 shrink-0 border border-slate-100">
+                      <PhoneCall className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] text-slate-400 font-medium block leading-none">WhatsApp Admin</span>
+                      <span className="text-[10px] font-extrabold text-emerald-800 block mt-1">+{data.adminPhone || "628..."}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Foto Banner Utama (Unsplash URL)</label>
-                <input
-                  type="url"
-                  required
-                  value={data.heroBanner}
-                  onChange={(e) => setData("heroBanner", e.target.value)}
-                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-gray-200 bg-white font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                />
+              {/* Bottom footer bar mockup */}
+              <div className="bg-white border-t border-slate-100 px-4 py-2.5 text-center text-[8px] font-mono text-slate-400 uppercase tracking-widest shrink-0 font-bold">
+                KAMPUNG DIGITAL DESA SAMIRONO
               </div>
-            </div>
 
-            <div className="flex justify-end pt-2">
-              <button
-                type="submit"
-                disabled={processing}
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                id="admin-save-btn"
-              >
-                <Save className="w-4 h-4 text-white" />
-                <span>{processing ? "Menyimpan..." : "Simpan Perubahan"}</span>
-              </button>
             </div>
-          </form>
+          </div>
+
         </div>
       )}
+
     </div>
   );
 }

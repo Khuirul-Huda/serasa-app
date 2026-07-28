@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import { router } from "@inertiajs/react";
 import L from "leaflet";
 import { 
   MapPin, 
@@ -14,11 +14,12 @@ import {
   CheckCircle2,
   Clock
 } from "lucide-react";
-import { Shop } from "@/types";
-import { router } from "@inertiajs/react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import type { Shop } from "@/types";
 
 interface ShopMapProps {
   shops: Shop[];
+  villageName?: string;
 }
 
 // Custom DivIcon marker generator using SVG matching our clean emerald theme
@@ -38,7 +39,7 @@ const createCustomMarker = (color: string = "#10b981", isSelected: boolean = fal
   });
 };
 
-export default function ShopMap({ shops }: ShopMapProps) {
+export default function ShopMap({ shops, villageName = "Desa Samirono" }: ShopMapProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [activePin, setActivePin] = useState<Shop | null>(null);
@@ -49,6 +50,7 @@ export default function ShopMap({ shops }: ShopMapProps) {
 
   const categories = useMemo(() => {
     const list = new Set(shops.map((s) => s.category));
+
     return ["all", ...Array.from(list)];
   }, [shops]);
 
@@ -61,13 +63,16 @@ export default function ShopMap({ shops }: ShopMapProps) {
         shop.dusun.toLowerCase().includes(searchQuery.toLowerCase());
       
       const matchCategory = selectedCategory === "all" || shop.category === selectedCategory;
+
       return matchSearch && matchCategory;
     });
   }, [shops, searchQuery, selectedCategory]);
 
   // Initialize Leaflet Map
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    if (!mapContainerRef.current) {
+return;
+}
 
     if (!mapInstanceRef.current) {
       // Center of Desa Samirono (Getasan)
@@ -99,7 +104,10 @@ export default function ShopMap({ shops }: ShopMapProps) {
   // Sync size on container resize
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !mapContainerRef.current) return;
+
+    if (!map || !mapContainerRef.current) {
+return;
+}
 
     const resizeObserver = new ResizeObserver(() => {
       map.invalidateSize();
@@ -116,7 +124,10 @@ export default function ShopMap({ shops }: ShopMapProps) {
   useEffect(() => {
     const map = mapInstanceRef.current;
     const markersLayer = markersLayerRef.current;
-    if (!map || !markersLayer) return;
+
+    if (!map || !markersLayer) {
+return;
+}
 
     markersLayer.clearLayers();
 
@@ -146,6 +157,7 @@ export default function ShopMap({ shops }: ShopMapProps) {
   const handleSelectShopFromSidebar = (shop: Shop) => {
     setActivePin(shop);
     const map = mapInstanceRef.current;
+
     if (map) {
       map.setView([shop.lat, shop.lng], 16, { animate: true });
     }
@@ -158,7 +170,7 @@ export default function ShopMap({ shops }: ShopMapProps) {
         <div>
           <h2 className="text-[15px] font-bold text-gray-800 flex items-center gap-2 uppercase tracking-wide">
             <Compass className="w-5 h-5 text-emerald-600" />
-            <span>Peta Geografis UMKM Desa Samirono</span>
+            <span>Peta Geografis UMKM {villageName}</span>
           </h2>
           <p className="text-xs text-gray-500">Klik pin toko atau daftar di samping untuk melihat letak akurat, kontak, jam operasional, dan etalase digital.</p>
         </div>
@@ -291,6 +303,7 @@ export default function ShopMap({ shops }: ShopMapProps) {
           ) : (
             mapShops.map((shop) => {
               const isActive = activePin?.id === shop.id;
+
               return (
                 <div
                   key={shop.id}

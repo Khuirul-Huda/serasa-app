@@ -19,7 +19,10 @@ export function formatIDR(price: number): string {
  * Truncates text to a specified maximum length and appends "..." if exceeded.
  */
 export function truncateText(text: string, limit: number): string {
-  if (text.length <= limit) return text;
+  if (text.length <= limit) {
+return text;
+}
+
   return text.substring(0, limit).trim() + "...";
 }
 
@@ -29,8 +32,10 @@ export function truncateText(text: string, limit: number): string {
 export function getWhatsAppLink(phone: string, message: string): string {
   // Normalize phone number (ensure no plus signs, spaces, or leading zeros if possible)
   let cleanPhone = phone.replace(/[^0-9]/g, "");
+
   if (cleanPhone.startsWith("0")) {
     cleanPhone = "62" + cleanPhone.substring(1);
   }
+
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 }

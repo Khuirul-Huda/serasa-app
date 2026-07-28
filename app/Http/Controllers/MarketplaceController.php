@@ -7,28 +7,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Product;
-use App\Models\Setting;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class MarketplaceController extends Controller
 {
     /**
      * Display the main landing page / catalog list.
      */
-    public function index(Request $request): Response
+    public function index(Request $request): HttpResponse
     {
         $search = $request->query('search', '');
         $catFilter = $request->query('category', 'all');
 
-        $categories = Category::all()->map(fn ($c) => $this->mapCategory($c));
-
-        // Start product query
-        $productQuery = Product::with(['shop', 'category']);
+        $productQuery = Product::query();
 
         if (! empty($search)) {
             $productQuery->where(function ($query) use ($search) {
@@ -44,33 +39,39 @@ class MarketplaceController extends Controller
             $productQuery->where('category_id', $catFilter);
         }
 
-        // Get active products
-        $products = $productQuery->get()->map(fn ($p) => $this->mapProduct($p));
+        $products = $productQuery->select([
+            'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+            'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        ])->get()->map(fn ($p) => $this->mapProduct($p));
 
-        // Get verified shops for displaying in list
-        $shops = Shop::where('is_verified', true)->get()->map(fn ($s) => $this->mapShop($s));
+        $shops = Shop::select([
+            'id', 'name', 'owner_name', 'description', 'category', 'phone',
+            'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
+            'working_hours', 'user_id',
+        ])->where('is_verified', true)->get()->map(fn ($s) => $this->mapShop($s));
 
         return Inertia::render('welcome', [
             'settings' => $this->getAppSettings(),
-            'categories' => $categories,
+            'categories' => $this->getCachedCategories(),
             'products' => $products,
             'shops' => $shops,
-            'filters' => [
-                'search' => $search,
-                'category' => $catFilter,
-            ],
+            'filters' => ['search' => $search, 'category' => $catFilter],
+        ])->toResponse($request)->withHeaders([
+            'Cache-Control' => 'public, max-age=60, stale-while-revalidate=300',
+            'Vary' => 'Accept',
         ]);
     }
 
     /**
-     * Display the shops directory directory page.
+     * Display the shops directory page.
      */
-    public function shops(Request $request): Response
+    public function shops(Request $request): HttpResponse
     {
-        $categories = Category::all()->map(fn ($c) => $this->mapCategory($c));
-
-        // Fetch all verified shops
-        $shops = Shop::where('is_verified', true)
+        $shops = Shop::select([
+            'id', 'name', 'owner_name', 'description', 'category', 'phone',
+            'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
+            'working_hours', 'user_id',
+        ])->where('is_verified', true)
             ->withCount('products')
             ->get()
             ->map(function ($shop) {
@@ -80,148 +81,135 @@ class MarketplaceController extends Controller
                 return $mapped;
             });
 
-        // Get all products to compute any highlights if needed
-        $products = Product::where('is_available', true)->get()->map(fn ($p) => $this->mapProduct($p));
+        $products = Product::select([
+            'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+            'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        ])->where('is_available', true)->get()->map(fn ($p) => $this->mapProduct($p));
 
         return Inertia::render('shops', [
             'settings' => $this->getAppSettings(),
-            'categories' => $categories,
+            'categories' => $this->getCachedCategories(),
             'shops' => $shops,
             'products' => $products,
+        ])->toResponse($request)->withHeaders([
+            'Cache-Control' => 'public, max-age=60, stale-while-revalidate=300',
+            'Vary' => 'Accept',
         ]);
     }
 
     /**
      * Display the Leaflet geographic map page.
      */
-    public function map(Request $request): Response
+    public function map(Request $request): HttpResponse
     {
-        $categories = Category::all()->map(fn ($c) => $this->mapCategory($c));
+        $shops = Shop::select([
+            'id', 'name', 'owner_name', 'description', 'category', 'phone',
+            'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
+            'working_hours', 'user_id',
+        ])->where('is_verified', true)->get()->map(fn ($s) => $this->mapShop($s));
 
-        // Fetch all verified shops with coordinates
-        $shops = Shop::where('is_verified', true)->get()->map(fn ($s) => $this->mapShop($s));
-
-        // Get products
-        $products = Product::where('is_available', true)->get()->map(fn ($p) => $this->mapProduct($p));
+        $products = Product::select([
+            'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+            'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        ])->where('is_available', true)->get()->map(fn ($p) => $this->mapProduct($p));
 
         return Inertia::render('map', [
             'settings' => $this->getAppSettings(),
-            'categories' => $categories,
+            'categories' => $this->getCachedCategories(),
             'shops' => $shops,
             'products' => $products,
+        ])->toResponse($request)->withHeaders([
+            'Cache-Control' => 'public, max-age=60, stale-while-revalidate=300',
+            'Vary' => 'Accept',
         ]);
     }
 
     /**
      * Display a specific shop detail page with its product list.
      */
-    public function shopDetail(string $id): Response
+    public function shopDetail(Request $request, string $id): HttpResponse
     {
-        $shop = Shop::with('products')->findOrFail($id);
+        $shop = Shop::select([
+            'id', 'name', 'owner_name', 'description', 'category', 'phone',
+            'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
+            'working_hours', 'user_id',
+        ])->with([
+            'products' => function ($query) {
+                $query->select([
+                    'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+                    'unit', 'image', 'rating', 'reviews_count', 'is_available',
+                ]);
+            },
+        ])->findOrFail($id);
 
-        $categories = Category::all()->map(fn ($c) => $this->mapCategory($c));
         $mappedShop = $this->mapShop($shop);
-
         $products = $shop->products->map(fn ($p) => $this->mapProduct($p));
-        $allProducts = Product::all()->map(fn ($p) => $this->mapProduct($p));
+
+        // Limit to latest 12 for the "Produk Lainnya" sidebar — avoids full table scan
+        $allProducts = Product::select([
+            'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+            'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        ])->latest()->limit(12)->get()->map(fn ($p) => $this->mapProduct($p));
 
         return Inertia::render('shop-detail', [
             'settings' => $this->getAppSettings(),
-            'categories' => $categories,
+            'categories' => $this->getCachedCategories(),
             'shop' => $mappedShop,
             'products' => $products,
             'allProducts' => $allProducts,
+        ])->toResponse($request)->withHeaders([
+            'Cache-Control' => 'public, max-age=30, stale-while-revalidate=120',
+            'Vary' => 'Accept',
         ]);
     }
 
     /**
      * Display a specific product specification details & reviews.
      */
-    public function productDetail(string $id): Response
+    public function productDetail(Request $request, string $id): HttpResponse
     {
-        $product = Product::with(['shop', 'reviews'])->findOrFail($id);
+        $product = Product::select([
+            'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+            'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        ])->with([
+            'shop' => function ($query) {
+                $query->select([
+                    'id', 'name', 'owner_name', 'description', 'category', 'phone',
+                    'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
+                    'working_hours', 'user_id',
+                ]);
+            },
+            'reviews' => function ($query) {
+                $query->select([
+                    'id', 'product_id', 'user_name', 'rating', 'comment', 'created_at',
+                ]);
+            },
+        ])->findOrFail($id);
 
-        $categories = Category::all()->map(fn ($c) => $this->mapCategory($c));
         $mappedProduct = $this->mapProduct($product);
         $mappedShop = $this->mapShop($product->shop);
-
         $reviews = $product->reviews->map(fn ($r) => $this->mapReview($r));
-        $allProducts = Product::all()->map(fn ($p) => $this->mapProduct($p));
+
+        // Limit to latest 12 for the "Produk Lainnya" sidebar — avoids full table scan
+        $allProducts = Product::select([
+            'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+            'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        ])->latest()->limit(12)->get()->map(fn ($p) => $this->mapProduct($p));
 
         return Inertia::render('product-detail', [
             'settings' => $this->getAppSettings(),
-            'categories' => $categories,
+            'categories' => $this->getCachedCategories(),
             'product' => $mappedProduct,
             'shop' => $mappedShop,
             'reviews' => $reviews,
             'allProducts' => $allProducts,
+        ])->toResponse($request)->withHeaders([
+            'Cache-Control' => 'public, max-age=30, stale-while-revalidate=120',
+            'Vary' => 'Accept',
         ]);
     }
 
     /* MAPPING HELPERS */
-
-    private function getAppSettings(): array
-    {
-        $settings = Setting::pluck('value', 'key')->toArray();
-
-        return [
-            'appName' => $settings['app_name'] ?? 'Samirono Etalase',
-            'tagline' => $settings['tagline'] ?? 'Platform UMKM Warga',
-            'villageName' => $settings['village_name'] ?? 'Desa Samirono',
-            'description' => $settings['description'] ?? 'Platform digitalisasi kreatif',
-            'adminPhone' => $settings['admin_phone'] ?? '6285725912345',
-            'heroBanner' => $settings['hero_banner'] ?? 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1200&q=80',
-        ];
-    }
-
-    private function mapCategory(Category $category): array
-    {
-        return [
-            'id' => $category->id,
-            'name' => $category->name,
-            'iconName' => $category->icon_name,
-            'description' => $category->description,
-            'color' => $category->color,
-        ];
-    }
-
-    private function mapProduct(Product $product): array
-    {
-        return [
-            'id' => $product->id,
-            'shopId' => $product->shop_id,
-            'categoryId' => $product->category_id,
-            'name' => $product->name,
-            'description' => $product->description,
-            'price' => (float) $product->price,
-            'unit' => $product->unit,
-            'image' => $product->image,
-            'rating' => (float) $product->rating,
-            'reviewsCount' => (int) $product->reviews_count,
-            'isAvailable' => (bool) $product->is_available,
-        ];
-    }
-
-    private function mapShop(Shop $shop): array
-    {
-        return [
-            'id' => $shop->id,
-            'name' => $shop->name,
-            'ownerName' => $shop->owner_name,
-            'description' => $shop->description,
-            'category' => $shop->category,
-            'phone' => $shop->phone,
-            'address' => $shop->address,
-            'dusun' => $shop->dusun,
-            'image' => $shop->image,
-            'logo' => $shop->logo,
-            'isVerified' => (bool) $shop->is_verified,
-            'lat' => (float) $shop->lat,
-            'lng' => (float) $shop->lng,
-            'jamKerja' => $shop->working_hours,
-            'userId' => $shop->user_id,
-        ];
-    }
 
     private function mapReview($review): array
     {

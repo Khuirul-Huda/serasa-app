@@ -17,7 +17,9 @@ Route::get('/shops', [MarketplaceController::class, 'shops'])->name('shops.index
 Route::get('/shops/{id}', [MarketplaceController::class, 'shopDetail'])->name('shops.detail');
 Route::get('/products/{id}', [MarketplaceController::class, 'productDetail'])->name('products.detail');
 Route::get('/map', [MarketplaceController::class, 'map'])->name('map.index');
-Route::post('/products/{id}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::post('/products/{id}/reviews', [ReviewController::class, 'store'])
+    ->name('reviews.store')
+    ->middleware('throttle:10,1');
 
 // Authenticated user page groups
 Route::middleware(['auth', 'verified'])->group(function () {

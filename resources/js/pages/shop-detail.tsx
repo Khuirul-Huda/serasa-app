@@ -3,13 +3,8 @@
  * SPDX-License-Identifier: Apache-2.5
  */
 
-import React from "react";
-import { Head, Link } from "@inertiajs/react";
-import MarketplaceLayout from "@/layouts/marketplace-layout";
-import ProductCard from "@/components/ProductCard";
-import { AppSettings, Category, Product, Shop } from "@/types";
+import { Link } from "@inertiajs/react";
 import { 
-  Store, 
   MapPin, 
   Phone, 
   CheckCircle2, 
@@ -17,23 +12,30 @@ import {
   ArrowLeft,
   ShoppingBag
 } from "lucide-react";
+import React from "react";
+import ProductCard from "@/components/ProductCard";
+import SEOHead from "@/components/SEOHead";
+import MarketplaceLayout from "@/layouts/marketplace-layout";
+import type { AppSettings, Category, Product, Shop } from "@/types";
 import { getWhatsAppLink } from "@/utils";
 
 interface ShopDetailProps {
   settings: AppSettings;
   categories: Category[];
   shop: Shop;
-  products: Product[];
-  allProducts: Product[];
+  products?: Product[];
+  allProducts?: Product[];
 }
 
 export default function ShopDetail({
   settings,
   categories,
   shop,
-  products,
-  allProducts,
+  products = [],
+  allProducts = [],
 }: ShopDetailProps) {
+  const shopProducts = products.length > 0 ? products : ((shop as any).products || []);
+
   const handleContactWhatsApp = () => {
     const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
     const url = getWhatsAppLink(shop.phone, message);
@@ -45,35 +47,44 @@ export default function ShopDetail({
       settings={settings}
       categories={categories}
       products={allProducts}
-      activeTab="detail"
+      activeTab="shops"
     >
-      <Head title={`${shop.name} - Katalog UMKM Samirono`} />
+      <SEOHead
+        title={`${shop.name} - Katalog UMKM Samirono`}
+        description={`Kunjungi toko ${shop.name} di Desa Samirono. Menyediakan ${shop.category}. Hubungi ${shop.ownerName} di dusun ${shop.dusun}.`}
+        keywords={`${shop.name}, UMKM ${shop.name}, Toko ${shop.dusun}, Produk ${shop.category}, Ekonomi Kreatif Samirono`}
+        image={shop.image}
+        siteName={settings.appName}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
         
-        {/* Back Link */}
-        <div>
+        {/* Breadcrumb Nav */}
+        <nav aria-label="Breadcrumb">
           <Link
             href="/shops"
             className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700 hover:text-emerald-600 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             <span>Kembali ke Daftar UMKM</span>
           </Link>
-        </div>
+        </nav>
 
         {/* Master Profile Header Block */}
-        <div className="bg-white rounded-3xl border border-gray-200 shadow-3xs overflow-hidden">
+        <article className="bg-white rounded-3xl border border-gray-200 shadow-3xs overflow-hidden">
           {/* Banner */}
-          <div className="relative h-44 sm:h-56 bg-gray-50">
+          <figure className="relative h-44 sm:h-56 bg-gray-50">
             <img 
               src={shop.image} 
               alt={shop.name} 
+              width={1200}
+              height={224}
+              loading="eager"
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" aria-hidden="true" />
+          </figure>
 
           {/* Profile details wrapper */}
           <div className="px-6 pb-6 pt-0 relative">
@@ -83,6 +94,9 @@ export default function ShopDetail({
                 <img 
                   src={shop.logo} 
                   alt={shop.name} 
+                  width={96}
+                  height={96}
+                  loading="eager"
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
@@ -110,16 +124,16 @@ export default function ShopDetail({
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4 border-t border-gray-100">
               {/* Left Column: Description & Metadata */}
               <div className="lg:col-span-8 space-y-4 text-xs">
-                <div className="space-y-1.5 text-gray-600 font-light leading-relaxed">
-                  <h4 className="text-gray-900 font-bold uppercase tracking-wider text-[9.5px]">Tentang UMKM Kami</h4>
+                <section className="space-y-1.5 text-gray-600 font-light leading-relaxed">
+                  <h2 className="text-gray-900 font-bold uppercase tracking-wider text-[9.5px]">Tentang UMKM Kami</h2>
                   <p className="text-sm font-normal text-gray-600 leading-relaxed">
                     {shop.description}
                   </p>
-                </div>
+                </section>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-[11px] text-gray-500">
+                <address className="not-italic grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-[11px] text-gray-500">
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
                     <div>
                       <span className="font-bold text-gray-800 block">Alamat Rumah Produksi:</span>
                       <span>{shop.address} ({shop.dusun})</span>
@@ -127,18 +141,18 @@ export default function ShopDetail({
                   </div>
                   {shop.jamKerja && (
                     <div className="flex items-start gap-2">
-                      <Clock className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <Clock className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
                       <div>
                         <span className="font-bold text-gray-800 block">Jam Operasional Pelayanan:</span>
-                        <span>{shop.jamKerja}</span>
+                        <time>{shop.jamKerja}</time>
                       </div>
                     </div>
                   )}
-                </div>
+                </address>
               </div>
 
               {/* Right Column: Interaction Hub */}
-              <div className="lg:col-span-4 bg-emerald-50/40 rounded-2xl border border-emerald-100/60 p-4 space-y-4 self-start text-xs">
+              <aside className="lg:col-span-4 bg-emerald-50/40 rounded-2xl border border-emerald-100/60 p-4 space-y-4 self-start text-xs">
                 <div className="space-y-1">
                   <span className="text-[9px] font-extrabold uppercase tracking-wider text-gray-400 block">Kontak Hubungan Pelaku Usaha</span>
                   <div className="font-bold text-gray-800 text-sm">{shop.ownerName} (Pemilik)</div>
@@ -161,43 +175,45 @@ export default function ShopDetail({
                     <span>Lihat di Peta Desa</span>
                   </Link>
                 </div>
-              </div>
+              </aside>
             </div>
 
           </div>
-        </div>
+        </article>
 
         {/* Associated Products Grid */}
-        <div className="space-y-5">
+        <section aria-label={`Etalase Produk ${shop.name}`} className="space-y-5">
           <div>
-            <h3 className="font-bold text-gray-900 text-base uppercase tracking-wider flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-emerald-600" />
-              <span>Etalase Produk Toko ({products.length})</span>
-            </h3>
+            <h2 className="font-bold text-gray-900 text-base uppercase tracking-wider flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+              <span>Etalase Produk Toko ({shopProducts.length})</span>
+            </h2>
             <p className="text-xs text-gray-500">Seluruh produk yang diproduksi secara langsung oleh {shop.name}.</p>
           </div>
 
-          {products.length === 0 ? (
+          {shopProducts.length === 0 ? (
             <div className="bg-white border border-gray-150 rounded-2xl p-16 text-center shadow-3xs max-w-md mx-auto">
-              <ShoppingBag className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+              <ShoppingBag className="w-10 h-10 text-gray-300 mx-auto mb-2" aria-hidden="true" />
               <p className="text-xs text-gray-400 italic">Toko belum mengunggah produk ke dalam katalog.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {products.map((product) => {
+            <ol className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 list-none p-0">
+              {shopProducts.map((product: Product) => {
                 const category = categories.find((c) => c.id === product.categoryId);
+
                 return (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    shop={shop}
-                    category={category}
-                  />
+                  <li key={product.id}>
+                    <ProductCard
+                      product={product}
+                      shop={shop}
+                      category={category}
+                    />
+                  </li>
                 );
               })}
-            </div>
+            </ol>
           )}
-        </div>
+        </section>
 
       </div>
     </MarketplaceLayout>

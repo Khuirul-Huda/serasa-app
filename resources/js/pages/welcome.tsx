@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.5
  */
 
+import { Link, router } from "@inertiajs/react";
+import { ShoppingBag, ArrowRight, CheckCircle2 } from "lucide-react";
 import React, { useState, useMemo } from "react";
-import { Head, Link } from "@inertiajs/react";
-import MarketplaceLayout from "@/layouts/marketplace-layout";
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
-import { AppSettings, Category, Product, Shop } from "@/types";
-import { ShoppingBag, ArrowRight, CheckCircle2 } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
+import MarketplaceLayout from "@/layouts/marketplace-layout";
+import type { AppSettings, Category, Product, Shop } from "@/types";
 
 interface WelcomeProps {
   settings: AppSettings;
@@ -57,7 +58,12 @@ export default function Welcome({
       setSelectedCategory={setSelectedCategory}
       activeTab="katalog"
     >
-      <Head title={`${settings.appName} - ${settings.tagline}`} />
+      <SEOHead
+        title={`${settings.appName} - ${settings.tagline}`}
+        description={settings.description || "Sentra UMKM digital kreatif Desa Samirono. Temukan produk lokal terbaik mulai dari kuliner segar hingga kerajinan anyaman bambu khas warga desa."}
+        image={settings.heroBanner}
+        siteName={settings.appName}
+      />
 
       {/* Hero promo slider carousel */}
       <Hero
@@ -109,6 +115,7 @@ export default function Welcome({
               {filteredProducts.map((product) => {
                 const shop = shops.find((s) => s.id === product.shopId);
                 const category = categories.find((c) => c.id === product.categoryId);
+
                 return (
                   <ProductCard
                     key={product.id}
@@ -144,12 +151,15 @@ export default function Welcome({
             {shops.slice(0, 3).map((shop) => (
               <div 
                 key={shop.id}
-                onClick={() => Link.prototype} // dummy handler as shopcard handles it
-                className="bg-white rounded-2xl border border-gray-150 p-4 shadow-3xs flex gap-4 cursor-pointer hover:border-emerald-600 transition-colors"
+                onClick={() => router.visit(`/shops/${shop.id}`)}
+                className="bg-white rounded-2xl border border-gray-150 p-4 shadow-3xs flex gap-4 cursor-pointer hover:border-emerald-600 transition-all hover:shadow-xs"
               >
                 <img 
                   src={shop.logo} 
                   alt={shop.name} 
+                  width={48}
+                  height={48}
+                  loading="lazy"
                   className="w-12 h-12 rounded-xl object-cover shrink-0 border border-gray-200"
                   referrerPolicy="no-referrer"
                 />

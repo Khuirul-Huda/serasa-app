@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.5
  */
 
-import React, { useState, useEffect, useRef } from "react";
 import { Link, usePage, router } from "@inertiajs/react";
 import { 
   Store, 
@@ -17,14 +16,14 @@ import {
   Search,
   ShoppingCart,
   Bell,
-  HelpCircle,
   Phone,
   ChevronDown,
   Globe,
   Trash2,
   LogOut
 } from "lucide-react";
-import { AppSettings, Category, Product } from "@/types";
+import React, { useState, useEffect, useRef } from "react";
+import type { AppSettings, Category, Product } from "@/types";
 import { formatIDR } from "@/utils";
 
 interface NavbarProps {
@@ -44,11 +43,6 @@ export default function Navbar({
   activeTab,
   searchQuery = "",
   setSearchQuery,
-  selectedCategory = "all",
-  setSelectedCategory,
-  categories,
-  products,
-  onSelectProduct,
 }: NavbarProps) {
   const { auth } = usePage().props as any;
   const user = auth?.user;
@@ -68,14 +62,17 @@ export default function Navbar({
       if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
         setIsCartOpen(false);
       }
+
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
         setIsNotificationOpen(false);
       }
+
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setIsUserDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
@@ -229,6 +226,7 @@ export default function Navbar({
           <nav className="hidden md:flex items-center gap-1 border-l border-gray-200 pl-4">
             <Link
               href="/"
+              prefetch="hover"
               className={`px-3 py-1.5 text-[10.5px] font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
                 activeTab === "katalog"
                   ? "bg-emerald-50 text-emerald-800 border border-emerald-100/70"
@@ -239,6 +237,7 @@ export default function Navbar({
             </Link>
             <Link
               href="/shops"
+              prefetch="hover"
               className={`px-3 py-1.5 text-[10.5px] font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
                 activeTab === "shops"
                   ? "bg-emerald-50 text-emerald-800 border border-emerald-100/70"
@@ -249,6 +248,7 @@ export default function Navbar({
             </Link>
             <Link
               href="/map"
+              prefetch="hover"
               className={`px-3 py-1.5 text-[10.5px] font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
                 activeTab === "map"
                   ? "bg-emerald-50 text-emerald-800 border border-emerald-100/70"
@@ -456,6 +456,7 @@ export default function Navbar({
             <Link
               href="/"
               onClick={() => setIsMobileMenuOpen(false)}
+              prefetch="hover"
               className={`flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-left text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "katalog"
                   ? "bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-100"
@@ -469,6 +470,7 @@ export default function Navbar({
             <Link
               href="/shops"
               onClick={() => setIsMobileMenuOpen(false)}
+              prefetch="hover"
               className={`flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-left text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "shops"
                   ? "bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-100"
@@ -482,6 +484,7 @@ export default function Navbar({
             <Link
               href="/map"
               onClick={() => setIsMobileMenuOpen(false)}
+              prefetch="hover"
               className={`flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-left text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "map"
                   ? "bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-100"

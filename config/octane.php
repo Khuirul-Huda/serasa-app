@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Cache\CacheManager;
+use Illuminate\Database\DatabaseManager;
 use Laravel\Octane\Contracts\OperationTerminated;
 use Laravel\Octane\Events\RequestHandled;
 use Laravel\Octane\Events\RequestReceived;
@@ -132,6 +134,9 @@ return [
 
     'warm' => [
         ...Octane::defaultServicesToWarm(),
+        // Pre-warm infrastructure bindings on worker boot to eliminate cold-start latency
+        CacheManager::class,
+        DatabaseManager::class,
     ],
 
     'flush' => [
@@ -220,5 +225,18 @@ return [
     */
 
     'max_execution_time' => 30,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maximum Requests Per Worker
+    |--------------------------------------------------------------------------
+    |
+    | After handling this many requests the worker will gracefully restart,
+    | reclaiming any accumulated memory. 500 is a safe default for
+    | FrankenPHP; increase only after profiling resident set size (RSS).
+    |
+    */
+
+    'max_requests' => env('OCTANE_MAX_REQUESTS', 500),
 
 ];
