@@ -151,7 +151,7 @@ export default function ProductDetail({
                 >
                   <span>{shop.name}</span>
                   {shop.isVerified && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-pastel-mint fill-pastel-mint-light shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-pastel-teal fill-pastel-teal-light shrink-0" />
                   )}
                 </Link>
               </div>
@@ -161,7 +161,7 @@ export default function ProductDetail({
             <div className="bg-navy-50 border border-navy-200/60 p-4 rounded-2xl">
               <span className="text-[9px] font-extrabold uppercase tracking-wider text-navy-400 block">Harga Terdaftar</span>
               <div className="flex items-baseline gap-1.5 mt-1">
-                <data value={product.price} className="text-2xl font-black text-pastel-mint">{formatIDR(product.price)}</data>
+                <data value={product.price} className="text-2xl font-black text-navy-900">{formatIDR(product.price)}</data>
                 <span className="text-xs text-navy-500 font-semibold">/ {product.unit}</span>
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function ProductDetail({
               <button
                 onClick={handleContactWhatsApp}
                 disabled={!product.isAvailable}
-                className="py-3 bg-pastel-mint hover:bg-pastel-mint/90 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-xs disabled:opacity-50"
+                className="py-3 bg-pastel-coral hover:bg-pastel-coral/90 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-xs disabled:opacity-50 transition-all"
               >
                 <Phone className="w-4 h-4 text-white" />
                 <span>Beli Langsung via WhatsApp</span>
@@ -190,9 +190,9 @@ export default function ProductDetail({
                   alert("Simulasi: Produk ditambahkan ke keranjang belanja Anda di Navbar.");
                 }}
                 disabled={!product.isAvailable}
-                className="py-3 bg-white hover:bg-navy-50 border border-pastel-teal/20 text-pastel-teal font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-3xs disabled:opacity-50"
+                className="py-3 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all shadow-3xs disabled:opacity-50"
               >
-                <ShoppingCart className="w-4 h-4 text-pastel-teal" />
+                <ShoppingCart className="w-4 h-4 text-white" />
                 <span>Simulasi Keranjang</span>
               </button>
             </div>

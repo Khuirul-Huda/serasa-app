@@ -168,7 +168,7 @@ export default function Login({ status, canResetPassword }: Props) {
       </div>
 
       {status && (
-        <div className="mt-4 p-3 bg-pastel-mint-light border border-pastel-mint/20 rounded-xl text-center text-xs font-semibold text-pastel-mint">
+        <div className="mt-4 p-3 bg-pastel-teal-light border border-pastel-teal/20 rounded-xl text-center text-xs font-semibold text-pastel-teal">
           {status}
         </div>
       )}

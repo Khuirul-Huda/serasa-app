@@ -173,7 +173,7 @@ export default function CatalogTab({
                       </div>
                     </TableCell>
 
-                    <TableCell className="p-4 text-xs font-bold text-pastel-mint">
+                    <TableCell className="p-4 text-xs font-black text-navy-900">
                       {formatIDR(product.price)} <span className="text-[9px] text-navy-400 font-normal">/ {product.unit}</span>
                     </TableCell>
 
@@ -186,7 +186,7 @@ export default function CatalogTab({
                         onClick={() => handleToggleProductAvailable(product.id)}
                         className={`inline-flex items-center gap-1 px-2.5 py-1 text-[9px] font-black uppercase rounded-lg border transition-all cursor-pointer ${
                           product.isAvailable
-                            ? "bg-pastel-mint-light text-pastel-mint border-pastel-mint/20 hover:bg-pastel-mint/20"
+                            ? "bg-pastel-teal-light text-pastel-teal border-pastel-teal/20 hover:bg-pastel-teal/20"
                             : "bg-pastel-coral-light text-pastel-coral border-pastel-coral/20 hover:bg-pastel-coral/20"
                         }`}
                       >

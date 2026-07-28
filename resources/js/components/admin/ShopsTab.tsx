@@ -169,7 +169,7 @@ export default function ShopsTab({
                           <span>{shop.dusun}</span>
                         </span>
                         <span className="flex items-center gap-1 font-mono text-[10px] text-navy-400">
-                          <PhoneCall className="w-3 h-3 text-pastel-mint shrink-0" />
+                          <PhoneCall className="w-3 h-3 text-pastel-teal shrink-0" />
                           <span>{shop.phone}</span>
                         </span>
                       </div>
@@ -184,7 +184,7 @@ export default function ShopsTab({
                           </span>
                         ) : null}
                         {shop.halal ? (
-                          <span className="px-1.5 py-0.5 bg-pastel-mint-light text-pastel-mint text-[8px] font-black uppercase rounded">
+                          <span className="px-1.5 py-0.5 bg-pastel-teal-light text-pastel-teal text-[8px] font-black uppercase rounded">
                             HALAL
                           </span>
                         ) : null}
@@ -204,7 +204,7 @@ export default function ShopsTab({
                     {/* Verification Status */}
                     <TableCell className="p-4">
                       {shop.isVerified ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-pastel-mint-light text-pastel-mint text-[9px] font-black uppercase rounded-lg border border-pastel-mint/20">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-pastel-teal-light text-pastel-teal text-[9px] font-black uppercase rounded-lg border border-pastel-teal/20">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           Terverifikasi
                         </span>

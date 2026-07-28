@@ -51,8 +51,8 @@ export default function ShopCard({
         {/* Verification & Dusun Pills */}
         <div className="absolute top-3 right-3 flex items-center gap-1.5">
           {shop.isVerified && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-white/95 text-pastel-mint text-[8.5px] font-black tracking-wider uppercase border border-pastel-mint/20 rounded-md shadow-2xs backdrop-blur-xs">
-              <CheckCircle2 className="w-3 h-3 text-pastel-mint fill-pastel-mint-light shrink-0" aria-hidden="true" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-white/95 text-pastel-teal text-[8.5px] font-black tracking-wider uppercase border border-pastel-teal/20 rounded-md shadow-2xs backdrop-blur-xs">
+              <CheckCircle2 className="w-3 h-3 text-pastel-teal fill-pastel-teal-light shrink-0" aria-hidden="true" />
               <span>Terverifikasi</span>
             </span>
           )}
@@ -60,7 +60,7 @@ export default function ShopCard({
         
         <div className="absolute bottom-2.5 right-3">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-navy-900/80 text-navy-100 text-[8.5px] font-bold uppercase tracking-wider rounded-md backdrop-blur-xs">
-            <MapPin className="w-2.5 h-2.5 text-pastel-mint" />
+            <MapPin className="w-2.5 h-2.5 text-pastel-peach" />
             <span>{shop.dusun}</span>
           </span>
         </div>
@@ -94,7 +94,7 @@ export default function ShopCard({
                 </span>
               )}
               {shop.halal && (
-                <span className="px-2 py-0.5 bg-pastel-mint-light text-pastel-mint text-[8px] font-black uppercase rounded-md border border-pastel-mint/20">
+                <span className="px-2 py-0.5 bg-pastel-teal-light text-pastel-teal text-[8px] font-black uppercase rounded-md border border-pastel-teal/20">
                   HALAL
                 </span>
               )}
@@ -144,10 +144,10 @@ export default function ShopCard({
           <div className="grid grid-cols-2 gap-2 pt-1">
             <button
               onClick={handleContactWhatsApp}
-              className="py-2 px-3 border border-navy-200 text-navy-700 font-extrabold uppercase tracking-wider text-[9.5px] rounded-xl hover:bg-pastel-mint-light hover:text-pastel-mint hover:border-pastel-mint/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+              className="py-2 px-3 border border-navy-200 text-navy-700 font-extrabold uppercase tracking-wider text-[9.5px] rounded-xl hover:bg-pastel-teal-light hover:text-pastel-teal hover:border-pastel-teal/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
               aria-label={`Hubungi ${shop.name} via WhatsApp`}
             >
-              <Phone className="w-3.5 h-3.5 text-pastel-mint" aria-hidden="true" />
+              <Phone className="w-3.5 h-3.5 text-pastel-teal" aria-hidden="true" />
               <span>Kontak WA</span>
             </button>
             <Link

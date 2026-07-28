@@ -47,7 +47,7 @@ export default function ProductCard({
           />
           {shop && (
             <figcaption className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-navy-900/80 to-transparent px-3 py-1.5 text-white flex items-center gap-1">
-              <MapPin className="w-3 h-3 text-pastel-mint shrink-0" />
+              <MapPin className="w-3 h-3 text-pastel-peach shrink-0" />
               <span className="text-[9px] font-bold uppercase tracking-wide truncate">{shop.dusun}</span>
             </figcaption>
           )}
@@ -95,7 +95,7 @@ export default function ProductCard({
               >
                 <span>{shop.name}</span>
                 {shop.isVerified && (
-                  <CheckCircle2 className="w-3 h-3 text-pastel-mint fill-pastel-mint-light shrink-0" aria-label="Terverifikasi" />
+                  <CheckCircle2 className="w-3 h-3 text-pastel-teal fill-pastel-teal-light shrink-0" aria-label="Terverifikasi" />
                 )}
               </Link>
             </div>
@@ -107,7 +107,7 @@ export default function ProductCard({
 
           <div className="pt-0.5">
             <div className="flex items-baseline gap-1.5 flex-wrap">
-              <data value={product.price} className="text-sm md:text-base font-extrabold text-pastel-mint">
+              <data value={product.price} className="text-sm md:text-base font-black text-navy-900">
                 {formatIDR(product.price)}
               </data>
               <span className="text-[9px] text-navy-400 font-normal">/ {product.unit}</span>
@@ -133,7 +133,7 @@ export default function ProductCard({
 
           <Link
             href={`/products/${product.id}`}
-            className="px-3 py-1 bg-pastel-teal-light hover:bg-pastel-teal text-pastel-teal hover:text-white text-[9.5px] font-bold uppercase tracking-wider rounded-lg transition-all border border-pastel-teal/20"
+            className="px-3 py-1 bg-pastel-coral hover:bg-pastel-coral/90 text-white text-[9.5px] font-bold uppercase tracking-wider rounded-lg transition-all shadow-3xs"
           >
             Beli
           </Link>

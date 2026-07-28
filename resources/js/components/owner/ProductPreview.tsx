@@ -54,7 +54,7 @@ export default function ProductPreview({ form, categories }: ProductPreviewProps
 
           <div className="flex items-center justify-between border-t border-navy-100 pt-2 shrink-0">
             <div className="flex flex-col">
-              <span className="text-[11px] font-black text-pastel-mint leading-none">
+              <span className="text-[11px] font-black text-navy-900 leading-none">
                 {formatIDR(Number(form.data.price) || 0)}
               </span>
               <span className="text-[8px] text-navy-400 font-medium">
@@ -62,7 +62,7 @@ export default function ProductPreview({ form, categories }: ProductPreviewProps
               </span>
             </div>
 
-            <div className="px-2.5 py-1 bg-pastel-teal text-white font-extrabold text-[8px] uppercase tracking-wider rounded-lg">
+            <div className="px-2.5 py-1 bg-pastel-coral text-white font-extrabold text-[8px] uppercase tracking-wider rounded-lg">
               Beli
             </div>
           </div>

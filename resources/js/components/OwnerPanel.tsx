@@ -145,8 +145,8 @@ export default function OwnerPanel({
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-xl font-black uppercase tracking-tight text-navy-900 leading-none">{myShop.name}</h2>
                 {myShop.isVerified ? (
-                  <Badge variant="outline" className="bg-pastel-mint-light border-pastel-mint/20 text-pastel-mint font-black uppercase text-[8px] tracking-wider py-0.5 px-2 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-pastel-mint fill-pastel-mint-light animate-pulse" />
+                  <Badge variant="outline" className="bg-pastel-teal-light border-pastel-teal/20 text-pastel-teal font-black uppercase text-[8px] tracking-wider py-0.5 px-2 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-pastel-teal fill-pastel-teal-light animate-pulse" />
                     <span>Terverifikasi</span>
                   </Badge>
                 ) : (

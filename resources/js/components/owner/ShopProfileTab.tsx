@@ -33,8 +33,8 @@ export default function ShopProfileTab({
 
       <form onSubmit={onSubmit} className="space-y-5 text-xs">
         {editSuccess && (
-          <div className="p-4 bg-pastel-mint-light border border-pastel-mint/20 text-pastel-mint font-bold rounded-xl flex items-center gap-2 animate-fade-in uppercase tracking-wider text-[10px] shadow-3xs">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-pastel-mint" />
+          <div className="p-4 bg-pastel-teal-light border border-pastel-teal/20 text-pastel-teal font-bold rounded-xl flex items-center gap-2 animate-fade-in uppercase tracking-wider text-[10px] shadow-3xs">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-pastel-teal" />
             Data Profil Toko Anda Berhasil Diperbarui!
           </div>
         )}

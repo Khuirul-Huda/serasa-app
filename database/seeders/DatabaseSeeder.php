@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Pertanian & Susu',
                 'icon_name' => 'Sprout',
                 'description' => 'Susu sapi segar, keju artisan lokal, dan hasil bumi organik segar.',
-                'color' => 'emerald',
+                'color' => 'teal',
             ],
             [
                 'id' => 'cat-kerajinan',

@@ -19,7 +19,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
       <Head title="Lupa Sandi - SAMIRONO ETALASE" />
 
       {status && (
-        <div className="mb-4 p-3 bg-pastel-mint-light border border-pastel-mint/20 rounded-xl text-center text-xs font-semibold text-pastel-mint">
+        <div className="mb-4 p-3 bg-pastel-teal-light border border-pastel-teal/20 rounded-xl text-center text-xs font-semibold text-pastel-teal">
           {status}
         </div>
       )}

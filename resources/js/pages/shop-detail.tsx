@@ -110,8 +110,8 @@ export default function ShopDetail({
                     {shop.name}
                   </h1>
                   {shop.isVerified && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-pastel-mint-light border border-pastel-mint/20 text-pastel-mint text-[8px] font-extrabold tracking-wider uppercase">
-                      <CheckCircle2 className="w-3 h-3 text-pastel-mint fill-pastel-mint-light" />
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-pastel-teal-light border border-pastel-teal/20 text-pastel-teal text-[8px] font-extrabold tracking-wider uppercase">
+                      <CheckCircle2 className="w-3 h-3 text-pastel-teal fill-pastel-teal-light" />
                       <span>Terverifikasi</span>
                     </span>
                   )}
@@ -122,8 +122,8 @@ export default function ShopDetail({
                     </span>
                   )}
                   {shop.halal && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-pastel-mint-light border border-pastel-mint/20 text-pastel-mint text-[8px] font-black tracking-wider uppercase">
-                      <Award className="w-3 h-3 text-pastel-mint" />
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-pastel-teal-light border border-pastel-teal/20 text-pastel-teal text-[8px] font-black tracking-wider uppercase">
+                      <Award className="w-3 h-3 text-pastel-teal" />
                       <span>Sertifikat Halal</span>
                     </span>
                   )}
@@ -181,7 +181,7 @@ export default function ShopDetail({
                 <div className="space-y-2">
                   <button
                     onClick={handleContactWhatsApp}
-                    className="w-full py-3 bg-pastel-mint hover:bg-pastel-mint/90 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                    className="w-full py-3 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-all"
                   >
                     <Phone className="w-4 h-4" />
                     <span>Hubungi Toko (WhatsApp)</span>
@@ -189,7 +189,7 @@ export default function ShopDetail({
 
                   <Link
                     href="/map"
-                    className="w-full py-3 bg-white hover:bg-navy-50 border border-pastel-teal/20 text-pastel-teal font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-3xs"
+                    className="w-full py-3 bg-navy-900 hover:bg-navy-800 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-3xs"
                   >
                     <MapPin className="w-4 h-4 text-pastel-teal" />
                     <span>Lihat di Peta Desa</span>

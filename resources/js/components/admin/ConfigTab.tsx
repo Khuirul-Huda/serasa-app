@@ -53,8 +53,8 @@ export default function ConfigTab({
 
         <form onSubmit={onSubmit} className="space-y-5 text-xs">
           {saveSuccess && (
-            <div className="p-4 bg-pastel-mint-light border border-pastel-mint/20 text-pastel-mint font-bold rounded-xl flex items-center gap-2 animate-fade-in uppercase tracking-wider text-[10px] shadow-3xs">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-pastel-mint" />
+            <div className="p-4 bg-pastel-teal-light border border-pastel-teal/20 text-pastel-teal font-bold rounded-xl flex items-center gap-2 animate-fade-in uppercase tracking-wider text-[10px] shadow-3xs">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-pastel-teal" />
               Konfigurasi Platform Berhasil Diperbarui!
             </div>
           )}
@@ -166,7 +166,7 @@ export default function ConfigTab({
 
         <div className="bg-navy-900 rounded-2xl p-6 text-white space-y-3 relative overflow-hidden">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-pastel-mint animate-pulse" />
+            <div className="w-3 h-3 rounded-full bg-pastel-teal animate-pulse" />
             <span className="text-[10px] font-mono uppercase tracking-widest text-navy-300">
               {data.villageName || "Desa Samirono"}
             </span>

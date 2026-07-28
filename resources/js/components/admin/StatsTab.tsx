@@ -39,7 +39,7 @@ export default function StatsTab({ shops, products, categories }: StatsTabProps)
           label="Toko Terverifikasi"
           value={verifiedShops}
           subtitle="Status Aktif & Valid"
-          icon={<UserCheck className="w-5 h-5 text-pastel-mint" />}
+          icon={<UserCheck className="w-5 h-5 text-pastel-teal" />}
         />
         <MetricCard
           label="Menunggu Review"
@@ -71,7 +71,7 @@ export default function StatsTab({ shops, products, categories }: StatsTabProps)
             const percentage = totalProducts > 0 ? Math.round((cat.count / totalProducts) * 100) : 0;
             const barColors = [
               "bg-pastel-teal",
-              "bg-pastel-mint",
+              "bg-navy-700",
               "bg-pastel-coral",
               "bg-pastel-peach",
               "bg-pastel-lavender",

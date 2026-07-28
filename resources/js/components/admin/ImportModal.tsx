@@ -53,7 +53,7 @@ export default function ImportModal({
   const conflictCount = importRows.filter((r) => r.isConflict).length;
 
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans">
       <div className="bg-white rounded-3xl border border-navy-200 shadow-2xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden">
         {/* Modal Header */}
         <div className="p-6 border-b border-navy-100 flex justify-between items-center bg-navy-50/50">
@@ -115,7 +115,7 @@ export default function ImportModal({
                   Hasil Preview Data ({importRows.length} Baris)
                 </span>
                 <div className="flex gap-3 text-[11px]">
-                  <span className="text-pastel-mint font-bold flex items-center gap-1">
+                  <span className="text-pastel-teal font-bold flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     {validCount} Didaftarkan
                   </span>
