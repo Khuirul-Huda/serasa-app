@@ -3,14 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Bell, MapPin, ThumbsUp } from "lucide-react";
+import { Bell, Store, CheckCircle2 } from "lucide-react";
+import { Link } from "@inertiajs/react";
 import React, { useState, useRef, useEffect } from "react";
+import type { Shop } from "@/types";
 
 interface NotificationDropdownProps {
+  shops?: Shop[];
   onOpen?: () => void;
 }
 
 export default function NotificationDropdown({
+  shops = [],
   onOpen,
 }: NotificationDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,15 +38,19 @@ export default function NotificationDropdown({
     onOpen?.();
   };
 
+  const verifiedShops = shops.filter((s) => s.isVerified).slice(0, 3);
+
   return (
     <div className="relative" ref={notifRef}>
       <button
         onClick={handleToggle}
         className="p-2 text-navy-600 hover:text-pastel-teal hover:bg-navy-100 rounded-xl transition-all relative cursor-pointer"
-        title="Notifikasi"
+        title="Notifikasi Portal"
       >
         <Bell className="w-5 h-5" />
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-pastel-coral rounded-full border border-white" />
+        {verifiedShops.length > 0 && (
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-pastel-coral rounded-full border border-white" />
+        )}
       </button>
 
       {isOpen && (
@@ -53,29 +61,40 @@ export default function NotificationDropdown({
               Terbaru
             </span>
           </div>
+
           <div className="divide-y divide-navy-100 max-h-64 overflow-y-auto">
-            <div className="py-2.5 space-y-0.5 bg-pastel-teal-light/20 px-1 rounded-lg">
-              <span className="font-bold text-navy-800 text-[11px]">
-                Toko Baru Terdaftar!
-              </span>
-              <p className="text-[10px] text-navy-500 font-normal leading-relaxed">
-                Gethuk Manis Bu Marni baru saja bergabung ke etalase.
-              </p>
-              <span className="block text-[9px] text-navy-400 font-medium">
-                10 menit yang lalu
-              </span>
-            </div>
-            <div className="py-2.5 space-y-0.5">
-              <span className="font-bold text-navy-800 text-[11px]">
-                Verifikasi Berhasil
-              </span>
-              <p className="text-[10px] text-navy-500 font-normal leading-relaxed">
-                Toko Kerajinan Bambu Lestari telah diverifikasi oleh Admin Desa.
-              </p>
-              <span className="block text-[9px] text-navy-400 font-medium">
-                2 jam yang lalu
-              </span>
-            </div>
+            {verifiedShops.length === 0 ? (
+              <div className="py-6 text-center text-navy-400 italic text-xs">
+                Belum ada pembaruan notifikasi
+              </div>
+            ) : (
+              verifiedShops.map((shop) => (
+                <Link
+                  key={shop.id}
+                  href={`/shops/${shop.id}`}
+                  onClick={() => setIsOpen(false)}
+                  className="py-2.5 flex items-start gap-2.5 hover:bg-navy-50/50 p-1.5 rounded-xl transition-colors block"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-pastel-teal-light text-pastel-teal flex items-center justify-center shrink-0 border border-pastel-teal/20 mt-0.5">
+                    <Store className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="space-y-0.5 min-w-0">
+                    <div className="flex items-center gap-1">
+                      <span className="font-bold text-navy-800 text-[11px] truncate">
+                        {shop.name}
+                      </span>
+                      <CheckCircle2 className="w-3 h-3 text-pastel-teal shrink-0" />
+                    </div>
+                    <p className="text-[10px] text-navy-500 font-normal leading-relaxed line-clamp-1">
+                      Toko UMKM sektor {shop.category} aktif di {shop.dusun}.
+                    </p>
+                    <span className="block text-[9px] text-navy-400 font-medium">
+                      Status Terverifikasi
+                    </span>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
         </div>
       )}

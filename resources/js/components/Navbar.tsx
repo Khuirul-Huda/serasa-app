@@ -144,7 +144,7 @@ export default function Navbar({
         {/* Right side interactions */}
         <div className="flex items-center gap-3 md:gap-4 shrink-0">
           <CartDropdown />
-          <NotificationDropdown />
+          <NotificationDropdown shops={shops} />
 
           {/* Quick Dashboard link for authenticated owners/admins */}
           {user && (

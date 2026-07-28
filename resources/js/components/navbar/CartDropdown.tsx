@@ -24,24 +24,7 @@ export default function CartDropdown({ onOpen }: CartDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "c1",
-      name: "Keju Mozzarella Lokal Samirono",
-      price: 38000,
-      qty: 1,
-      image:
-        "https://images.unsplash.com/photo-1552763484-5d60bed6f2d8?auto=format&fit=crop&q=80&w=150",
-    },
-    {
-      id: "c2",
-      name: "Susu Sapi Segar Pasteurisasi (1L)",
-      price: 15000,
-      qty: 2,
-      image:
-        "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&q=80&w=150",
-    },
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const cartTotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.qty,
