@@ -14,11 +14,13 @@ import {
   Tag
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import type { AppSettings, Category } from "@/types";
+import type { AppSettings, Category, Product } from "@/types";
+import { formatIDR } from "@/utils";
 
 interface HeroProps {
   settings: AppSettings;
   categories: Category[];
+  products?: Product[];
   selectedCategory: string;
   setSelectedCategory: (catId: string) => void;
   searchQuery: string;
@@ -58,19 +60,22 @@ const promoSlides = [
 ];
 
 export default function Hero({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  settings: _settings,
+  settings,
   categories,
+  products = [],
   selectedCategory,
   setSelectedCategory,
   searchQuery,
   setSearchQuery,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  totalShops: _totalShops,
+  totalShops,
   totalProducts,
 }: HeroProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [timeLeft, setTimeLeft] = useState({ hours: 3, minutes: 44, seconds: 12 });
+
+  const featuredProduct = products.length > 0 
+    ? (products.find((p) => p.isAvailable) || products[0])
+    : null;
 
   // Carousel Auto-advance
   useEffect(() => {
@@ -92,7 +97,7 @@ export default function Hero({
         } else if (prev.hours > 0) {
           return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
         } else {
-          return { hours: 3, minutes: 44, seconds: 12 }; // reset loop to stay active
+          return { hours: 3, minutes: 44, seconds: 12 };
         }
       });
     }, 1000);
@@ -100,12 +105,12 @@ export default function Hero({
     return () => clearInterval(timer);
   }, []);
 
-  const handleNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % promoSlides.length);
-  };
-
   const handlePrevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + promoSlides.length) % promoSlides.length);
+  };
+
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % promoSlides.length);
   };
 
   const hotSearches = [
@@ -147,7 +152,7 @@ export default function Hero({
                   referrerPolicy="no-referrer"
                 />
                 
-                {/* Single-color gradient overlay: navy-900 → transparent ✅ */}
+                {/* Single-color gradient overlay */}
                 <div className="absolute inset-0 bg-linear-to-tr from-navy-900 via-navy-900/75 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
                   <div className="space-y-2 sm:space-y-3 max-w-lg">
                     <span className="inline-block px-3 py-1 bg-pastel-peach text-navy-900 text-[9px] font-black uppercase tracking-wider rounded-md">
@@ -224,41 +229,47 @@ export default function Hero({
                 </div>
               </div>
 
-              <div 
-                onClick={() => router.visit("/products/prod-keju-artisan")}
-                className="flex gap-3.5 p-3 rounded-2xl bg-pastel-coral-light/40 hover:bg-pastel-coral-light border border-pastel-coral/20 hover:border-pastel-coral/40 transition-all cursor-pointer group/promo"
-              >
-                <div className="w-20 h-20 rounded-xl overflow-hidden bg-navy-100 shrink-0 border border-pastel-coral/20 group-hover/promo:scale-105 transition-transform duration-300">
-                  <img
-                    src="https://images.unsplash.com/photo-1559561853-080268185995?auto=format&fit=crop&w=150&q=80"
-                    alt="Promo Keju Samirono"
-                    width={80}
-                    height={80}
-                    loading="lazy"
-                    sizes="80px"
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <span className="inline-block px-1.5 py-0.5 bg-pastel-coral-light text-pastel-coral text-[8px] font-black uppercase rounded-md">
-                    Stok Terbatas
-                  </span>
-                  <h4 className="text-[12px] font-bold text-navy-800 line-clamp-1 leading-snug group-hover/promo:text-pastel-coral transition-colors">
-                    Keju Samirono Mozzarella
-                  </h4>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-xs font-black text-navy-900">Rp 30.000</span>
-                    <span className="text-[9px] text-navy-400 line-through">Rp 35.000</span>
+              {featuredProduct ? (
+                <div 
+                  onClick={() => router.visit(`/products/${featuredProduct.id}`)}
+                  className="flex gap-3.5 p-3 rounded-2xl bg-pastel-coral-light/40 hover:bg-pastel-coral-light border border-pastel-coral/20 hover:border-pastel-coral/40 transition-all cursor-pointer group/promo"
+                >
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-navy-100 shrink-0 border border-pastel-coral/20 group-hover/promo:scale-105 transition-transform duration-300">
+                    <img
+                      src={featuredProduct.image}
+                      alt={featuredProduct.name}
+                      width={80}
+                      height={80}
+                      loading="lazy"
+                      sizes="80px"
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
                   </div>
-                  <span className="text-[10px] text-pastel-mint font-bold block">Hemat Rp 5.000!</span>
+                  <div className="space-y-1">
+                    <span className="inline-block px-1.5 py-0.5 bg-pastel-coral-light text-pastel-coral text-[8px] font-black uppercase rounded-md">
+                      Stok Terbatas
+                    </span>
+                    <h4 className="text-[12px] font-bold text-navy-800 line-clamp-1 leading-snug group-hover/promo:text-pastel-coral transition-colors">
+                      {featuredProduct.name}
+                    </h4>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-xs font-black text-navy-900">{formatIDR(featuredProduct.price)}</span>
+                      <span className="text-[9px] text-navy-400 font-medium">/ {featuredProduct.unit}</span>
+                    </div>
+                    <span className="text-[10px] text-pastel-teal font-bold block">Produk Unggulan Warga</span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-4 bg-navy-50 text-center rounded-2xl text-xs text-navy-400">
+                  Belum ada produk promo
+                </div>
+              )}
 
               <div className="space-y-1 pt-1">
                 <div className="flex justify-between text-[10px] text-navy-500 font-bold">
-                  <span>Tersisa 4 pcs</span>
-                  <span className="text-pastel-coral">Hampir Habis (87% Terjual)</span>
+                  <span>Tersisa Stok Terbatas</span>
+                  <span className="text-pastel-coral">Diskon Harian</span>
                 </div>
                 <div className="w-full h-2 bg-navy-100 rounded-full overflow-hidden">
                   <div className="h-full bg-pastel-coral rounded-full" style={{ width: "87%" }} />
@@ -268,49 +279,63 @@ export default function Hero({
 
             <div className="border-t border-navy-100 pt-3 flex justify-between items-center text-[11px] text-navy-500 font-medium">
               <div className="flex items-center gap-1">
-                <ThumbsUp className="w-3.5 h-3.5 text-pastel-mint" />
+                <ThumbsUp className="w-3.5 h-3.5 text-pastel-teal" />
                 <span>100% Produk Desa</span>
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5 text-pastel-peach" />
-                <span>Getasan, Semarang</span>
+                <span>{settings.villageName || "Desa Samirono"}</span>
               </div>
             </div>
           </div>
 
         </div>
 
-        {/* E-Commerce Search & Suggestion Bar */}
-        <div className="bg-white rounded-3xl border border-navy-200/60 p-5 shadow-2xs space-y-4" id="search-filter-panel">
-          
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-navy-400" />
-            <input
-              type="text"
-              placeholder="Cari produk kriya, susu murni, keju mozarella, keripik tempe, atau nama UMKM..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-20 py-3 rounded-2xl bg-navy-50 text-navy-800 placeholder-navy-400 focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal border border-navy-200/60 text-xs font-semibold transition-all"
-              id="search-input"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy-600 p-0.5 bg-navy-200/60 hover:bg-navy-200 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all"
-              >
-                Hapus
-              </button>
-            )}
+        {/* Global Search Bar */}
+        <div className="bg-white rounded-3xl border border-navy-200/60 p-4 sm:p-5 shadow-2xs space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-center">
+            <div className="relative flex-grow w-full">
+              <input
+                type="text"
+                placeholder="Cari produk UMKM Desa Samirono (misal: susu segar, keju, batik, gethuk...)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    router.get("/", { search: searchQuery, category: selectedCategory });
+                  }
+                }}
+                className="w-full pl-11 pr-4 py-3 bg-navy-50 border border-navy-200/60 rounded-2xl text-xs sm:text-sm font-medium text-navy-800 placeholder-navy-400 focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal transition-all"
+                id="hero-search-input"
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" />
+            </div>
+
+            <button
+              onClick={() => router.get("/", { search: searchQuery, category: selectedCategory })}
+              className="w-full sm:w-auto px-7 py-3 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-2xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 shrink-0"
+            >
+              <Search className="w-4 h-4" />
+              <span>Cari Katalog</span>
+            </button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-[10px] text-navy-500">
-            <span className="font-bold uppercase tracking-wider text-[9px] text-navy-400 shrink-0">Pencarian Populer:</span>
-            <div className="flex flex-wrap gap-1.5">
-              {hotSearches.map((item, idx) => (
+          {/* Quick Search Tag Chips */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+            <div className="flex items-center gap-1 text-navy-400 font-extrabold uppercase text-[9.5px] tracking-wider shrink-0">
+              <Tag className="w-3 h-3 text-pastel-coral" />
+              <span>Populer:</span>
+            </div>
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              {hotSearches.map((item) => (
                 <button
-                  key={idx}
+                  key={item.query}
                   onClick={() => setSearchQuery(item.query)}
-                  className="px-2.5 py-1 rounded-lg bg-navy-100/60 hover:bg-pastel-teal-light text-navy-700 hover:text-pastel-teal font-medium border border-navy-200/50 hover:border-pastel-teal/20 transition-all cursor-pointer"
+                  className={`px-3 py-1 rounded-xl text-[10.5px] font-bold transition-all shrink-0 cursor-pointer ${
+                    searchQuery === item.query
+                      ? "bg-pastel-teal text-white shadow-3xs"
+                      : "bg-navy-100/60 hover:bg-pastel-teal-light text-navy-700 hover:text-pastel-teal"
+                  }`}
                 >
                   {item.label}
                 </button>
@@ -318,36 +343,33 @@ export default function Hero({
             </div>
           </div>
 
-          <div className="border-t border-navy-100 pt-4 flex items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-1.5 w-full">
-              <button
-                onClick={() => setSelectedCategory("all")}
-                className={`px-4 py-2 rounded-xl text-[9.5px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
-                  selectedCategory === "all"
-                    ? "bg-pastel-teal text-white border-pastel-teal shadow-2xs"
-                    : "bg-white text-navy-600 hover:bg-navy-50 border-navy-200/60"
-                }`}
-                id="category-all"
-              >
-                Semua Produk ({totalProducts})
-              </button>
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-4 py-2 rounded-xl text-[9.5px] font-bold uppercase tracking-wider transition-all cursor-pointer border ${
-                    selectedCategory === cat.id
-                      ? "bg-pastel-teal text-white border-pastel-teal shadow-2xs"
-                      : "bg-white text-navy-600 hover:bg-navy-50 border-navy-200/60"
-                  }`}
-                  id={`category-${cat.id}`}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Category Filter Pills Bar */}
+          <div className="pt-2 border-t border-navy-100 flex items-center gap-2 overflow-x-auto no-scrollbar">
+            <button
+              onClick={() => setSelectedCategory("all")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
+                selectedCategory === "all"
+                  ? "bg-pastel-teal text-white shadow-xs"
+                  : "bg-navy-50 hover:bg-navy-100 text-navy-600 border border-navy-200/50"
+              }`}
+            >
+              Semua Komoditas ({totalProducts})
+            </button>
 
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
+                  selectedCategory === cat.id
+                    ? "bg-pastel-teal text-white shadow-xs"
+                    : "bg-navy-50 hover:bg-navy-100 text-navy-600 border border-navy-200/50"
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
 
       </div>

@@ -69,6 +69,7 @@ export default function Welcome({
       <Hero
         settings={settings}
         categories={categories}
+        products={products}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         searchQuery={searchQuery}
