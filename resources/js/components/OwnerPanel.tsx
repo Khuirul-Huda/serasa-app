@@ -248,6 +248,7 @@ export default function OwnerPanel({
       {/* Tab Panels */}
       {activeTab === "shop-profile" && (
         <ShopProfileTab
+          myShop={myShop}
           form={editShopForm}
           onSubmit={handleEditShopSubmit}
           editSuccess={editSuccess}
