@@ -11,6 +11,7 @@ import {
     ShoppingBag,
     ArrowRight,
     Clock,
+    Award,
 } from 'lucide-react';
 import React from 'react';
 import type { Shop } from '@/types';
@@ -32,20 +33,20 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
 
     return (
         <article
-            className="group flex h-full flex-col overflow-hidden rounded-3xl border border-navy-200/60 bg-white font-sans shadow-2xs transition-all duration-300 hover:border-pastel-teal hover:shadow-md"
+            className="group flex h-full flex-col overflow-hidden rounded-3xl border border-navy-200/60 bg-white font-sans shadow-2xs transition-all duration-300 hover:-translate-y-1 hover:border-pastel-teal hover:shadow-md"
             id={`shop-card-${shop.id}`}
         >
             {/* Background Image Banner */}
             <Link
                 href={`/shops/${shop.id}`}
-                className="relative block h-36 overflow-hidden bg-navy-50"
+                className="relative block h-44 overflow-hidden bg-navy-50"
             >
                 <figure className="h-full w-full">
                     <img
                         src={shop.image}
                         alt={`Banner ${shop.name}`}
                         width={400}
-                        height={144}
+                        height={176}
                         loading="lazy"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="h-full w-full object-cover opacity-95 transition-all duration-500 group-hover:scale-105"
@@ -56,25 +57,25 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                     </figcaption>
                 </figure>
                 <div
-                    className="absolute inset-0 bg-linear-to-t from-navy-900/70 via-navy-900/20 to-transparent"
+                    className="absolute inset-0 bg-linear-to-t from-navy-900/80 via-navy-900/20 to-transparent"
                     aria-hidden="true"
                 />
 
-                {/* Verification & Dusun Pills */}
-                <div className="absolute top-3 right-3 flex items-center gap-1.5">
-                    {shop.isVerified && (
-                        <span className="inline-flex items-center gap-1 rounded-lg border border-pastel-teal/20 bg-white/95 px-2.5 py-1 text-xs font-black tracking-wider text-pastel-teal uppercase shadow-2xs backdrop-blur-xs">
+                {/* Top Glassmorphism Floating Badges */}
+                <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                    {shop.isVerified ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-xl border border-pastel-teal/20 bg-white/95 px-2.5 py-1 text-xs font-black tracking-wider text-pastel-teal uppercase shadow-2xs backdrop-blur-md">
                             <CheckCircle2
-                                className="h-3.5 w-3.5 shrink-0 fill-pastel-teal-light text-pastel-teal"
+                                className="h-3.5 w-3.5 shrink-0 text-pastel-teal"
                                 aria-hidden="true"
                             />
                             <span>Terverifikasi</span>
                         </span>
+                    ) : (
+                        <span />
                     )}
-                </div>
 
-                <div className="absolute right-3 bottom-2.5">
-                    <span className="inline-flex items-center gap-1 rounded-lg bg-navy-900/85 px-2.5 py-1 text-xs font-bold tracking-wider text-navy-100 uppercase backdrop-blur-xs">
+                    <span className="inline-flex items-center gap-1 rounded-xl bg-navy-900/85 px-2.5 py-1 text-xs font-bold tracking-wider text-navy-100 uppercase backdrop-blur-md">
                         <MapPin className="h-3 w-3 text-pastel-peach" />
                         <span>{shop.dusun}</span>
                     </span>
@@ -85,7 +86,7 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
             <div className="relative flex flex-1 flex-col justify-between px-5 pt-0 pb-5">
                 <div className="relative">
                     {/* Logo overlapping the banner */}
-                    <div className="absolute -top-9 left-0 h-16 w-16 overflow-hidden rounded-2xl border-2 border-white bg-white shadow-xs">
+                    <div className="absolute -top-10 left-0 h-16 w-16 overflow-hidden rounded-2xl border-4 border-white bg-white shadow-md">
                         <img
                             src={shop.logo}
                             alt={`Logo ${shop.name}`}
@@ -99,29 +100,38 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                     </div>
 
                     <div className="space-y-2.5 pt-9">
+                        {/* Badges Row */}
                         <div className="flex flex-wrap items-center gap-1.5">
                             <span className="inline-block rounded-lg border border-pastel-teal/20 bg-pastel-teal-light px-2.5 py-0.5 text-xs font-extrabold tracking-wider text-pastel-teal uppercase">
                                 {shop.category}
                             </span>
                             {shop.nib && (
-                                <span className="rounded-lg border border-pastel-lavender/20 bg-pastel-lavender-light px-2 py-0.5 text-xs font-black text-pastel-lavender uppercase">
-                                    NIB
+                                <span className="inline-flex items-center gap-0.5 rounded-lg border border-pastel-lavender/20 bg-pastel-lavender-light px-2 py-0.5 text-xs font-black text-pastel-lavender uppercase">
+                                    <Award className="h-3 w-3" />
+                                    <span>NIB</span>
                                 </span>
                             )}
                             {shop.halal && (
-                                <span className="rounded-lg border border-pastel-teal/20 bg-pastel-teal-light px-2 py-0.5 text-xs font-black text-pastel-teal uppercase">
-                                    HALAL
+                                <span className="inline-flex items-center gap-0.5 rounded-lg border border-pastel-teal/20 bg-pastel-teal-light px-2 py-0.5 text-xs font-black text-pastel-teal uppercase">
+                                    <Award className="h-3 w-3" />
+                                    <span>HALAL</span>
                                 </span>
                             )}
                             {shop.pirt && (
-                                <span className="rounded-lg border border-pastel-peach/20 bg-pastel-peach-light px-2 py-0.5 text-xs font-black text-pastel-peach uppercase">
-                                    P-IRT
+                                <span className="inline-flex items-center gap-0.5 rounded-lg border border-pastel-peach/20 bg-pastel-peach-light px-2 py-0.5 text-xs font-black text-pastel-peach uppercase">
+                                    <Award className="h-3 w-3" />
+                                    <span>P-IRT</span>
                                 </span>
                             )}
                         </div>
 
-                        <h3 className="flex min-w-0 items-center gap-1 font-sans text-base leading-snug font-black text-navy-900 transition-colors group-hover:text-pastel-teal sm:text-lg" title={shop.name}>
-                            <Link href={`/shops/${shop.id}`} className="truncate">{shop.name}</Link>
+                        <h3
+                            className="flex min-w-0 items-center gap-1 font-sans text-base leading-snug font-black text-navy-900 transition-colors group-hover:text-pastel-teal sm:text-lg"
+                            title={shop.name}
+                        >
+                            <Link href={`/shops/${shop.id}`} className="truncate">
+                                {shop.name}
+                            </Link>
                         </h3>
 
                         <p className="-mt-0.5 text-xs font-bold tracking-wider text-navy-400 uppercase">
@@ -189,7 +199,7 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                         >
                             <span>Katalog</span>
                             <ArrowRight
-                                className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5"
+                                className="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
                                 aria-hidden="true"
                             />
                         </Link>
