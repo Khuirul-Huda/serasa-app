@@ -157,10 +157,7 @@ class MarketplaceController extends Controller
             'shop' => $mappedShop,
             'products' => $products,
             'allProducts' => $allProducts,
-        ])->toResponse($request)->withHeaders([
-            'Cache-Control' => 'public, max-age=30, stale-while-revalidate=120',
-            'Vary' => 'Accept',
-        ]);
+        ])->toResponse($request);
     }
 
     /**
@@ -203,10 +200,7 @@ class MarketplaceController extends Controller
             'shop' => $mappedShop,
             'reviews' => $reviews,
             'allProducts' => $allProducts,
-        ])->toResponse($request)->withHeaders([
-            'Cache-Control' => 'public, max-age=30, stale-while-revalidate=120',
-            'Vary' => 'Accept',
-        ]);
+        ])->toResponse($request);
     }
 
     /* MAPPING HELPERS */

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.5
  */
 
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import {
   ArrowLeft,
   Star,
@@ -40,11 +40,14 @@ export default function ProductDetail({
   reviews = [],
   allProducts = [],
 }: ProductDetailProps) {
+  const { auth } = usePage().props as any;
+  const user = auth?.user;
+
   const productReviews = reviews.length > 0 ? reviews : ((product as any).reviews || []);
 
   // Review form submission setup
   const { data, setData, post, processing, errors, reset } = useForm({
-    userName: "",
+    userName: user?.name || "",
     rating: 5,
     comment: "",
   });
@@ -59,8 +62,12 @@ export default function ProductDetail({
     e.preventDefault();
     post(`/products/${product.id}/reviews`, {
       onSuccess: () => {
+        toast.success("Ulasan Anda berhasil dikirim dan diterbitkan!");
         reset("comment");
-      }
+      },
+      onError: () => {
+        toast.error("Gagal mengirim ulasan. Periksa kembali isian formulir.");
+      },
     });
   };
 
