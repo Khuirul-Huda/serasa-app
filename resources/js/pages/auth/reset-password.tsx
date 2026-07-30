@@ -29,9 +29,14 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                 resetOnSuccess={['password', 'password_confirmation']}
             >
                 {({ processing, errors }) => (
-                    <div className="grid gap-4.5 text-xs font-sans text-navy-900">
+                    <div className="grid gap-4.5 font-sans text-xs text-navy-900">
                         <div className="grid gap-1.5">
-                            <Label htmlFor="email" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Email Terdaftar</Label>
+                            <Label
+                                htmlFor="email"
+                                className="text-xs font-bold tracking-wider text-navy-600 uppercase"
+                            >
+                                Email Terdaftar
+                            </Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -48,12 +53,17 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                         </div>
 
                         <div className="grid gap-1.5">
-                            <Label htmlFor="password" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Kata Sandi Baru</Label>
+                            <Label
+                                htmlFor="password"
+                                className="text-xs font-bold tracking-wider text-navy-600 uppercase"
+                            >
+                                Kata Sandi Baru
+                            </Label>
                             <PasswordInput
                                 id="password"
                                 name="password"
                                 autoComplete="new-password"
-                                className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
+                                className="rounded-xl border-navy-200/60 focus-visible:border-pastel-teal focus-visible:ring-pastel-teal/20"
                                 autoFocus
                                 placeholder="Kata sandi baru Anda"
                                 passwordrules={passwordRules}
@@ -62,14 +72,17 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                         </div>
 
                         <div className="grid gap-1.5">
-                            <Label htmlFor="password_confirmation" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">
+                            <Label
+                                htmlFor="password_confirmation"
+                                className="text-xs font-bold tracking-wider text-navy-600 uppercase"
+                            >
                                 Ulangi Kata Sandi Baru
                             </Label>
                             <PasswordInput
                                 id="password_confirmation"
                                 name="password_confirmation"
                                 autoComplete="new-password"
-                                className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
+                                className="rounded-xl border-navy-200/60 focus-visible:border-pastel-teal focus-visible:ring-pastel-teal/20"
                                 placeholder="Konfirmasi kata sandi baru"
                                 passwordrules={passwordRules}
                             />
@@ -81,7 +94,7 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
 
                         <Button
                             type="submit"
-                            className="mt-2 w-full h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs cursor-pointer"
+                            className="shadow-3xs mt-2 h-10 w-full cursor-pointer rounded-xl bg-pastel-teal text-xs font-extrabold tracking-wider text-white uppercase hover:bg-pastel-teal/90"
                             disabled={processing}
                             data-test="reset-password-button"
                         >
@@ -97,5 +110,6 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
 
 ResetPassword.layout = {
     title: 'Atur Ulang Kata Sandi',
-    description: 'Masukkan kata sandi baru Anda di bawah ini untuk mengakses kembali portal.',
+    description:
+        'Masukkan kata sandi baru Anda di bawah ini untuk mengakses kembali portal.',
 };

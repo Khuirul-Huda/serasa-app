@@ -3,239 +3,298 @@
  * SPDX-License-Identifier: Apache-2.5
  */
 
-import { Link } from "@inertiajs/react";
-import { 
-  MapPin, 
-  Phone, 
-  CheckCircle2, 
-  Clock, 
-  ArrowLeft,
-  ShoppingBag,
-  Award
-} from "lucide-react";
-import React from "react";
-import ProductCard from "@/components/ProductCard";
-import SEOHead from "@/components/SEOHead";
-import MarketplaceLayout from "@/layouts/marketplace-layout";
-import type { AppSettings, Category, Product, Shop } from "@/types";
-import { getWhatsAppLink } from "@/utils";
+import { Link } from '@inertiajs/react';
+import {
+    MapPin,
+    Phone,
+    CheckCircle2,
+    Clock,
+    ShoppingBag,
+    Award,
+    ChevronRight,
+} from 'lucide-react';
+import React from 'react';
+import ProductCard from '@/components/ProductCard';
+import SEOHead from '@/components/SEOHead';
+import MarketplaceLayout from '@/layouts/marketplace-layout';
+import type { AppSettings, Category, Product, Shop } from '@/types';
+import { getWhatsAppLink } from '@/utils';
 
 interface ShopDetailProps {
-  settings: AppSettings;
-  categories: Category[];
-  shop: Shop;
-  products?: Product[];
-  allProducts?: Product[];
+    settings: AppSettings;
+    categories: Category[];
+    shop: Shop;
+    products?: Product[];
+    allProducts?: Product[];
 }
 
 export default function ShopDetail({
-  settings,
-  categories,
-  shop,
-  products = [],
-  allProducts = [],
+    settings,
+    categories,
+    shop,
+    products = [],
+    allProducts = [],
 }: ShopDetailProps) {
-  const shopProducts = products.length > 0 ? products : ((shop as any).products || []);
+    const shopProducts =
+        products.length > 0 ? products : (shop as any).products || [];
 
-  const handleContactWhatsApp = () => {
-    const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
-    const url = getWhatsAppLink(shop.phone, message);
-    window.open(url, "_blank");
-  };
+    const handleContactWhatsApp = () => {
+        const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
+        const url = getWhatsAppLink(shop.phone, message);
+        window.open(url, '_blank');
+    };
 
-  return (
-    <MarketplaceLayout
-      settings={settings}
-      categories={categories}
-      products={allProducts}
-      activeTab="shops"
-    >
-      <SEOHead
-        title={`${shop.name} - Katalog UMKM Samirono`}
-        description={`Kunjungi toko ${shop.name} di Desa Samirono. Menyediakan ${shop.category}. Hubungi ${shop.ownerName} di dusun ${shop.dusun}.`}
-        keywords={`${shop.name}, UMKM ${shop.name}, Toko ${shop.dusun}, Produk ${shop.category}, Ekonomi Kreatif Samirono`}
-        image={shop.image}
-        siteName={settings.appName}
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in font-sans text-navy-900">
-        
-        {/* Breadcrumb Nav */}
-        <nav aria-label="Breadcrumb">
-          <Link
-            href="/shops"
-            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-pastel-teal hover:text-pastel-teal/90 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-            <span>Kembali ke Daftar UMKM</span>
-          </Link>
-        </nav>
-
-        {/* Master Profile Header Block */}
-        <article className="bg-white rounded-3xl border border-navy-200/60 shadow-3xs overflow-hidden">
-          {/* Banner */}
-          <figure className="relative h-44 sm:h-56 bg-navy-50">
-            <img 
-              src={shop.image} 
-              alt={shop.name} 
-              width={1200}
-              height={224}
-              loading="eager"
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
+    return (
+        <MarketplaceLayout
+            settings={settings}
+            categories={categories}
+            products={allProducts}
+            activeTab="shops"
+        >
+            <SEOHead
+                title={`${shop.name} - Katalog UMKM Samirono`}
+                description={`Kunjungi toko ${shop.name} di Desa Samirono. Menyediakan ${shop.category}. Hubungi ${shop.ownerName} di dusun ${shop.dusun}.`}
+                keywords={`${shop.name}, UMKM ${shop.name}, Toko ${shop.dusun}, Produk ${shop.category}, Ekonomi Kreatif Samirono`}
+                image={shop.image}
+                siteName={settings.appName}
             />
-            {/* Single color gradient: navy-900 → transparent */}
-            <div className="absolute inset-0 bg-linear-to-t from-navy-900/70 to-transparent" aria-hidden="true" />
-          </figure>
 
-          {/* Profile details wrapper */}
-          <div className="px-6 pb-6 pt-0 relative">
-            <div className="flex flex-col sm:flex-row gap-5 sm:items-end -mt-10 sm:-mt-12 mb-4">
-              {/* Logo */}
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border-4 border-white bg-white overflow-hidden shadow-md shrink-0">
-                <img 
-                  src={shop.logo} 
-                  alt={shop.name} 
-                  width={96}
-                  height={96}
-                  loading="eager"
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-
-              <div className="space-y-1 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-xl sm:text-2xl font-black text-navy-900 tracking-tight leading-tight">
-                    {shop.name}
-                  </h1>
-                  {shop.isVerified && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-pastel-teal-light border border-pastel-teal/20 text-pastel-teal text-[8px] font-extrabold tracking-wider uppercase">
-                      <CheckCircle2 className="w-3 h-3 text-pastel-teal fill-pastel-teal-light" />
-                      <span>Terverifikasi</span>
-                    </span>
-                  )}
-                  {shop.nib && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-pastel-lavender-light border border-pastel-lavender/20 text-pastel-lavender text-[8px] font-black tracking-wider uppercase">
-                      <Award className="w-3 h-3 text-pastel-lavender" />
-                      <span>Izin NIB</span>
-                    </span>
-                  )}
-                  {shop.halal && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-pastel-teal-light border border-pastel-teal/20 text-pastel-teal text-[8px] font-black tracking-wider uppercase">
-                      <Award className="w-3 h-3 text-pastel-teal" />
-                      <span>Sertifikat Halal</span>
-                    </span>
-                  )}
-                  {shop.pirt && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-pastel-peach-light border border-pastel-peach/20 text-pastel-peach text-[8px] font-black tracking-wider uppercase">
-                      <Award className="w-3 h-3 text-pastel-peach" />
-                      <span>Izin P-IRT</span>
-                    </span>
-                  )}
-                </div>
-                
-                <p className="text-[10.5px] uppercase tracking-wider text-navy-400 font-bold">
-                  Kategori Utama: <span className="text-pastel-teal font-extrabold">{shop.category}</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4 border-t border-navy-100">
-              {/* Left Column: Description & Metadata */}
-              <div className="lg:col-span-8 space-y-4 text-xs">
-                <section className="space-y-1.5 text-navy-600 font-light leading-relaxed">
-                  <h2 className="text-navy-900 font-bold uppercase tracking-wider text-[9.5px]">Tentang UMKM Kami</h2>
-                  <p className="text-sm font-normal text-navy-600 leading-relaxed">
-                    {shop.description}
-                  </p>
-                </section>
-
-                <address className="not-italic grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-[11px] text-navy-500">
-                  <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-pastel-teal shrink-0 mt-0.5" aria-hidden="true" />
-                    <div>
-                      <span className="font-bold text-navy-800 block">Alamat Rumah Produksi:</span>
-                      <span>{shop.address} ({shop.dusun})</span>
-                    </div>
-                  </div>
-                  {shop.jamKerja && (
-                    <div className="flex items-start gap-2">
-                      <Clock className="w-4 h-4 text-pastel-teal shrink-0 mt-0.5" aria-hidden="true" />
-                      <div>
-                        <span className="font-bold text-navy-800 block">Jam Operasional Pelayanan:</span>
-                        <time>{shop.jamKerja}</time>
-                      </div>
-                    </div>
-                  )}
-                </address>
-              </div>
-
-              {/* Right Column: Interaction Hub */}
-              <aside className="lg:col-span-4 bg-pastel-teal-light/30 rounded-2xl border border-pastel-teal/15 p-4 space-y-4 self-start text-xs">
-                <div className="space-y-1">
-                  <span className="text-[9px] font-extrabold uppercase tracking-wider text-navy-400 block">Kontak Hubungan Pelaku Usaha</span>
-                  <div className="font-bold text-navy-800 text-sm">{shop.ownerName} (Pemilik)</div>
-                </div>
-
-                <div className="space-y-2">
-                  <button
-                    onClick={handleContactWhatsApp}
-                    className="w-full py-3 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-all"
-                  >
-                    <Phone className="w-4 h-4" />
-                    <span>Hubungi Toko (WhatsApp)</span>
-                  </button>
-
-                  <Link
-                    href="/map"
-                    className="w-full py-3 bg-navy-900 hover:bg-navy-800 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-3xs"
-                  >
-                    <MapPin className="w-4 h-4 text-pastel-teal" />
-                    <span>Lihat di Peta Desa</span>
-                  </Link>
-                </div>
-              </aside>
-            </div>
-
-          </div>
-        </article>
-
-        {/* Associated Products Grid */}
-        <section aria-label={`Etalase Produk ${shop.name}`} className="space-y-5">
-          <div>
-            <h2 className="font-bold text-navy-900 text-base uppercase tracking-wider flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-pastel-teal" aria-hidden="true" />
-              <span>Etalase Produk Toko ({shopProducts.length})</span>
-            </h2>
-            <p className="text-xs text-navy-500">Seluruh produk yang diproduksi secara langsung oleh {shop.name}.</p>
-          </div>
-
-          {shopProducts.length === 0 ? (
-            <div className="bg-white border border-navy-200/60 rounded-2xl p-16 text-center shadow-3xs max-w-md mx-auto">
-              <ShoppingBag className="w-10 h-10 text-navy-300 mx-auto mb-2" aria-hidden="true" />
-              <p className="text-xs text-navy-400 italic">Toko belum mengunggah produk ke dalam katalog.</p>
-            </div>
-          ) : (
-            <ol className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 list-none p-0">
-              {shopProducts.map((product: Product) => {
-                const category = categories.find((c) => c.id === product.categoryId);
-
-                return (
-                  <li key={product.id}>
-                    <ProductCard
-                      product={product}
-                      shop={shop}
-                      category={category}
+            <div className="mx-auto max-w-7xl animate-fade-in space-y-8 px-4 py-8 font-sans text-navy-900 sm:px-6 lg:px-8">
+                {/* Breadcrumb Nav */}
+                <nav
+                    aria-label="Breadcrumb"
+                    className="no-scrollbar flex items-center gap-2 overflow-x-auto py-1 text-xs font-medium text-navy-500"
+                >
+                    <Link
+                        href="/"
+                        className="shrink-0 font-bold transition-colors hover:text-pastel-teal"
+                    >
+                        Beranda
+                    </Link>
+                    <ChevronRight
+                        className="h-3.5 w-3.5 shrink-0 text-navy-300"
+                        aria-hidden="true"
                     />
-                  </li>
-                );
-              })}
-            </ol>
-          )}
-        </section>
+                    <Link
+                        href="/shops"
+                        className="shrink-0 font-bold transition-colors hover:text-pastel-teal"
+                    >
+                        Daftar UMKM
+                    </Link>
+                    <ChevronRight
+                        className="h-3.5 w-3.5 shrink-0 text-navy-300"
+                        aria-hidden="true"
+                    />
+                    <span className="max-w-[240px] shrink-0 truncate font-bold text-navy-800">
+                        {shop.name}
+                    </span>
+                </nav>
 
-      </div>
-    </MarketplaceLayout>
-  );
+                {/* Master Profile Header Block */}
+                <article className="shadow-3xs overflow-hidden rounded-3xl border border-navy-200/60 bg-white">
+                    {/* Banner */}
+                    <figure className="relative h-44 bg-navy-50 sm:h-56">
+                        <img
+                            src={shop.image}
+                            alt={shop.name}
+                            width={1200}
+                            height={224}
+                            loading="eager"
+                            className="h-full w-full object-cover"
+                            referrerPolicy="no-referrer"
+                        />
+                        {/* Single color gradient: navy-900 → transparent */}
+                        <div
+                            className="absolute inset-0 bg-linear-to-t from-navy-900/70 to-transparent"
+                            aria-hidden="true"
+                        />
+                    </figure>
+
+                    {/* Profile details wrapper */}
+                    <div className="relative px-6 pt-0 pb-6">
+                        <div className="-mt-10 mb-4 flex flex-col gap-5 sm:-mt-12 sm:flex-row sm:items-end">
+                            {/* Logo */}
+                            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-white shadow-md sm:h-24 sm:w-24">
+                                <img
+                                    src={shop.logo}
+                                    alt={shop.name}
+                                    width={96}
+                                    height={96}
+                                    loading="eager"
+                                    className="h-full w-full object-cover"
+                                    referrerPolicy="no-referrer"
+                                />
+                            </div>
+
+                            <div className="flex-1 space-y-1">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <h1 className="text-xl leading-tight font-black tracking-tight text-navy-900 sm:text-2xl">
+                                        {shop.name}
+                                    </h1>
+                                    {shop.isVerified && (
+                                        <span className="inline-flex items-center gap-1 rounded border border-pastel-teal/20 bg-pastel-teal-light px-2.5 py-0.5 text-xs font-extrabold tracking-wider text-pastel-teal uppercase">
+                                            <CheckCircle2 className="h-3 w-3 fill-pastel-teal-light text-pastel-teal" />
+                                            <span>Terverifikasi</span>
+                                        </span>
+                                    )}
+                                    {shop.nib && (
+                                        <span className="inline-flex items-center gap-1 rounded border border-pastel-lavender/20 bg-pastel-lavender-light px-2 py-0.5 text-xs font-black tracking-wider text-pastel-lavender uppercase">
+                                            <Award className="h-3 w-3 text-pastel-lavender" />
+                                            <span>Izin NIB</span>
+                                        </span>
+                                    )}
+                                    {shop.halal && (
+                                        <span className="inline-flex items-center gap-1 rounded border border-pastel-teal/20 bg-pastel-teal-light px-2 py-0.5 text-xs font-black tracking-wider text-pastel-teal uppercase">
+                                            <Award className="h-3 w-3 text-pastel-teal" />
+                                            <span>Sertifikat Halal</span>
+                                        </span>
+                                    )}
+                                    {shop.pirt && (
+                                        <span className="inline-flex items-center gap-1 rounded border border-pastel-peach/20 bg-pastel-peach-light px-2 py-0.5 text-xs font-black tracking-wider text-pastel-peach uppercase">
+                                            <Award className="h-3 w-3 text-pastel-peach" />
+                                            <span>Izin P-IRT</span>
+                                        </span>
+                                    )}
+                                </div>
+
+                                <p className="text-xs font-bold tracking-wider text-navy-400 uppercase">
+                                    Kategori Utama:{' '}
+                                    <span className="font-extrabold text-pastel-teal">
+                                        {shop.category}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-8 border-t border-navy-100 pt-4 lg:grid-cols-12">
+                            {/* Left Column: Description & Metadata */}
+                            <div className="space-y-4 text-xs lg:col-span-8">
+                                <section className="space-y-1.5 leading-relaxed font-light text-navy-600">
+                                    <h2 className="text-xs font-bold tracking-wider text-navy-900 uppercase">
+                                        Tentang UMKM Kami
+                                    </h2>
+                                    <p className="text-sm leading-relaxed font-normal text-navy-600">
+                                        {shop.description}
+                                    </p>
+                                </section>
+
+                                <address className="grid grid-cols-1 gap-3 pt-2 text-xs text-navy-500 not-italic sm:grid-cols-2">
+                                    <div className="flex items-start gap-2">
+                                        <MapPin
+                                            className="mt-0.5 h-4 w-4 shrink-0 text-pastel-teal"
+                                            aria-hidden="true"
+                                        />
+                                        <div>
+                                            <span className="block font-bold text-navy-800">
+                                                Alamat Rumah Produksi:
+                                            </span>
+                                            <span>
+                                                {shop.address} ({shop.dusun})
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {shop.jamKerja && (
+                                        <div className="flex items-start gap-2">
+                                            <Clock
+                                                className="mt-0.5 h-4 w-4 shrink-0 text-pastel-teal"
+                                                aria-hidden="true"
+                                            />
+                                            <div>
+                                                <span className="block font-bold text-navy-800">
+                                                    Jam Operasional Pelayanan:
+                                                </span>
+                                                <time>{shop.jamKerja}</time>
+                                            </div>
+                                        </div>
+                                    )}
+                                </address>
+                            </div>
+
+                            {/* Right Column: Interaction Hub */}
+                            <aside className="space-y-4 self-start rounded-2xl border border-pastel-teal/15 bg-pastel-teal-light/30 p-4 text-xs lg:col-span-4">
+                                <div className="space-y-1">
+                                    <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase">
+                                        Kontak Hubungan Pelaku Usaha
+                                    </span>
+                                    <div className="text-sm font-bold text-navy-800">
+                                        {shop.ownerName} (Pemilik)
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <button
+                                        onClick={handleContactWhatsApp}
+                                        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-pastel-teal py-3 text-xs font-bold tracking-wider text-white uppercase shadow-xs transition-all hover:bg-pastel-teal/90"
+                                    >
+                                        <Phone className="h-4 w-4" />
+                                        <span>Hubungi Toko (WhatsApp)</span>
+                                    </button>
+
+                                    <Link
+                                        href="/map"
+                                        className="shadow-3xs flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-navy-900 py-3 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-navy-800"
+                                    >
+                                        <MapPin className="h-4 w-4 text-pastel-teal" />
+                                        <span>Lihat di Peta Desa</span>
+                                    </Link>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </article>
+
+                {/* Associated Products Grid */}
+                <section
+                    aria-label={`Etalase Produk ${shop.name}`}
+                    className="space-y-5"
+                >
+                    <div>
+                        <h2 className="flex items-center gap-2 text-base font-bold tracking-wider text-navy-900 uppercase">
+                            <ShoppingBag
+                                className="h-5 w-5 text-pastel-teal"
+                                aria-hidden="true"
+                            />
+                            <span>
+                                Etalase Produk Toko ({shopProducts.length})
+                            </span>
+                        </h2>
+                        <p className="text-xs text-navy-500">
+                            Seluruh produk yang diproduksi secara langsung oleh{' '}
+                            {shop.name}.
+                        </p>
+                    </div>
+
+                    {shopProducts.length === 0 ? (
+                        <div className="shadow-3xs mx-auto max-w-md rounded-2xl border border-navy-200/60 bg-white p-16 text-center">
+                            <ShoppingBag
+                                className="mx-auto mb-2 h-10 w-10 text-navy-300"
+                                aria-hidden="true"
+                            />
+                            <p className="text-xs text-navy-400 italic">
+                                Toko belum mengunggah produk ke dalam katalog.
+                            </p>
+                        </div>
+                    ) : (
+                        <ol className="grid list-none grid-cols-2 gap-4 p-0 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                            {shopProducts.map((product: Product) => {
+                                const category = categories.find(
+                                    (c) => c.id === product.categoryId,
+                                );
+
+                                return (
+                                    <li key={product.id}>
+                                        <ProductCard
+                                            product={product}
+                                            shop={shop}
+                                            category={category}
+                                        />
+                                    </li>
+                                );
+                            })}
+                        </ol>
+                    )}
+                </section>
+            </div>
+        </MarketplaceLayout>
+    );
 }

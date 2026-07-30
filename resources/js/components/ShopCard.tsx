@@ -3,164 +3,199 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MapPin, Phone, CheckCircle2, ShoppingBag, ArrowRight, Clock } from "lucide-react";
-import { Link } from "@inertiajs/react";
-import React from "react";
-import type { Shop } from "@/types";
-import { getWhatsAppLink } from "@/utils";
+import { Link } from '@inertiajs/react';
+import {
+    MapPin,
+    Phone,
+    CheckCircle2,
+    ShoppingBag,
+    ArrowRight,
+    Clock,
+} from 'lucide-react';
+import React from 'react';
+import type { Shop } from '@/types';
+import { getWhatsAppLink } from '@/utils';
 
 interface ShopCardProps {
-  shop: Shop;
-  productCount: number;
+    shop: Shop;
+    productCount: number;
 }
 
-export default function ShopCard({
-  shop,
-  productCount,
-}: ShopCardProps) {
-  const handleContactWhatsApp = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
-    const url = getWhatsAppLink(shop.phone, message);
-    window.open(url, "_blank");
-  };
+export default function ShopCard({ shop, productCount }: ShopCardProps) {
+    const handleContactWhatsApp = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
+        const url = getWhatsAppLink(shop.phone, message);
+        window.open(url, '_blank');
+    };
 
-  return (
-    <article
-      className="group bg-white rounded-3xl border border-navy-200/60 hover:border-pastel-teal shadow-2xs hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full font-sans"
-      id={`shop-card-${shop.id}`}
-    >
-      {/* Background Image Banner */}
-      <Link href={`/shops/${shop.id}`} className="block relative h-36 bg-navy-50 overflow-hidden">
-        <figure className="w-full h-full">
-          <img
-            src={shop.image}
-            alt={`Banner ${shop.name}`}
-            width={400}
-            height={144}
-            loading="lazy"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 opacity-95"
-            referrerPolicy="no-referrer"
-          />
-          <figcaption className="sr-only">{shop.name} — {shop.category}</figcaption>
-        </figure>
-        <div className="absolute inset-0 bg-linear-to-t from-navy-900/70 via-navy-900/20 to-transparent" aria-hidden="true" />
-
-        {/* Verification & Dusun Pills */}
-        <div className="absolute top-3 right-3 flex items-center gap-1.5">
-          {shop.isVerified && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/95 text-pastel-teal text-xs font-black tracking-wider uppercase border border-pastel-teal/20 rounded-lg shadow-2xs backdrop-blur-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 text-pastel-teal fill-pastel-teal-light shrink-0" aria-hidden="true" />
-              <span>Terverifikasi</span>
-            </span>
-          )}
-        </div>
-        
-        <div className="absolute bottom-2.5 right-3">
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-navy-900/85 text-navy-100 text-xs font-bold uppercase tracking-wider rounded-lg backdrop-blur-xs">
-            <MapPin className="w-3 h-3 text-pastel-peach" />
-            <span>{shop.dusun}</span>
-          </span>
-        </div>
-      </Link>
-
-      {/* Profile Info Area */}
-      <div className="px-5 pb-5 pt-0 relative flex-1 flex flex-col justify-between">
-        <div className="relative">
-          {/* Logo overlapping the banner */}
-          <div className="absolute -top-9 left-0 w-16 h-16 rounded-2xl border-2 border-white bg-white overflow-hidden shadow-xs">
-            <img
-              src={shop.logo}
-              alt={`Logo ${shop.name}`}
-              width={64}
-              height={64}
-              loading="lazy"
-              sizes="64px"
-              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-              referrerPolicy="no-referrer"
-            />
-          </div>
-
-          <div className="pt-9 space-y-2.5">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="inline-block text-xs font-extrabold text-pastel-teal bg-pastel-teal-light border border-pastel-teal/20 px-2.5 py-0.5 rounded-lg uppercase tracking-wider">
-                {shop.category}
-              </span>
-              {shop.nib && (
-                <span className="px-2 py-0.5 bg-pastel-lavender-light text-pastel-lavender text-[10px] font-black uppercase rounded-lg border border-pastel-lavender/20">
-                  NIB
-                </span>
-              )}
-              {shop.halal && (
-                <span className="px-2 py-0.5 bg-pastel-teal-light text-pastel-teal text-[10px] font-black uppercase rounded-lg border border-pastel-teal/20">
-                  HALAL
-                </span>
-              )}
-              {shop.pirt && (
-                <span className="px-2 py-0.5 bg-pastel-peach-light text-pastel-peach text-[10px] font-black uppercase rounded-lg border border-pastel-peach/20">
-                  P-IRT
-                </span>
-              )}
-            </div>
-
-            <h3 className="font-sans text-base sm:text-lg text-navy-900 group-hover:text-pastel-teal transition-colors flex items-center gap-1 leading-snug font-black">
-              <Link href={`/shops/${shop.id}`}>{shop.name}</Link>
-            </h3>
-
-            <p className="text-xs uppercase tracking-wider text-navy-400 font-bold -mt-0.5">
-              Pemilik: <span className="text-navy-700 font-black">{shop.ownerName}</span>
-            </p>
-
-            <p className="text-xs sm:text-sm text-navy-600 line-clamp-2 leading-relaxed pt-0.5 font-normal">
-              {shop.description}
-            </p>
-          </div>
-        </div>
-
-        <footer className="pt-3.5 mt-4 border-t border-navy-100 space-y-3 text-xs">
-          <address className="not-italic flex flex-col gap-2 text-navy-500">
-            <div className="flex items-start gap-1.5">
-              <MapPin className="w-4 h-4 text-pastel-teal shrink-0 mt-0.5" aria-hidden="true" />
-              <span className="font-sans text-xs text-navy-600 font-medium">{shop.address}</span>
-            </div>
-            
-            <div className="flex items-center justify-between gap-2 pt-0.5">
-              <div className="flex items-center gap-1.5 font-bold text-navy-700 text-xs uppercase tracking-wider bg-navy-100/60 border border-navy-200/50 px-2.5 py-1 rounded-lg">
-                <ShoppingBag className="w-3.5 h-3.5 text-pastel-teal shrink-0" aria-hidden="true" />
-                <span>{productCount} Produk Kreatif</span>
-              </div>
-
-              {shop.jamKerja && (
-                <div className="flex items-center gap-1 font-bold text-navy-500 text-xs uppercase tracking-wider">
-                  <Clock className="w-3.5 h-3.5 text-pastel-teal shrink-0" aria-hidden="true" />
-                  <time>{shop.jamKerja}</time>
-                </div>
-              )}
-            </div>
-          </address>
-
-          <div className="grid grid-cols-2 gap-2 pt-1">
-            <button
-              onClick={handleContactWhatsApp}
-              className="py-2.5 px-3 border border-navy-200 text-navy-700 font-extrabold uppercase tracking-wider text-xs rounded-xl hover:bg-pastel-teal-light hover:text-pastel-teal hover:border-pastel-teal/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
-              aria-label={`Hubungi ${shop.name} via WhatsApp`}
-            >
-              <Phone className="w-4 h-4 text-pastel-teal" aria-hidden="true" />
-              <span>Kontak WA</span>
-            </button>
+    return (
+        <article
+            className="group flex h-full flex-col overflow-hidden rounded-3xl border border-navy-200/60 bg-white font-sans shadow-2xs transition-all duration-300 hover:border-pastel-teal hover:shadow-md"
+            id={`shop-card-${shop.id}`}
+        >
+            {/* Background Image Banner */}
             <Link
-              href={`/shops/${shop.id}`}
-              className="py-2.5 px-3 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 group/btn shadow-2xs"
-              aria-label={`Lihat katalog ${shop.name}`}
+                href={`/shops/${shop.id}`}
+                className="relative block h-36 overflow-hidden bg-navy-50"
             >
-              <span>Katalog</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" aria-hidden="true" />
+                <figure className="h-full w-full">
+                    <img
+                        src={shop.image}
+                        alt={`Banner ${shop.name}`}
+                        width={400}
+                        height={144}
+                        loading="lazy"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="h-full w-full object-cover opacity-95 transition-all duration-500 group-hover:scale-105"
+                        referrerPolicy="no-referrer"
+                    />
+                    <figcaption className="sr-only">
+                        {shop.name} — {shop.category}
+                    </figcaption>
+                </figure>
+                <div
+                    className="absolute inset-0 bg-linear-to-t from-navy-900/70 via-navy-900/20 to-transparent"
+                    aria-hidden="true"
+                />
+
+                {/* Verification & Dusun Pills */}
+                <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                    {shop.isVerified && (
+                        <span className="inline-flex items-center gap-1 rounded-lg border border-pastel-teal/20 bg-white/95 px-2.5 py-1 text-xs font-black tracking-wider text-pastel-teal uppercase shadow-2xs backdrop-blur-xs">
+                            <CheckCircle2
+                                className="h-3.5 w-3.5 shrink-0 fill-pastel-teal-light text-pastel-teal"
+                                aria-hidden="true"
+                            />
+                            <span>Terverifikasi</span>
+                        </span>
+                    )}
+                </div>
+
+                <div className="absolute right-3 bottom-2.5">
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-navy-900/85 px-2.5 py-1 text-xs font-bold tracking-wider text-navy-100 uppercase backdrop-blur-xs">
+                        <MapPin className="h-3 w-3 text-pastel-peach" />
+                        <span>{shop.dusun}</span>
+                    </span>
+                </div>
             </Link>
-          </div>
-        </footer>
-      </div>
-    </article>
-  );
+
+            {/* Profile Info Area */}
+            <div className="relative flex flex-1 flex-col justify-between px-5 pt-0 pb-5">
+                <div className="relative">
+                    {/* Logo overlapping the banner */}
+                    <div className="absolute -top-9 left-0 h-16 w-16 overflow-hidden rounded-2xl border-2 border-white bg-white shadow-xs">
+                        <img
+                            src={shop.logo}
+                            alt={`Logo ${shop.name}`}
+                            width={64}
+                            height={64}
+                            loading="lazy"
+                            sizes="64px"
+                            className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
+                            referrerPolicy="no-referrer"
+                        />
+                    </div>
+
+                    <div className="space-y-2.5 pt-9">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="inline-block rounded-lg border border-pastel-teal/20 bg-pastel-teal-light px-2.5 py-0.5 text-xs font-extrabold tracking-wider text-pastel-teal uppercase">
+                                {shop.category}
+                            </span>
+                            {shop.nib && (
+                                <span className="rounded-lg border border-pastel-lavender/20 bg-pastel-lavender-light px-2 py-0.5 text-xs font-black text-pastel-lavender uppercase">
+                                    NIB
+                                </span>
+                            )}
+                            {shop.halal && (
+                                <span className="rounded-lg border border-pastel-teal/20 bg-pastel-teal-light px-2 py-0.5 text-xs font-black text-pastel-teal uppercase">
+                                    HALAL
+                                </span>
+                            )}
+                            {shop.pirt && (
+                                <span className="rounded-lg border border-pastel-peach/20 bg-pastel-peach-light px-2 py-0.5 text-xs font-black text-pastel-peach uppercase">
+                                    P-IRT
+                                </span>
+                            )}
+                        </div>
+
+                        <h3 className="flex items-center gap-1 font-sans text-base leading-snug font-black text-navy-900 transition-colors group-hover:text-pastel-teal sm:text-lg">
+                            <Link href={`/shops/${shop.id}`}>{shop.name}</Link>
+                        </h3>
+
+                        <p className="-mt-0.5 text-xs font-bold tracking-wider text-navy-400 uppercase">
+                            Pemilik:{' '}
+                            <span className="font-black text-navy-700">
+                                {shop.ownerName}
+                            </span>
+                        </p>
+
+                        <p className="line-clamp-2 pt-0.5 text-xs leading-relaxed font-normal text-navy-600 sm:text-sm">
+                            {shop.description}
+                        </p>
+                    </div>
+                </div>
+
+                <footer className="mt-4 space-y-3 border-t border-navy-100 pt-3.5 text-xs">
+                    <address className="flex flex-col gap-2 text-navy-500 not-italic">
+                        <div className="flex items-start gap-1.5">
+                            <MapPin
+                                className="mt-0.5 h-4 w-4 shrink-0 text-pastel-teal"
+                                aria-hidden="true"
+                            />
+                            <span className="font-sans text-xs font-medium text-navy-600">
+                                {shop.address}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-2 pt-0.5">
+                            <div className="flex items-center gap-1.5 rounded-lg border border-navy-200/50 bg-navy-100/60 px-2.5 py-1 text-xs font-bold tracking-wider text-navy-700 uppercase">
+                                <ShoppingBag
+                                    className="h-3.5 w-3.5 shrink-0 text-pastel-teal"
+                                    aria-hidden="true"
+                                />
+                                <span>{productCount} Produk Kreatif</span>
+                            </div>
+
+                            {shop.jamKerja && (
+                                <div className="flex items-center gap-1 text-xs font-bold tracking-wider text-navy-500 uppercase">
+                                    <Clock
+                                        className="h-3.5 w-3.5 shrink-0 text-pastel-teal"
+                                        aria-hidden="true"
+                                    />
+                                    <time>{shop.jamKerja}</time>
+                                </div>
+                            )}
+                        </div>
+                    </address>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                        <button
+                            onClick={handleContactWhatsApp}
+                            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-navy-200 px-3 py-2.5 text-xs font-extrabold tracking-wider text-navy-700 uppercase shadow-2xs transition-all hover:border-pastel-teal/30 hover:bg-pastel-teal-light hover:text-pastel-teal"
+                            aria-label={`Hubungi ${shop.name} via WhatsApp`}
+                        >
+                            <Phone
+                                className="h-4 w-4 text-pastel-teal"
+                                aria-hidden="true"
+                            />
+                            <span>Kontak WA</span>
+                        </button>
+                        <Link
+                            href={`/shops/${shop.id}`}
+                            className="group/btn flex items-center justify-center gap-1.5 rounded-xl bg-pastel-teal px-3 py-2.5 text-xs font-extrabold tracking-wider text-white uppercase shadow-2xs transition-all hover:bg-pastel-teal/90"
+                            aria-label={`Lihat katalog ${shop.name}`}
+                        >
+                            <span>Katalog</span>
+                            <ArrowRight
+                                className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5"
+                                aria-hidden="true"
+                            />
+                        </Link>
+                    </div>
+                </footer>
+            </div>
+        </article>
+    );
 }

@@ -58,7 +58,7 @@ export default function TwoFactorChallenge() {
         <>
             <Head title="Verifikasi 2-Faktor" />
 
-            <div className="space-y-6 text-xs font-sans text-navy-900">
+            <div className="space-y-6 font-sans text-xs text-navy-900">
                 <Form
                     {...store.form()}
                     className="space-y-4"
@@ -75,7 +75,7 @@ export default function TwoFactorChallenge() {
                                         placeholder="Masukkan kode pemulihan"
                                         autoFocus={showRecoveryInput}
                                         required
-                                        className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
+                                        className="rounded-xl border-navy-200/60 focus-visible:border-pastel-teal focus-visible:ring-pastel-teal/20"
                                     />
                                     <InputError
                                         message={errors.recovery_code}
@@ -112,7 +112,7 @@ export default function TwoFactorChallenge() {
 
                             <Button
                                 type="submit"
-                                className="w-full h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs cursor-pointer"
+                                className="shadow-3xs h-10 w-full cursor-pointer rounded-xl bg-pastel-teal text-xs font-extrabold tracking-wider text-white uppercase hover:bg-pastel-teal/90"
                                 disabled={processing}
                             >
                                 Lanjutkan Masuk
@@ -122,7 +122,7 @@ export default function TwoFactorChallenge() {
                                 <span>atau Anda dapat </span>
                                 <button
                                     type="button"
-                                    className="cursor-pointer text-pastel-teal font-bold hover:underline"
+                                    className="cursor-pointer font-bold text-pastel-teal hover:underline"
                                     onClick={() =>
                                         toggleRecoveryMode(clearErrors)
                                     }

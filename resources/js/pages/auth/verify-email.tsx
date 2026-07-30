@@ -16,17 +16,21 @@ export default function VerifyEmail({ status }: { status?: string }) {
             <Head title="Verifikasi Email" />
 
             {status === 'verification-link-sent' && (
-                <div className="mb-4 p-3 bg-pastel-teal-light border border-pastel-teal/20 rounded-xl text-center text-xs font-bold text-pastel-teal">
-                    Tautan verifikasi baru telah dikirimkan ke alamat email yang Anda daftarkan.
+                <div className="mb-4 rounded-xl border border-pastel-teal/20 bg-pastel-teal-light p-3 text-center text-xs font-bold text-pastel-teal">
+                    Tautan verifikasi baru telah dikirimkan ke alamat email yang
+                    Anda daftarkan.
                 </div>
             )}
 
-            <Form {...send.form()} className="space-y-6 text-center text-xs font-sans text-navy-900">
+            <Form
+                {...send.form()}
+                className="space-y-6 text-center font-sans text-xs text-navy-900"
+            >
                 {({ processing }) => (
                     <>
-                        <Button 
-                            disabled={processing} 
-                            className="w-full h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs cursor-pointer"
+                        <Button
+                            disabled={processing}
+                            className="shadow-3xs h-10 w-full cursor-pointer rounded-xl bg-pastel-teal text-xs font-extrabold tracking-wider text-white uppercase hover:bg-pastel-teal/90"
                         >
                             {processing && <Spinner />}
                             Kirim Ulang Email Verifikasi

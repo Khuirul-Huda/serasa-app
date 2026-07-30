@@ -15,90 +15,97 @@ export default function Dashboard() {
     return (
         <AppLayout>
             <Head title="Pusat Kendali Portal Desa" />
-            
-            <div className="max-w-5xl mx-auto p-6 space-y-6 font-sans text-navy-900 animate-fade-in">
+
+            <div className="mx-auto max-w-5xl animate-fade-in space-y-6 p-6 font-sans text-navy-900">
                 {/* Header Welcome Box */}
-                <div className="bg-white rounded-3xl border border-navy-200/60 p-6 shadow-3xs space-y-2">
+                <div className="shadow-3xs space-y-2 rounded-3xl border border-navy-200/60 bg-white p-6">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-xl bg-pastel-teal text-white flex items-center justify-center font-bold">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-pastel-teal font-bold text-white">
                             S
                         </div>
-                        <span className="text-xs font-black uppercase tracking-wider text-pastel-teal">
+                        <span className="text-xs font-black tracking-wider text-pastel-teal uppercase">
                             Pusat Kendali Akun Warga
                         </span>
                     </div>
-                    <h1 className="text-xl sm:text-2xl font-black text-navy-900">
+                    <h1 className="text-xl font-black text-navy-900 sm:text-2xl">
                         Selamat Datang, {user?.name || 'Mitra Samirono'}!
                     </h1>
-                    <p className="text-xs text-navy-500 max-w-xl leading-relaxed font-normal">
-                        Anda terhubung sebagai <strong className="font-bold text-navy-800 uppercase">{user?.role || 'pengguna'}</strong>. Akses panel manajemen UMKM Anda di bawah ini.
+                    <p className="max-w-xl text-xs leading-relaxed font-normal text-navy-500">
+                        Anda terhubung sebagai{' '}
+                        <strong className="font-bold text-navy-800 uppercase">
+                            {user?.role || 'pengguna'}
+                        </strong>
+                        . Akses panel manajemen UMKM Anda di bawah ini.
                     </p>
                 </div>
 
                 {/* Quick Navigation Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {user?.role === 'admin' ? (
                         <Link
                             href="/admin/dashboard"
-                            className="bg-white rounded-3xl border border-navy-200/60 p-6 shadow-3xs hover:border-pastel-peach transition-all group flex flex-col justify-between space-y-4"
+                            className="shadow-3xs group flex flex-col justify-between space-y-4 rounded-3xl border border-navy-200/60 bg-white p-6 transition-all hover:border-pastel-peach"
                         >
                             <div className="space-y-2">
-                                <div className="w-10 h-10 rounded-2xl bg-pastel-peach-light text-navy-900 flex items-center justify-center border border-pastel-peach/30">
-                                    <ShieldCheck className="w-5 h-5 text-pastel-peach" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-pastel-peach/30 bg-pastel-peach-light text-navy-900">
+                                    <ShieldCheck className="h-5 w-5 text-pastel-peach" />
                                 </div>
-                                <h2 className="text-base font-extrabold text-navy-900 group-hover:text-pastel-peach transition-colors uppercase tracking-wider">
+                                <h2 className="text-base font-extrabold tracking-wider text-navy-900 uppercase transition-colors group-hover:text-pastel-peach">
                                     Panel Moderasi Admin Desa
                                 </h2>
-                                <p className="text-xs text-navy-500 font-normal leading-relaxed">
-                                    Verifikasi toko UMKM baru, atur konfigurasi portal, dan impor data spreadsheet massal.
+                                <p className="text-xs leading-relaxed font-normal text-navy-500">
+                                    Verifikasi toko UMKM baru, atur konfigurasi
+                                    portal, dan impor data spreadsheet massal.
                                 </p>
                             </div>
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-navy-800 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                            <div className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-navy-800 uppercase transition-transform group-hover:translate-x-1">
                                 <span>Buka Panel Admin</span>
-                                <ArrowRight className="w-4 h-4 text-pastel-peach" />
+                                <ArrowRight className="h-4 w-4 text-pastel-peach" />
                             </div>
                         </Link>
                     ) : (
                         <Link
                             href="/merchant/dashboard"
-                            className="bg-white rounded-3xl border border-navy-200/60 p-6 shadow-3xs hover:border-pastel-teal transition-all group flex flex-col justify-between space-y-4"
+                            className="shadow-3xs group flex flex-col justify-between space-y-4 rounded-3xl border border-navy-200/60 bg-white p-6 transition-all hover:border-pastel-teal"
                         >
                             <div className="space-y-2">
-                                <div className="w-10 h-10 rounded-2xl bg-pastel-teal-light text-pastel-teal flex items-center justify-center border border-pastel-teal/20">
-                                    <Store className="w-5 h-5" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-pastel-teal/20 bg-pastel-teal-light text-pastel-teal">
+                                    <Store className="h-5 w-5" />
                                 </div>
-                                <h2 className="text-base font-extrabold text-navy-900 group-hover:text-pastel-teal transition-colors uppercase tracking-wider">
+                                <h2 className="text-base font-extrabold tracking-wider text-navy-900 uppercase transition-colors group-hover:text-pastel-teal">
                                     Kelola Toko & Produk Saya
                                 </h2>
-                                <p className="text-xs text-navy-500 font-normal leading-relaxed">
-                                    Unggah foto produk baru, atur ketersediaan stok, dan ubah profil toko digital Anda.
+                                <p className="text-xs leading-relaxed font-normal text-navy-500">
+                                    Unggah foto produk baru, atur ketersediaan
+                                    stok, dan ubah profil toko digital Anda.
                                 </p>
                             </div>
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-pastel-teal uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                            <div className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-pastel-teal uppercase transition-transform group-hover:translate-x-1">
                                 <span>Buka Kelola Toko</span>
-                                <ArrowRight className="w-4 h-4" />
+                                <ArrowRight className="h-4 w-4" />
                             </div>
                         </Link>
                     )}
 
                     <Link
                         href="/"
-                        className="bg-white rounded-3xl border border-navy-200/60 p-6 shadow-3xs hover:border-pastel-teal transition-all group flex flex-col justify-between space-y-4"
+                        className="shadow-3xs group flex flex-col justify-between space-y-4 rounded-3xl border border-navy-200/60 bg-white p-6 transition-all hover:border-pastel-teal"
                     >
                         <div className="space-y-2">
-                            <div className="w-10 h-10 rounded-2xl bg-navy-100 text-navy-700 flex items-center justify-center border border-navy-200">
-                                <ShoppingBag className="w-5 h-5 text-pastel-teal" />
+                            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-navy-200 bg-navy-100 text-navy-700">
+                                <ShoppingBag className="h-5 w-5 text-pastel-teal" />
                             </div>
-                            <h2 className="text-base font-extrabold text-navy-900 group-hover:text-pastel-teal transition-colors uppercase tracking-wider">
+                            <h2 className="text-base font-extrabold tracking-wider text-navy-900 uppercase transition-colors group-hover:text-pastel-teal">
                                 Jelajahi Etalase Warga
                             </h2>
-                            <p className="text-xs text-navy-500 font-normal leading-relaxed">
-                                Lihat produk unggulan Desa Samirono mulai dari susu segar, keju, hingga anyaman bambu.
+                            <p className="text-xs leading-relaxed font-normal text-navy-500">
+                                Lihat produk unggulan Desa Samirono mulai dari
+                                susu segar, keju, hingga anyaman bambu.
                             </p>
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-navy-700 uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                        <div className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-navy-700 uppercase transition-transform group-hover:translate-x-1">
                             <span>Buka Katalog Utama</span>
-                            <ArrowRight className="w-4 h-4 text-pastel-teal" />
+                            <ArrowRight className="h-4 w-4 text-pastel-teal" />
                         </div>
                     </Link>
                 </div>

@@ -33,16 +33,21 @@ export default function ConfirmPassword() {
 
             <Form {...store.form()} resetOnSuccess={['password']}>
                 {({ processing, errors }) => (
-                    <div className="space-y-6 text-xs font-sans text-navy-900">
+                    <div className="space-y-6 font-sans text-xs text-navy-900">
                         <div className="grid gap-2">
-                            <Label htmlFor="password" className="font-bold text-navy-400 uppercase tracking-wider text-[9px]">Kata Sandi</Label>
+                            <Label
+                                htmlFor="password"
+                                className="text-xs font-bold tracking-wider text-navy-600 uppercase"
+                            >
+                                Kata Sandi
+                            </Label>
                             <PasswordInput
                                 id="password"
                                 name="password"
                                 placeholder="Masukkan kata sandi Anda"
                                 autoComplete="current-password"
                                 autoFocus
-                                className="rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal"
+                                className="rounded-xl border-navy-200/60 focus-visible:border-pastel-teal focus-visible:ring-pastel-teal/20"
                             />
 
                             <InputError message={errors.password} />
@@ -50,7 +55,7 @@ export default function ConfirmPassword() {
 
                         <div className="flex items-center">
                             <Button
-                                className="w-full h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-3xs cursor-pointer"
+                                className="shadow-3xs h-10 w-full cursor-pointer rounded-xl bg-pastel-teal text-xs font-extrabold tracking-wider text-white uppercase hover:bg-pastel-teal/90"
                                 disabled={processing}
                                 data-test="confirm-password-button"
                             >

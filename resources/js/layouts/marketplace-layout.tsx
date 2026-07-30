@@ -3,119 +3,137 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from "react";
-import Navbar from "@/components/Navbar";
-import type { AppSettings, Category, Product, Shop } from "@/types";
-import { 
-  Phone, 
-  Heart
-} from "lucide-react";
-import { Link } from "@inertiajs/react";
+import { Link } from '@inertiajs/react';
+import { Phone, Heart } from 'lucide-react';
+import React from 'react';
+import Navbar from '@/components/Navbar';
+import type { AppSettings, Category, Product, Shop } from '@/types';
 
 interface MarketplaceLayoutProps {
-  children: React.ReactNode;
-  settings: AppSettings;
-  activeTab: "katalog" | "shops" | "map" | "merchant" | "admin" | "detail";
-  categories: Category[];
-  products: Product[];
-  shops?: Shop[];
-  searchQuery?: string;
-  setSearchQuery?: (query: string) => void;
-  selectedCategory?: string;
-  setSelectedCategory?: (cat: string) => void;
+    children: React.ReactNode;
+    settings: AppSettings;
+    activeTab: 'katalog' | 'shops' | 'map' | 'merchant' | 'admin' | 'detail';
+    categories: Category[];
+    products: Product[];
+    shops?: Shop[];
+    searchQuery?: string;
+    setSearchQuery?: (query: string) => void;
+    selectedCategory?: string;
+    setSelectedCategory?: (cat: string) => void;
 }
 
 export default function MarketplaceLayout({
-  children,
-  settings,
-  activeTab,
-  categories,
-  products,
-  shops = [],
-  searchQuery = "",
-  setSearchQuery,
-  selectedCategory = "all",
-  setSelectedCategory,
+    children,
+    settings,
+    activeTab,
+    categories,
+    products,
+    shops = [],
+    searchQuery = '',
+    setSearchQuery,
+    selectedCategory = 'all',
+    setSelectedCategory,
 }: MarketplaceLayoutProps) {
-  return (
-    <div className="min-h-screen bg-navy-50/40 flex flex-col font-sans antialiased text-navy-900" id="serasa-root-container">
-      {/* Navbar wrapper */}
-      <Navbar
-        settings={settings}
-        activeTab={activeTab}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        categories={categories}
-        products={products}
-        shops={shops}
-      />
+    return (
+        <div
+            className="flex min-h-screen flex-col bg-navy-50/40 font-sans text-navy-900 antialiased"
+            id="serasa-root-container"
+        >
+            {/* Navbar wrapper */}
+            <Navbar
+                settings={settings}
+                activeTab={activeTab}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                categories={categories}
+                products={products}
+                shops={shops}
+            />
 
-      {/* Main Content Area */}
-      <main className="flex-grow">
-        {children}
-      </main>
+            {/* Main Content Area */}
+            <main className="flex-grow">{children}</main>
 
-      {/* FOOTER */}
-      <footer className="bg-navy-900 text-navy-400 py-12 border-t border-navy-800 font-sans mt-16" id="serasa-footer">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          
-          {/* Main Top Row: Logo & Navigation Links */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div className="space-y-1.5 max-w-md">
-              <Link 
-                href="/"
-                className="flex items-center gap-2.5 text-left group cursor-pointer"
-              >
-                <div className="w-8 h-8 bg-pastel-teal rounded-xl flex items-center justify-center text-white font-black text-sm shadow-2xs group-hover:bg-pastel-teal/90 transition-colors">
-                  S
+            {/* FOOTER */}
+            <footer
+                className="mt-16 border-t border-navy-800 bg-navy-900 py-12 font-sans text-navy-400"
+                id="serasa-footer"
+            >
+                <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
+                    {/* Main Top Row: Logo & Navigation Links */}
+                    <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+                        <div className="max-w-md space-y-1.5">
+                            <Link
+                                href="/"
+                                className="group flex cursor-pointer items-center gap-2.5 text-left"
+                            >
+                                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-pastel-teal text-sm font-black text-white shadow-2xs transition-colors group-hover:bg-pastel-teal/90">
+                                    S
+                                </div>
+                                <span className="text-base font-black tracking-wide text-white uppercase">
+                                    SAMIRONO{' '}
+                                    <span className="text-pastel-teal">
+                                        ETALASE
+                                    </span>
+                                </span>
+                            </Link>
+                            <p className="text-xs leading-relaxed font-normal text-navy-300">
+                                Platform digitalisasi & sentra promosi produk
+                                usaha warga {settings.villageName}, Kecamatan
+                                Getasan, Kabupaten Semarang.
+                            </p>
+                        </div>
+
+                        {/* Navigation Links */}
+                        <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold tracking-wider text-navy-200 uppercase">
+                            <Link
+                                href="/"
+                                className="transition-colors hover:text-pastel-teal"
+                            >
+                                Etalase Warga
+                            </Link>
+                            <Link
+                                href="/shops"
+                                className="transition-colors hover:text-pastel-teal"
+                            >
+                                Daftar UMKM
+                            </Link>
+                            <Link
+                                href="/map"
+                                className="transition-colors hover:text-pastel-teal"
+                            >
+                                Peta Desa
+                            </Link>
+                            <Link
+                                href="/merchant/dashboard"
+                                className="transition-colors hover:text-pastel-teal"
+                            >
+                                Daftar Toko
+                            </Link>
+                            <a
+                                href={`https://wa.me/${settings.adminPhone}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-pastel-teal/25 bg-pastel-teal/15 px-3.5 py-1.5 text-xs font-bold text-pastel-teal transition-all hover:bg-pastel-teal/25"
+                            >
+                                <Phone className="h-3 w-3 text-pastel-teal" />
+                                <span>Helpline Desa</span>
+                            </a>
+                        </nav>
+                    </div>
+
+                    {/* Bottom Copyright & Credit Row */}
+                    <div className="flex flex-col items-center justify-between gap-4 border-t border-navy-800/80 pt-6 font-mono text-xs text-navy-400 sm:flex-row">
+                        <p>© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO.</p>
+                        <p className="flex items-center gap-1 font-sans text-xs text-navy-300">
+                            Dibuat dengan{' '}
+                            <Heart className="h-3 w-3 fill-pastel-coral text-pastel-coral" />{' '}
+                            untuk Kemandirian Ekonomi Desa.
+                        </p>
+                    </div>
                 </div>
-                <span className="text-white font-black text-base tracking-wide uppercase">
-                  SAMIRONO <span className="text-pastel-teal">ETALASE</span>
-                </span>
-              </Link>
-              <p className="text-[11px] text-navy-300 font-normal leading-relaxed">
-                Platform digitalisasi & sentra promosi produk usaha warga {settings.villageName}, Kecamatan Getasan, Kabupaten Semarang.
-              </p>
-            </div>
-
-            {/* Navigation Links */}
-            <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-wider text-navy-200">
-              <Link href="/" className="hover:text-pastel-teal transition-colors">
-                Etalase Warga
-              </Link>
-              <Link href="/shops" className="hover:text-pastel-teal transition-colors">
-                Daftar UMKM
-              </Link>
-              <Link href="/map" className="hover:text-pastel-teal transition-colors">
-                Peta Desa
-              </Link>
-              <Link href="/merchant/dashboard" className="hover:text-pastel-teal transition-colors">
-                Daftar Toko
-              </Link>
-              <a 
-                href={`https://wa.me/${settings.adminPhone}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-pastel-teal/15 hover:bg-pastel-teal/25 text-pastel-teal font-bold rounded-xl border border-pastel-teal/25 transition-all text-[10px]"
-              >
-                <Phone className="w-3 h-3 text-pastel-teal" />
-                <span>Helpline Desa</span>
-              </a>
-            </nav>
-          </div>
-
-          {/* Bottom Copyright & Credit Row */}
-          <div className="border-t border-navy-800/80 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono text-navy-400">
-            <p>© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO.</p>
-            <p className="flex items-center gap-1 font-sans text-[11px] text-navy-300">
-              Dibuat dengan <Heart className="w-3 h-3 text-pastel-coral fill-pastel-coral" /> untuk Kemandirian Ekonomi Desa.
-            </p>
-          </div>
-
+            </footer>
         </div>
-      </footer>
-    </div>
-  );
+    );
 }
