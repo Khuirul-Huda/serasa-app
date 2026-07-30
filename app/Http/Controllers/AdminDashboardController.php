@@ -8,9 +8,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SaveSettingsRequest;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Setting;
 use App\Models\Shop;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -22,7 +25,7 @@ use Inertia\Response;
 class AdminDashboardController extends Controller
 {
     /**
-     * Display the admin panel dashboard.
+     * Display the admin panel dashboard with full platform management data.
      */
     public function index(): Response
     {
@@ -41,11 +44,38 @@ class AdminDashboardController extends Controller
 
         $categories = $this->getCachedCategories();
 
+        $reviews = Review::with('product:id,name')
+            ->latest()
+            ->take(100)
+            ->get()
+            ->map(fn ($r) => [
+                'id' => $r->id,
+                'productId' => $r->product_id,
+                'productName' => $r->product?->name ?? 'Produk',
+                'userName' => $r->user_name,
+                'rating' => $r->rating,
+                'comment' => $r->comment,
+                'createdAt' => $r->created_at ? $r->created_at->diffForHumans() : 'Baru Saja',
+            ])->toArray();
+
+        $users = User::select(['id', 'name', 'email', 'role', 'created_at'])
+            ->latest()
+            ->get()
+            ->map(fn ($u) => [
+                'id' => $u->id,
+                'name' => $u->name,
+                'email' => $u->email,
+                'role' => $u->role,
+                'createdAt' => $u->created_at ? $u->created_at->format('d M Y') : '-',
+            ])->toArray();
+
         return Inertia::render('admin-dashboard', [
             'settings' => $this->getAppSettings(),
             'shops' => $shops,
             'products' => $products,
             'categories' => $categories,
+            'reviews' => $reviews,
+            'users' => $users,
         ]);
     }
 
@@ -60,6 +90,150 @@ class AdminDashboardController extends Controller
         $shop->update([
             'is_verified' => ! $shop->is_verified,
         ]);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Toggle legal permit status (NIB, HALAL, PIRT) for a shop.
+     */
+    public function toggleShopPermit(Request $request, string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $request->validate([
+            'permit' => 'required|in:nib,halal,pirt',
+        ]);
+
+        $shop = Shop::findOrFail($id);
+        $permit = $request->input('permit');
+
+        $shop->update([
+            $permit => ! $shop->{$permit},
+        ]);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Toggle availability status of a product.
+     */
+    public function toggleProduct(string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $product = Product::findOrFail($id);
+        $product->update([
+            'is_available' => ! $product->is_available,
+        ]);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Delete a product from the platform.
+     */
+    public function deleteProduct(string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        DB::transaction(function () use ($id) {
+            $product = Product::findOrFail($id);
+            Review::where('product_id', $product->id)->delete();
+            $product->delete();
+        });
+
+        return redirect()->back();
+    }
+
+    /**
+     * Delete a product review and recalculate product average rating.
+     */
+    public function deleteReview(string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        DB::transaction(function () use ($id) {
+            $review = Review::findOrFail($id);
+            $productId = $review->product_id;
+            $review->delete();
+
+            if ($product = Product::find($productId)) {
+                $reviewsCount = Review::where('product_id', $product->id)->count();
+                $averageRating = Review::where('product_id', $product->id)->avg('rating') ?: 5.0;
+
+                $product->update([
+                    'rating' => round($averageRating, 1),
+                    'reviews_count' => $reviewsCount,
+                ]);
+            }
+        });
+
+        return redirect()->back();
+    }
+
+    /**
+     * Add a new sector category to the platform.
+     */
+    public function addCategory(Request $request): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:100|unique:categories,name',
+            'description' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:30',
+        ]);
+
+        Category::create([
+            'id' => 'cat-'.Str::slug($validated['name']),
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+            'icon_name' => 'Store',
+            'description' => $validated['description'] ?? ('Sektor '.$validated['name'].' Desa Samirono'),
+            'color' => $validated['color'] ?? 'teal',
+        ]);
+
+        Cache::forget('app:categories');
+
+        return redirect()->back();
+    }
+
+    /**
+     * Delete a sector category from the platform.
+     */
+    public function deleteCategory(string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $category = Category::findOrFail($id);
+
+        // Reassign products to first category or default before deleting
+        $defaultCat = Category::where('id', '!=', $category->id)->first();
+        if ($defaultCat) {
+            Product::where('category_id', $category->id)->update(['category_id' => $defaultCat->id]);
+        }
+
+        $category->delete();
+
+        Cache::forget('app:categories');
+
+        return redirect()->back();
+    }
+
+    /**
+     * Update user role.
+     */
+    public function updateUserRole(Request $request, string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $validated = $request->validate([
+            'role' => 'required|in:admin,owner,user',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->update(['role' => $validated['role']]);
 
         return redirect()->back();
     }

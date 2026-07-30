@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Search, CheckCircle2, AlertCircle, FileSpreadsheet, Trash2, ShieldCheck, MapPin, PhoneCall } from "lucide-react";
+import { Search, CheckCircle2, AlertCircle, FileSpreadsheet, Trash2, ShieldCheck, MapPin, PhoneCall, Download, Award } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
 import React from "react";
+import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -50,13 +51,39 @@ export default function ShopsTab({
   });
 
   const handleToggleVerify = (shopId: string) => {
-    router.put(`/admin/shops/${shopId}/verify`);
+    router.post(`/admin/shops/${shopId}/verify`);
+  };
+
+  const handleTogglePermit = (shopId: string, permit: "nib" | "halal" | "pirt") => {
+    router.post(`/admin/shops/${shopId}/permit`, { permit });
   };
 
   const handleDeleteShop = (shopId: string, shopName: string) => {
     if (confirm(`Hapus toko "${shopName}" beserta produknya dari platform?`)) {
       router.delete(`/admin/shops/${shopId}`);
     }
+  };
+
+  const handleExportExcel = () => {
+    const exportData = shops.map((shop, index) => ({
+      No: index + 1,
+      "Nama Pemilik": shop.ownerName,
+      "Nama Toko": shop.name,
+      "Sektor Usaha": shop.category,
+      Dusun: shop.dusun,
+      Alamat: shop.address,
+      "No WhatsApp": shop.phone,
+      "Status Verifikasi": shop.isVerified ? "Terverifikasi" : "Dalam Review",
+      "Izin NIB": shop.nib ? "Ya" : "Tidak",
+      "Izin HALAL": shop.halal ? "Ya" : "Tidak",
+      "Izin PIRT": shop.pirt ? "Ya" : "Tidak",
+      "Jam Kerja": shop.jamKerja || "08:00 - 17:00",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan_UMKM_Desa");
+    XLSX.writeFile(wb, `Laporan_UMKM_Desa_Samirono_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   return (
@@ -68,17 +95,28 @@ export default function ShopsTab({
             Manajemen Direktori Toko UMKM
           </h3>
           <p className="text-xs sm:text-sm text-navy-500 mt-1 font-normal">
-            Verifikasi toko warga, kelola legalitas NIB/HALAL, atau impor spreadsheet data desa.
+            Verifikasi toko warga, kelola toggle legalitas NIB/HALAL/PIRT, atau impor & ekspor laporan desa.
           </p>
         </div>
 
-        <Button
-          onClick={onOpenImportModal}
-          className="px-5 h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer w-full md:w-auto justify-center"
-        >
-          <FileSpreadsheet className="w-4 h-4 text-white" />
-          <span>Import Spreadsheet Excel</span>
-        </Button>
+        <div className="flex items-center gap-2.5 w-full md:w-auto flex-wrap">
+          <Button
+            onClick={handleExportExcel}
+            variant="outline"
+            className="px-4 h-10 border-navy-200 text-navy-700 hover:bg-navy-50 text-xs sm:text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer flex-1 sm:flex-none justify-center"
+          >
+            <Download className="w-4 h-4 text-pastel-teal" />
+            <span>Ekspor Excel</span>
+          </Button>
+
+          <Button
+            onClick={onOpenImportModal}
+            className="px-5 h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer flex-1 sm:flex-none justify-center"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-white" />
+            <span>Impor Spreadsheet</span>
+          </Button>
+        </div>
       </div>
 
       {/* Filter & Search Bar */}
@@ -117,7 +155,7 @@ export default function ShopsTab({
               <TableRow className="bg-navy-50 border-b border-navy-100 hover:bg-navy-50/50 text-xs font-extrabold uppercase text-navy-600 tracking-wider">
                 <TableHead className="p-4">Identitas Toko & Pemilik</TableHead>
                 <TableHead className="p-4">Lokasi & Kontak</TableHead>
-                <TableHead className="p-4">Legalitas (NIB/PIRT)</TableHead>
+                <TableHead className="p-4">Legalitas (Klik Toggle Admin)</TableHead>
                 <TableHead className="p-4">Status Verifikasi</TableHead>
                 <TableHead className="p-4 text-right">Tindakan Moderasi</TableHead>
               </TableRow>
@@ -175,29 +213,45 @@ export default function ShopsTab({
                       </div>
                     </TableCell>
 
-                    {/* Legalities */}
+                    {/* Interactive Legal Permit Toggles */}
                     <TableCell className="p-4 text-xs">
                       <div className="flex gap-1.5 flex-wrap">
-                        {shop.nib ? (
-                          <span className="px-2 py-0.5 bg-pastel-lavender-light text-pastel-lavender text-[10px] font-black uppercase rounded-md border border-pastel-lavender/30">
-                            NIB
-                          </span>
-                        ) : null}
-                        {shop.halal ? (
-                          <span className="px-2 py-0.5 bg-pastel-teal-light text-pastel-teal text-[10px] font-black uppercase rounded-md border border-pastel-teal/30">
-                            HALAL
-                          </span>
-                        ) : null}
-                        {shop.pirt ? (
-                          <span className="px-2 py-0.5 bg-pastel-peach-light text-pastel-peach text-[10px] font-black uppercase rounded-md border border-pastel-peach/30">
-                            P-IRT
-                          </span>
-                        ) : null}
-                        {!shop.nib && !shop.halal && !shop.pirt && (
-                          <span className="text-xs text-navy-400 italic">
-                            -
-                          </span>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleTogglePermit(shop.id, "nib")}
+                          title="Klik untuk ubah status NIB"
+                          className={`px-2 py-1 text-[10px] font-black uppercase rounded-lg border transition-all cursor-pointer ${
+                            shop.nib
+                              ? "bg-pastel-lavender-light text-pastel-lavender border-pastel-lavender/30 hover:opacity-80"
+                              : "bg-navy-100 text-navy-400 border-navy-200 line-through opacity-70 hover:opacity-100"
+                          }`}
+                        >
+                          NIB
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleTogglePermit(shop.id, "halal")}
+                          title="Klik untuk ubah status HALAL"
+                          className={`px-2 py-1 text-[10px] font-black uppercase rounded-lg border transition-all cursor-pointer ${
+                            shop.halal
+                              ? "bg-pastel-teal-light text-pastel-teal border-pastel-teal/30 hover:opacity-80"
+                              : "bg-navy-100 text-navy-400 border-navy-200 line-through opacity-70 hover:opacity-100"
+                          }`}
+                        >
+                          HALAL
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleTogglePermit(shop.id, "pirt")}
+                          title="Klik untuk ubah status P-IRT"
+                          className={`px-2 py-1 text-[10px] font-black uppercase rounded-lg border transition-all cursor-pointer ${
+                            shop.pirt
+                              ? "bg-pastel-peach-light text-pastel-peach border-pastel-peach/30 hover:opacity-80"
+                              : "bg-navy-100 text-navy-400 border-navy-200 line-through opacity-70 hover:opacity-100"
+                          }`}
+                        >
+                          P-IRT
+                        </button>
                       </div>
                     </TableCell>
 

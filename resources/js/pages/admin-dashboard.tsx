@@ -9,11 +9,31 @@ import MarketplaceLayout from "@/layouts/marketplace-layout";
 import AdminPanel from "@/components/AdminPanel";
 import { AppSettings, Category, Product, Shop } from "@/types";
 
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+}
+
+export interface AdminReview {
+  id: string;
+  productId: string;
+  productName: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 interface AdminDashboardProps {
   settings: AppSettings;
   shops: Shop[];
   products: Product[];
   categories: Category[];
+  reviews?: AdminReview[];
+  users?: AdminUser[];
 }
 
 export default function AdminDashboard({
@@ -21,8 +41,9 @@ export default function AdminDashboard({
   shops,
   products,
   categories,
+  reviews = [],
+  users = [],
 }: AdminDashboardProps) {
-  // Use products as allProducts to satisfy layout navbar parameters
   return (
     <MarketplaceLayout
       settings={settings}
@@ -38,6 +59,8 @@ export default function AdminDashboard({
           shops={shops}
           products={products}
           categories={categories}
+          reviews={reviews}
+          users={users}
         />
       </div>
     </MarketplaceLayout>

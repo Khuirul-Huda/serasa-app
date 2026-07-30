@@ -3,14 +3,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useForm, router, Link } from "@inertiajs/react";
-import { ShieldCheck, Activity, Store, Settings, FileSpreadsheet, CheckCircle2, AlertCircle, ShoppingBag, Grid } from "lucide-react";
+import { useForm, router } from "@inertiajs/react";
+import {
+  ShieldCheck,
+  Activity,
+  Store,
+  Settings,
+  FileSpreadsheet,
+  CheckCircle2,
+  AlertCircle,
+  ShoppingBag,
+  Package,
+  MessageSquare,
+  Layers,
+  Users,
+} from "lucide-react";
 import React, { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 import type { AppSettings, Shop, Product, Category } from "@/types";
+import type { AdminReview, AdminUser } from "@/pages/admin-dashboard";
 import StatsTab from "./admin/StatsTab";
 import ShopsTab from "./admin/ShopsTab";
 import ConfigTab from "./admin/ConfigTab";
+import ProductsTab from "./admin/ProductsTab";
+import ReviewsTab from "./admin/ReviewsTab";
+import CategoriesTab from "./admin/CategoriesTab";
+import UsersTab from "./admin/UsersTab";
 import ImportModal, { ParsedImportRow } from "./admin/ImportModal";
 
 interface AdminPanelProps {
@@ -18,6 +36,8 @@ interface AdminPanelProps {
   shops: Shop[];
   products: Product[];
   categories: Category[];
+  reviews?: AdminReview[];
+  users?: AdminUser[];
 }
 
 export default function AdminPanel({
@@ -25,8 +45,13 @@ export default function AdminPanel({
   shops,
   products,
   categories,
+  reviews = [],
+  users = [],
 }: AdminPanelProps) {
-  const [activeSubTab, setActiveSubTab] = useState<"stats" | "shops" | "config">("stats");
+  const [activeSubTab, setActiveSubTab] = useState<
+    "stats" | "shops" | "products" | "reviews" | "categories" | "users" | "config"
+  >("stats");
+
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [searchShopQuery, setSearchShopQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "verified" | "pending">("all");
@@ -173,7 +198,7 @@ export default function AdminPanel({
     setIsSubmittingImport(true);
 
     router.post(
-      "/admin/shops/import",
+      "/admin/shops/bulk-import",
       { shops: toImport },
       {
         onSuccess: () => {
@@ -211,7 +236,7 @@ export default function AdminPanel({
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-navy-500 font-normal">
-                Pusat kendali verifikasi UMKM, statistik ekonomi warga, dan impor data spreadsheet massal {settings.appName}.
+                Pusat kendali verifikasi UMKM, moderasi produk & ulasan, serta manajemen pengguna {settings.appName}.
               </p>
             </div>
           </div>
@@ -249,7 +274,7 @@ export default function AdminPanel({
 
           <div className="bg-navy-50/60 rounded-2xl border border-navy-200/50 p-4 flex items-center justify-between">
             <div>
-              <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-navy-400 block">Menunggu Verifikasi</span>
+              <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-navy-400 block">Menunggu Review</span>
               <span className="text-lg sm:text-xl font-black text-pastel-peach mt-0.5 block">{pendingShops} Toko</span>
             </div>
             <div className="w-10 h-10 rounded-xl bg-pastel-peach-light text-pastel-peach flex items-center justify-center border border-pastel-peach/30">
@@ -268,22 +293,23 @@ export default function AdminPanel({
           </div>
         </div>
 
-        {/* Underlined Tab Switcher */}
-        <div className="flex space-x-6 border-b border-navy-200 pt-2 shrink-0">
+        {/* Underlined Tab Switcher Bar */}
+        <div className="flex space-x-4 sm:space-x-6 border-b border-navy-200 pt-2 shrink-0 overflow-x-auto">
           <button
             onClick={() => setActiveSubTab("stats")}
-            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
               activeSubTab === "stats"
                 ? "border-pastel-teal text-pastel-teal"
                 : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
             }`}
           >
             <Activity className="w-4 h-4" />
-            <span>Statistik Ekonomi</span>
+            <span>Statistik</span>
           </button>
+
           <button
             onClick={() => setActiveSubTab("shops")}
-            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
               activeSubTab === "shops"
                 ? "border-pastel-teal text-pastel-teal"
                 : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
@@ -292,21 +318,70 @@ export default function AdminPanel({
             <Store className="w-4 h-4" />
             <span>Kelola UMKM ({totalShops})</span>
             {pendingShops > 0 && (
-              <span className="ml-1 px-2 py-0.5 bg-pastel-peach text-navy-900 text-xs font-black rounded-full">
+              <span className="ml-0.5 px-2 py-0.5 bg-pastel-peach text-navy-900 text-xs font-black rounded-full">
                 {pendingShops}
               </span>
             )}
           </button>
+
+          <button
+            onClick={() => setActiveSubTab("products")}
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
+              activeSubTab === "products"
+                ? "border-pastel-teal text-pastel-teal"
+                : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
+            }`}
+          >
+            <Package className="w-4 h-4" />
+            <span>Moderasi Produk ({products.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab("reviews")}
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
+              activeSubTab === "reviews"
+                ? "border-pastel-teal text-pastel-teal"
+                : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Ulasan ({reviews.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab("categories")}
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
+              activeSubTab === "categories"
+                ? "border-pastel-teal text-pastel-teal"
+                : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Sektor ({categories.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab("users")}
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
+              activeSubTab === "users"
+                ? "border-pastel-teal text-pastel-teal"
+                : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Akun ({users.length})</span>
+          </button>
+
           <button
             onClick={() => setActiveSubTab("config")}
-            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
+            className={`pb-3 px-1 border-b-2 text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
               activeSubTab === "config"
                 ? "border-pastel-teal text-pastel-teal"
                 : "border-transparent text-navy-400 hover:text-navy-700 hover:border-navy-300"
             }`}
           >
             <Settings className="w-4 h-4" />
-            <span>Konfigurasi Platform</span>
+            <span>Konfigurasi</span>
           </button>
         </div>
       </div>
@@ -329,6 +404,26 @@ export default function AdminPanel({
           setStatusFilter={setStatusFilter}
           onOpenImportModal={() => setIsImportModalOpen(true)}
         />
+      )}
+
+      {activeSubTab === "products" && (
+        <ProductsTab
+          products={products}
+          categories={categories}
+          shops={shops}
+        />
+      )}
+
+      {activeSubTab === "reviews" && (
+        <ReviewsTab reviews={reviews} />
+      )}
+
+      {activeSubTab === "categories" && (
+        <CategoriesTab categories={categories} />
+      )}
+
+      {activeSubTab === "users" && (
+        <UsersTab users={users} />
       )}
 
       {activeSubTab === "config" && (
