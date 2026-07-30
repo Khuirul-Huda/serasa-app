@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Star, Trash2, MessageSquare, ShieldAlert } from "lucide-react";
+import { Star, Trash2, MessageSquare } from "lucide-react";
 import { router } from "@inertiajs/react";
 import React, { useState } from "react";
+import { toast } from "sonner";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Table,
   TableHeader,
@@ -21,10 +23,16 @@ interface ReviewsTabProps {
 }
 
 export default function ReviewsTab({ reviews }: ReviewsTabProps) {
-  const handleDeleteReview = (reviewId: string) => {
-    if (confirm("Hapus ulasan ini dari platform? Rating rata-rata produk akan dihitung ulang.")) {
-      router.delete(`/admin/reviews/${reviewId}`);
-    }
+  const [reviewToDelete, setReviewToDelete] = useState<{ id: string; userName: string } | null>(null);
+
+  const confirmDeleteReview = () => {
+    if (!reviewToDelete) return;
+    router.delete(`/admin/reviews/${reviewToDelete.id}`, {
+      onSuccess: () => {
+        toast.success(`Ulasan dari "${reviewToDelete.userName}" berhasil dihapus.`);
+        setReviewToDelete(null);
+      },
+    });
   };
 
   return (
@@ -93,7 +101,7 @@ export default function ReviewsTab({ reviews }: ReviewsTabProps) {
 
                     <TableCell className="p-4 text-right">
                       <button
-                        onClick={() => handleDeleteReview(rev.id)}
+                        onClick={() => setReviewToDelete({ id: rev.id, userName: rev.userName })}
                         className="p-2 rounded-xl text-navy-400 hover:text-pastel-coral hover:bg-pastel-coral-light transition-colors cursor-pointer"
                         title="Hapus Ulasan"
                       >
@@ -107,6 +115,18 @@ export default function ReviewsTab({ reviews }: ReviewsTabProps) {
           </Table>
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmDialog
+        isOpen={!!reviewToDelete}
+        title="Konfirmasi Hapus Ulasan"
+        description={`Hapus ulasan dari "${reviewToDelete?.userName}"? Rating rata-rata produk terkait akan dihitung ulang secara otomatis.`}
+        confirmLabel="Ya, Hapus Ulasan"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteReview}
+        onCancel={() => setReviewToDelete(null)}
+      />
     </div>
   );
 }

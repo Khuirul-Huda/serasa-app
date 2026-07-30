@@ -14,6 +14,7 @@ import {
   Send
 } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -187,7 +188,7 @@ export default function ProductDetail({
 
               <button
                 onClick={() => {
-                  alert("Simulasi: Produk ditambahkan ke keranjang belanja Anda di Navbar.");
+                  toast.success(`"${product.name}" ditambahkan ke keranjang belanja.`);
                 }}
                 disabled={!product.isAvailable}
                 className="py-3 bg-pastel-teal hover:bg-pastel-teal/90 text-white font-bold uppercase tracking-wider text-[10px] rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all shadow-3xs disabled:opacity-50"

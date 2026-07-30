@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Plus, Trash2, Grid, Layers } from "lucide-react";
+import { Plus, Trash2, Layers } from "lucide-react";
 import { useForm, router } from "@inertiajs/react";
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Table,
   TableHeader,
@@ -25,6 +27,7 @@ interface CategoriesTabProps {
 
 export default function CategoriesTab({ categories }: CategoriesTabProps) {
   const [isAdding, setIsAdding] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const { data, setData, post, processing, reset } = useForm({
     name: "",
@@ -36,16 +39,21 @@ export default function CategoriesTab({ categories }: CategoriesTabProps) {
     e.preventDefault();
     post("/admin/categories", {
       onSuccess: () => {
+        toast.success(`Kategori sektor "${data.name}" berhasil ditambahkan!`);
         reset();
         setIsAdding(false);
       },
     });
   };
 
-  const handleDeleteCategory = (catId: string, name: string) => {
-    if (confirm(`Hapus kategori "${name}"? Produk yang terkait akan dialihkan ke kategori default.`)) {
-      router.delete(`/admin/categories/${catId}`);
-    }
+  const confirmDeleteCategory = () => {
+    if (!categoryToDelete) return;
+    router.delete(`/admin/categories/${categoryToDelete.id}`, {
+      onSuccess: () => {
+        toast.success(`Kategori "${categoryToDelete.name}" berhasil dihapus.`);
+        setCategoryToDelete(null);
+      },
+    });
   };
 
   return (
@@ -105,14 +113,14 @@ export default function CategoriesTab({ categories }: CategoriesTabProps) {
                 type="button"
                 variant="outline"
                 onClick={() => setIsAdding(false)}
-                className="rounded-xl text-navy-600 text-xs sm:text-sm"
+                className="rounded-xl text-navy-600 text-xs sm:text-sm cursor-pointer"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={processing}
-                className="bg-pastel-teal hover:bg-pastel-teal/90 text-white rounded-xl font-extrabold uppercase tracking-wider text-xs sm:text-sm"
+                className="bg-pastel-teal hover:bg-pastel-teal/90 text-white rounded-xl font-extrabold uppercase tracking-wider text-xs sm:text-sm cursor-pointer"
               >
                 Simpan Kategori
               </Button>
@@ -145,7 +153,7 @@ export default function CategoriesTab({ categories }: CategoriesTabProps) {
 
                   <TableCell className="p-4 text-right">
                     <button
-                      onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                      onClick={() => setCategoryToDelete({ id: cat.id, name: cat.name })}
                       className="p-2 rounded-xl text-navy-400 hover:text-pastel-coral hover:bg-pastel-coral-light transition-colors cursor-pointer"
                       title="Hapus Kategori"
                     >
@@ -158,6 +166,18 @@ export default function CategoriesTab({ categories }: CategoriesTabProps) {
           </Table>
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmDialog
+        isOpen={!!categoryToDelete}
+        title="Konfirmasi Hapus Kategori"
+        description={`Hapus kategori "${categoryToDelete?.name}"? Produk yang berada di bawah kategori ini akan dialihkan ke kategori default secara otomatis.`}
+        confirmLabel="Ya, Hapus Kategori"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteCategory}
+        onCancel={() => setCategoryToDelete(null)}
+      />
     </div>
   );
 }

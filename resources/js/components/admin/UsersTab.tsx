@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Users, Shield, UserCheck, Store } from "lucide-react";
+import { Users } from "lucide-react";
 import { router } from "@inertiajs/react";
 import React from "react";
+import { toast } from "sonner";
 import {
   Table,
   TableHeader,
@@ -21,8 +22,12 @@ interface UsersTabProps {
 }
 
 export default function UsersTab({ users }: UsersTabProps) {
-  const handleRoleChange = (userId: number, newRole: string) => {
-    router.post(`/admin/users/${userId}/role`, { role: newRole });
+  const handleRoleChange = (userId: number, newRole: string, userName: string) => {
+    router.post(`/admin/users/${userId}/role`, { role: newRole }, {
+      onSuccess: () => {
+        toast.success(`Peran akun "${userName}" berhasil diubah menjadi ${newRole.toUpperCase()}.`);
+      },
+    });
   };
 
   return (
@@ -91,7 +96,7 @@ export default function UsersTab({ users }: UsersTabProps) {
                   <TableCell className="p-4 text-right">
                     <select
                       value={user.role}
-                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                      onChange={(e) => handleRoleChange(user.id, e.target.value, user.name)}
                       className="px-3 py-1.5 text-xs rounded-xl border border-navy-200/60 bg-white text-navy-800 font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal cursor-pointer shadow-3xs"
                     >
                       <option value="user">Pengguna (Warga)</option>

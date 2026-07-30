@@ -6,6 +6,7 @@
 import { ShoppingCart, Trash2, X } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import React, { useState, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import { formatIDR } from "@/utils";
 
 interface CartItem {
@@ -127,8 +128,9 @@ export default function CartDropdown({ onOpen }: CartDropdownProps) {
               </div>
               <button
                 onClick={() => {
-                  alert(
-                    "Ini adalah simulasi pemesanan. Pembelian sungguhan langsung dilakukan dengan menghubungi WhatsApp Pelaku UMKM bersangkutan di detail produk.",
+                  toast.info(
+                    "Simulasi Pemesanan: Pembelian sungguhan langsung dilakukan via WhatsApp ke Pelaku UMKM di detail produk.",
+                    { duration: 5000 }
                   );
                   setIsOpen(false);
                 }}

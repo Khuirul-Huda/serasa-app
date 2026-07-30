@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PlusCircle, Search, Eye, Trash2, CheckCircle2, AlertCircle } from "lucide-react";
-import { router } from "@inertiajs/react";
+import { Search, CheckCircle2, AlertCircle, Plus, Trash2, Package } from "lucide-react";
+import { Link, router } from "@inertiajs/react";
 import React, { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Table,
   TableHeader,
@@ -18,30 +20,29 @@ import {
 } from "@/components/ui/table";
 import type { Product, Category } from "@/types";
 import { formatIDR } from "@/utils";
-import AddProductForm from "./AddProductForm";
-import ProductPreview from "./ProductPreview";
 
 interface CatalogTabProps {
   myProducts: Product[];
   categories: Category[];
-  addProductForm: any;
-  handleAddProductSubmit: (e: React.FormEvent) => void;
-  isAddingProduct: boolean;
-  setIsAddingProduct: (val: boolean) => void;
+  searchCatalogQuery: string;
+  setSearchCatalogQuery: (query: string) => void;
+  selectedCatalogCategory: string;
+  setSelectedCatalogCategory: (category: string) => void;
+  onOpenAddModal: () => void;
 }
 
 export default function CatalogTab({
   myProducts,
   categories,
-  addProductForm,
-  handleAddProductSubmit,
-  isAddingProduct,
-  setIsAddingProduct,
+  searchCatalogQuery,
+  setSearchCatalogQuery,
+  selectedCatalogCategory,
+  setSelectedCatalogCategory,
+  onOpenAddModal,
 }: CatalogTabProps) {
-  const [searchCatalogQuery, setSearchCatalogQuery] = useState("");
-  const [selectedCatalogCategory, setSelectedCatalogCategory] = useState("all");
+  const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
 
-  const filteredProducts = useMemo(() => {
+  const filteredCatalogProducts = useMemo(() => {
     return myProducts.filter((p) => {
       const matchesSearch =
         p.name.toLowerCase().includes(searchCatalogQuery.toLowerCase()) ||
@@ -54,14 +55,22 @@ export default function CatalogTab({
     });
   }, [myProducts, searchCatalogQuery, selectedCatalogCategory]);
 
-  const handleToggleProductAvailable = (productId: string) => {
-    router.put(`/merchant/products/${productId}/toggle`);
+  const handleToggleProductAvailable = (productId: string, isAvailable: boolean) => {
+    router.put(`/merchant/products/${productId}/toggle`, {}, {
+      onSuccess: () => {
+        toast.success(isAvailable ? "Stok produk diubah menjadi Habis." : "Stok produk diubah menjadi Tersedia!");
+      },
+    });
   };
 
-  const handleDeleteProduct = (productId: string) => {
-    if (confirm("Hapus produk ini dari katalog etalase Anda?")) {
-      router.delete(`/merchant/products/${productId}`);
-    }
+  const confirmDeleteProduct = () => {
+    if (!productToDelete) return;
+    router.delete(`/merchant/products/${productToDelete.id}`, {
+      onSuccess: () => {
+        toast.success(`Produk "${productToDelete.name}" berhasil dihapus.`);
+        setProductToDelete(null);
+      },
+    });
   };
 
   return (
@@ -74,55 +83,33 @@ export default function CatalogTab({
         </div>
 
         <Button
-          onClick={() => setIsAddingProduct(!isAddingProduct)}
+          onClick={onOpenAddModal}
           className="px-5 h-10 bg-pastel-teal hover:bg-pastel-teal/90 text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
         >
-          <PlusCircle className="w-4 h-4 text-white" />
-          <span>{isAddingProduct ? "Batal Tambah" : "Tambah Produk Baru"}</span>
+          <Plus className="w-4 h-4 text-white" />
+          <span>Tambah Produk Baru</span>
         </Button>
       </div>
 
-      {/* Add Product Form + Live Preview Panel */}
-      {isAddingProduct && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in" id="owner-add-product-form">
-          <div className="lg:col-span-7">
-            <AddProductForm
-              form={addProductForm}
-              categories={categories}
-              onSubmit={handleAddProductSubmit}
-              onCancel={() => setIsAddingProduct(false)}
-            />
-          </div>
-
-          <div className="lg:col-span-5 space-y-4">
-            <div className="flex items-center gap-2 text-navy-600 pl-1">
-              <Eye className="w-4.5 h-4.5 text-pastel-teal" />
-              <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wider">Pratinjau Tampilan (Preview)</span>
-            </div>
-
-            <ProductPreview form={addProductForm} categories={categories} />
-          </div>
-        </div>
-      )}
-
-      {/* Search & Category Filter Controls */}
+      {/* Filter & Search Bar */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" />
           <Input
             type="text"
-            placeholder="Cari produk Anda..."
+            placeholder="Cari produk toko..."
             value={searchCatalogQuery}
             onChange={(e) => setSearchCatalogQuery(e.target.value)}
             className="pl-10 py-2.5 rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal bg-white text-xs sm:text-sm"
           />
         </div>
+
         <select
           value={selectedCatalogCategory}
           onChange={(e) => setSelectedCatalogCategory(e.target.value)}
           className="px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-navy-200/60 bg-white text-navy-800 font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pastel-teal/20 focus:border-pastel-teal cursor-pointer shadow-3xs"
         >
-          <option value="all">Semua Sektor Komoditas</option>
+          <option value="all">Semua Sektor Kategori ({myProducts.length})</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
               {cat.name}
@@ -131,28 +118,27 @@ export default function CatalogTab({
         </select>
       </div>
 
-      {/* Product List Table */}
+      {/* Products Table */}
       <div className="bg-white border border-navy-200/60 rounded-3xl shadow-3xs overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-navy-50 border-b border-navy-100 hover:bg-navy-50/50 text-xs uppercase font-extrabold text-navy-600 tracking-wider">
-                <TableHead className="p-4">Nama Produk Kreatif</TableHead>
+              <TableRow className="bg-navy-50 border-b border-navy-100 hover:bg-navy-50/50 text-xs font-extrabold uppercase text-navy-600 tracking-wider">
+                <TableHead className="p-4">Identitas Produk</TableHead>
                 <TableHead className="p-4">Harga Terdaftar</TableHead>
-                <TableHead className="p-4">Sektor Komoditas</TableHead>
                 <TableHead className="p-4">Status Ketersediaan</TableHead>
                 <TableHead className="p-4 text-right">Tindakan</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredProducts.length === 0 ? (
+              {filteredCatalogProducts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="p-8 text-center text-xs sm:text-sm text-navy-400 italic">
-                    Belum ada produk dalam katalog. Klik tombol "Tambah Produk Baru" di atas.
+                  <TableCell colSpan={4} className="p-8 text-center text-xs sm:text-sm text-navy-400 italic">
+                    Belum ada produk terdaftar dalam katalog toko ini.
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredProducts.map((product) => (
+                filteredCatalogProducts.map((product) => (
                   <TableRow key={product.id} className="border-b border-navy-100 hover:bg-navy-50/30 transition-colors">
                     <TableCell className="p-4">
                       <div className="flex items-center gap-3">
@@ -163,9 +149,12 @@ export default function CatalogTab({
                           referrerPolicy="no-referrer"
                         />
                         <div className="min-w-0">
-                          <span className="font-bold text-navy-900 text-xs sm:text-sm truncate block">
+                          <Link
+                            href={`/products/${product.id}`}
+                            className="font-bold text-navy-900 text-xs sm:text-sm hover:text-pastel-teal truncate block"
+                          >
                             {product.name}
-                          </span>
+                          </Link>
                           <span className="text-xs text-navy-500 block line-clamp-1 font-normal">
                             {product.description}
                           </span>
@@ -177,13 +166,10 @@ export default function CatalogTab({
                       {formatIDR(product.price)} <span className="text-xs text-navy-400 font-normal">/ {product.unit}</span>
                     </TableCell>
 
-                    <TableCell className="p-4 text-xs sm:text-sm font-medium text-navy-600">
-                      {categories.find((c) => c.id === product.categoryId)?.name || "-"}
-                    </TableCell>
-
                     <TableCell className="p-4">
                       <button
-                        onClick={() => handleToggleProductAvailable(product.id)}
+                        type="button"
+                        onClick={() => handleToggleProductAvailable(product.id, product.isAvailable)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-black uppercase rounded-lg border transition-all cursor-pointer ${
                           product.isAvailable
                             ? "bg-pastel-teal-light text-pastel-teal border-pastel-teal/20 hover:bg-pastel-teal/20"
@@ -193,7 +179,7 @@ export default function CatalogTab({
                         {product.isAvailable ? (
                           <>
                             <CheckCircle2 className="w-3.5 h-3.5" />
-                            Stok Tersedia
+                            Tersedia
                           </>
                         ) : (
                           <>
@@ -206,7 +192,8 @@ export default function CatalogTab({
 
                     <TableCell className="p-4 text-right">
                       <button
-                        onClick={() => handleDeleteProduct(product.id)}
+                        type="button"
+                        onClick={() => setProductToDelete({ id: product.id, name: product.name })}
                         className="p-2 rounded-xl text-navy-400 hover:text-pastel-coral hover:bg-pastel-coral-light transition-colors cursor-pointer"
                         title="Hapus Produk"
                       >
@@ -220,6 +207,18 @@ export default function CatalogTab({
           </Table>
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmDialog
+        isOpen={!!productToDelete}
+        title="Konfirmasi Hapus Produk"
+        description={`Apakah Anda yakin ingin menghapus produk "${productToDelete?.name}" dari etalase toko Anda?`}
+        confirmLabel="Ya, Hapus Produk"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteProduct}
+        onCancel={() => setProductToDelete(null)}
+      />
     </div>
   );
 }

@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Search, CheckCircle2, AlertCircle, FileSpreadsheet, Trash2, ShieldCheck, MapPin, PhoneCall, Download, Award } from "lucide-react";
+import { Search, CheckCircle2, AlertCircle, FileSpreadsheet, Trash2, ShieldCheck, MapPin, PhoneCall, Download } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
-import React from "react";
+import React, { useState } from "react";
 import * as XLSX from "xlsx";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Table,
   TableHeader,
@@ -36,6 +38,8 @@ export default function ShopsTab({
   setStatusFilter,
   onOpenImportModal,
 }: ShopsTabProps) {
+  const [shopToDelete, setShopToDelete] = useState<{ id: string; name: string } | null>(null);
+
   const filteredShops = shops.filter((shop) => {
     const matchesSearch =
       shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -50,18 +54,30 @@ export default function ShopsTab({
     return matchesSearch && matchesStatus;
   });
 
-  const handleToggleVerify = (shopId: string) => {
-    router.post(`/admin/shops/${shopId}/verify`);
+  const handleToggleVerify = (shopId: string, isVerified: boolean) => {
+    router.post(`/admin/shops/${shopId}/verify`, {}, {
+      onSuccess: () => {
+        toast.success(isVerified ? "Status verifikasi toko dibatalkan." : "Toko berhasil diverifikasi!");
+      },
+    });
   };
 
   const handleTogglePermit = (shopId: string, permit: "nib" | "halal" | "pirt") => {
-    router.post(`/admin/shops/${shopId}/permit`, { permit });
+    router.post(`/admin/shops/${shopId}/permit`, { permit }, {
+      onSuccess: () => {
+        toast.success(`Izin ${permit.toUpperCase()} toko berhasil diperbarui!`);
+      },
+    });
   };
 
-  const handleDeleteShop = (shopId: string, shopName: string) => {
-    if (confirm(`Hapus toko "${shopName}" beserta produknya dari platform?`)) {
-      router.delete(`/admin/shops/${shopId}`);
-    }
+  const confirmDeleteShop = () => {
+    if (!shopToDelete) return;
+    router.delete(`/admin/shops/${shopToDelete.id}`, {
+      onSuccess: () => {
+        toast.success(`Toko "${shopToDelete.name}" berhasil dihapus.`);
+        setShopToDelete(null);
+      },
+    });
   };
 
   const handleExportExcel = () => {
@@ -83,7 +99,9 @@ export default function ShopsTab({
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Laporan_UMKM_Desa");
-    XLSX.writeFile(wb, `Laporan_UMKM_Desa_Samirono_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    const fileName = `Laporan_UMKM_Desa_Samirono_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    toast.success(`Laporan Excel "${fileName}" berhasil diunduh!`);
   };
 
   return (
@@ -276,7 +294,7 @@ export default function ShopsTab({
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleToggleVerify(shop.id)}
+                          onClick={() => handleToggleVerify(shop.id, shop.isVerified)}
                           className={`h-9 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer ${
                             shop.isVerified
                               ? "bg-pastel-peach-light text-pastel-peach border-pastel-peach/20 hover:bg-pastel-peach/20"
@@ -290,7 +308,7 @@ export default function ShopsTab({
                         </Button>
 
                         <button
-                          onClick={() => handleDeleteShop(shop.id, shop.name)}
+                          onClick={() => setShopToDelete({ id: shop.id, name: shop.name })}
                           className="p-2 rounded-xl text-navy-400 hover:text-pastel-coral hover:bg-pastel-coral-light transition-colors cursor-pointer"
                           title="Hapus Toko"
                         >
@@ -305,6 +323,18 @@ export default function ShopsTab({
           </Table>
         </div>
       </div>
+
+      {/* Custom Confirmation Modal */}
+      <ConfirmDialog
+        isOpen={!!shopToDelete}
+        title="Konfirmasi Hapus Toko"
+        description={`Apakah Anda yakin ingin menghapus toko "${shopToDelete?.name}" beserta seluruh produknya dari direktori desa? Action ini tidak dapat dibatalkan.`}
+        confirmLabel="Ya, Hapus Toko"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteShop}
+        onCancel={() => setShopToDelete(null)}
+      />
     </div>
   );
 }

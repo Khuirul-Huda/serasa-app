@@ -19,26 +19,8 @@ import {
   Users,
 } from "lucide-react";
 import React, { useState, useRef } from "react";
+import { toast } from "sonner";
 import * as XLSX from "xlsx";
-import type { AppSettings, Shop, Product, Category } from "@/types";
-import type { AdminReview, AdminUser } from "@/pages/admin-dashboard";
-import StatsTab from "./admin/StatsTab";
-import ShopsTab from "./admin/ShopsTab";
-import ConfigTab from "./admin/ConfigTab";
-import ProductsTab from "./admin/ProductsTab";
-import ReviewsTab from "./admin/ReviewsTab";
-import CategoriesTab from "./admin/CategoriesTab";
-import UsersTab from "./admin/UsersTab";
-import ImportModal, { ParsedImportRow } from "./admin/ImportModal";
-
-interface AdminPanelProps {
-  settings: AppSettings;
-  shops: Shop[];
-  products: Product[];
-  categories: Category[];
-  reviews?: AdminReview[];
-  users?: AdminUser[];
-}
 
 export default function AdminPanel({
   settings,
@@ -82,6 +64,7 @@ export default function AdminPanel({
     post("/admin/settings", {
       onSuccess: () => {
         setSaveSuccess(true);
+        toast.success("Konfigurasi portal berhasil disimpan!");
         setTimeout(() => setSaveSuccess(false), 3500);
       },
     });
@@ -104,7 +87,7 @@ export default function AdminPanel({
         const rawData: any[] = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
         if (rawData.length < 2) {
-          alert("File Excel kosong atau tidak sesuai format.");
+          toast.error("File Excel kosong atau tidak sesuai format.");
           setIsParsing(false);
           return;
         }
@@ -166,9 +149,10 @@ export default function AdminPanel({
         }
 
         setImportRows(parsed);
+        toast.info(`Berhasil me-load ${parsed.length} baris data toko dari file Excel.`);
       } catch (err) {
         console.error("Gagal membaca Excel:", err);
-        alert("Terjadi kesalahan membaca file Excel. Pastikan format valid.");
+        toast.error("Terjadi kesalahan membaca file Excel. Pastikan format valid.");
       } finally {
         setIsParsing(false);
       }
@@ -191,7 +175,7 @@ export default function AdminPanel({
     const toImport = importRows.filter((r) => r.action === "import");
 
     if (toImport.length === 0) {
-      alert("Pilih setidaknya 1 baris toko untuk diimpor.");
+      toast.warning("Pilih setidaknya 1 baris toko untuk diimpor.");
       return;
     }
 
@@ -205,11 +189,11 @@ export default function AdminPanel({
           setIsSubmittingImport(false);
           setIsImportModalOpen(false);
           setImportRows([]);
-          alert(`Berhasil mengimpor data UMKM!`);
+          toast.success(`Berhasil mengimpor ${toImport.length} data UMKM ke direktori desa!`);
         },
         onError: () => {
           setIsSubmittingImport(false);
-          alert("Gagal mengimpor data toko. Periksa kembali format data.");
+          toast.error("Gagal mengimpor data toko. Periksa kembali format data.");
         },
       }
     );

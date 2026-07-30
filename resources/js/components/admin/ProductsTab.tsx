@@ -6,7 +6,9 @@
 import { Search, CheckCircle2, AlertCircle, Trash2, ShoppingBag } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
 import React, { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Table,
   TableHeader,
@@ -27,6 +29,7 @@ interface ProductsTabProps {
 export default function ProductsTab({ products, categories, shops }: ProductsTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -38,14 +41,22 @@ export default function ProductsTab({ products, categories, shops }: ProductsTab
     });
   }, [products, searchQuery, categoryFilter]);
 
-  const handleToggleProduct = (productId: string) => {
-    router.post(`/admin/products/${productId}/toggle`);
+  const handleToggleProduct = (productId: string, isAvailable: boolean) => {
+    router.post(`/admin/products/${productId}/toggle`, {}, {
+      onSuccess: () => {
+        toast.success(isAvailable ? "Status stok diubah menjadi Habis." : "Status stok diubah menjadi Tersedia!");
+      },
+    });
   };
 
-  const handleDeleteProduct = (productId: string, name: string) => {
-    if (confirm(`Hapus produk "${name}" dari platform?`)) {
-      router.delete(`/admin/products/${productId}`);
-    }
+  const confirmDeleteProduct = () => {
+    if (!productToDelete) return;
+    router.delete(`/admin/products/${productToDelete.id}`, {
+      onSuccess: () => {
+        toast.success(`Produk "${productToDelete.name}" berhasil dihapus.`);
+        setProductToDelete(null);
+      },
+    });
   };
 
   return (
@@ -151,7 +162,7 @@ export default function ProductsTab({ products, categories, shops }: ProductsTab
 
                       <TableCell className="p-4">
                         <button
-                          onClick={() => handleToggleProduct(product.id)}
+                          onClick={() => handleToggleProduct(product.id, product.isAvailable)}
                           className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-black uppercase rounded-lg border transition-all cursor-pointer ${
                             product.isAvailable
                               ? "bg-pastel-teal-light text-pastel-teal border-pastel-teal/20 hover:bg-pastel-teal/20"
@@ -174,7 +185,7 @@ export default function ProductsTab({ products, categories, shops }: ProductsTab
 
                       <TableCell className="p-4 text-right">
                         <button
-                          onClick={() => handleDeleteProduct(product.id, product.name)}
+                          onClick={() => setProductToDelete({ id: product.id, name: product.name })}
                           className="p-2 rounded-xl text-navy-400 hover:text-pastel-coral hover:bg-pastel-coral-light transition-colors cursor-pointer"
                           title="Hapus Produk"
                         >
@@ -189,6 +200,18 @@ export default function ProductsTab({ products, categories, shops }: ProductsTab
           </Table>
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmDialog
+        isOpen={!!productToDelete}
+        title="Konfirmasi Hapus Produk"
+        description={`Apakah Anda yakin ingin menghapus produk "${productToDelete?.name}" dari platform etalase?`}
+        confirmLabel="Ya, Hapus Produk"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={confirmDeleteProduct}
+        onCancel={() => setProductToDelete(null)}
+      />
     </div>
   );
 }
