@@ -5,7 +5,7 @@
 
 import { Link, router } from '@inertiajs/react';
 import { ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Hero from '@/components/Hero';
 import ProductCard from '@/components/ProductCard';
 import SEOHead from '@/components/SEOHead';
@@ -34,6 +34,8 @@ export default function Welcome({
     const [selectedCategory, setSelectedCategory] = useState(
         filters?.category || 'all',
     );
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 8;
 
     // Client-side instant filtering for premium responsive UX
     const filteredProducts = useMemo(() => {
@@ -53,6 +55,18 @@ export default function Welcome({
             return matchSearch && matchCategory;
         });
     }, [products, searchQuery, selectedCategory]);
+
+    // Reset page to 1 when search or category filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, selectedCategory]);
+
+    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE) || 1;
+
+    const paginatedProducts = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredProducts, currentPage]);
 
     // Fast O(1) lookup maps for products rendering
     const shopsMap = useMemo(() => {
@@ -103,7 +117,7 @@ export default function Welcome({
 
             <div className="mx-auto max-w-7xl space-y-12 px-4 py-10 font-sans sm:px-6 lg:px-8">
                 {/* Catalog Section */}
-                <div className="space-y-6">
+                <div className="space-y-6" id="catalog-section">
                     <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                         <div>
                             <h2 className="flex items-center gap-2 text-base font-black tracking-wider text-navy-900 uppercase">
@@ -117,7 +131,7 @@ export default function Welcome({
                         </div>
 
                         <div className="rounded-xl border border-navy-200/60 bg-white px-3 py-1.5 text-xs font-bold tracking-wider text-navy-500 uppercase shadow-2xs">
-                            Menampilkan {filteredProducts.length} Produk Relevan
+                            Menampilkan {paginatedProducts.length} dari {filteredProducts.length} Produk Relevan
                         </div>
                     </div>
 
@@ -143,20 +157,69 @@ export default function Welcome({
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                            {filteredProducts.map((product) => {
-                                const shop = shopsMap.get(product.shopId);
-                                const category = categoriesMap.get(product.categoryId);
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                                {paginatedProducts.map((product) => {
+                                    const shop = shopsMap.get(product.shopId);
+                                    const category = categoriesMap.get(product.categoryId);
 
-                                return (
-                                    <ProductCard
-                                        key={product.id}
-                                        product={product}
-                                        shop={shop}
-                                        category={category}
-                                    />
-                                );
-                            })}
+                                    return (
+                                        <ProductCard
+                                            key={product.id}
+                                            product={product}
+                                            shop={shop}
+                                            category={category}
+                                        />
+                                    );
+                                })}
+                            </div>
+
+                            {/* Pagination Controls Bar */}
+                            {totalPages > 1 && (
+                                <div className="flex flex-col items-center justify-between gap-4 border-t border-navy-100 pt-6 sm:flex-row">
+                                    <div className="text-xs font-bold text-navy-500">
+                                        Halaman {currentPage} dari {totalPages} ({filteredProducts.length} Produk Total)
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <button
+                                            disabled={currentPage === 1}
+                                            onClick={() => {
+                                                setCurrentPage((prev) => Math.max(prev - 1, 1));
+                                                document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                                            }}
+                                            className="cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-1.5 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40"
+                                        >
+                                            &laquo; Prev
+                                        </button>
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                            <button
+                                                key={page}
+                                                onClick={() => {
+                                                    setCurrentPage(page);
+                                                    document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                                                }}
+                                                className={`h-8 w-8 cursor-pointer rounded-xl text-xs font-extrabold transition-all ${
+                                                    page === currentPage
+                                                        ? 'bg-pastel-teal text-white shadow-2xs'
+                                                        : 'border border-navy-200 bg-white text-navy-700 hover:border-pastel-teal hover:text-pastel-teal'
+                                                }`}
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
+                                        <button
+                                            disabled={currentPage === totalPages}
+                                            onClick={() => {
+                                                setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                                                document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                                            }}
+                                            className="cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-1.5 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40"
+                                        >
+                                            Next &raquo;
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
