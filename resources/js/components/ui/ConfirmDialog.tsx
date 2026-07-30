@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AlertTriangle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -28,12 +29,18 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const isDanger = variant === "danger";
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans text-navy-900">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans text-navy-900">
       <div className="bg-white rounded-3xl border border-navy-200 shadow-2xl max-w-md w-full p-6 space-y-5 animate-scale-in">
         <div className="flex items-start gap-4">
           <div
@@ -79,6 +86,7 @@ export default function ConfirmDialog({
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
