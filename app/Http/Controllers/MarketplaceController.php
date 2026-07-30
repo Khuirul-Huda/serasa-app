@@ -143,7 +143,10 @@ class MarketplaceController extends Controller
         ])->findOrFail($id);
 
         $mappedShop = $this->mapShop($shop);
-        $products = $shop->products->map(fn ($p) => $this->mapProduct($p));
+        $products = $shop->products->map(function ($p) {
+            /** @var Product $p */
+            return $this->mapProduct($p);
+        });
 
         // Limit to latest 12 for the "Produk Lainnya" sidebar — avoids full table scan
         $allProducts = Product::select([
@@ -184,8 +187,11 @@ class MarketplaceController extends Controller
         ])->findOrFail($id);
 
         $mappedProduct = $this->mapProduct($product);
-        $mappedShop = $this->mapShop($product->shop);
-        $reviews = $product->reviews->map(fn ($r) => $this->mapReview($r));
+        $mappedShop = $product->shop instanceof Shop ? $this->mapShop($product->shop) : [];
+        $reviews = $product->reviews->map(function ($r) {
+            /** @var \App\Models\Review $r */
+            return $this->mapReview($r);
+        });
 
         // Limit to latest 12 for the "Produk Lainnya" sidebar — avoids full table scan
         $allProducts = Product::select([
@@ -205,7 +211,7 @@ class MarketplaceController extends Controller
 
     /* MAPPING HELPERS */
 
-    private function mapReview($review): array
+    private function mapReview(\App\Models\Review $review): array
     {
         return [
             'id' => $review->id,

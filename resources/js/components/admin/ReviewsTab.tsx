@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Star, Trash2, MessageSquare } from "lucide-react";
+import { Star, Trash2, MessageSquare, Search, Download } from "lucide-react";
 import { router } from "@inertiajs/react";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import * as XLSX from "xlsx";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Table,
@@ -23,7 +26,19 @@ interface ReviewsTabProps {
 }
 
 export default function ReviewsTab({ reviews }: ReviewsTabProps) {
+  const [searchQuery, setSearchQuery] = useState("");
   const [reviewToDelete, setReviewToDelete] = useState<{ id: string; userName: string } | null>(null);
+
+  const filteredReviews = useMemo(() => {
+    return reviews.filter((r) => {
+      const q = searchQuery.toLowerCase();
+      return (
+        r.userName.toLowerCase().includes(q) ||
+        r.productName.toLowerCase().includes(q) ||
+        r.comment.toLowerCase().includes(q)
+      );
+    });
+  }, [reviews, searchQuery]);
 
   const confirmDeleteReview = () => {
     if (!reviewToDelete) return;
@@ -35,10 +50,28 @@ export default function ReviewsTab({ reviews }: ReviewsTabProps) {
     });
   };
 
+  const handleExportExcel = () => {
+    const exportData = reviews.map((rev, index) => ({
+      No: index + 1,
+      "Pengulas": rev.userName,
+      "Produk": rev.productName,
+      "Rating": rev.rating,
+      "Komentar": rev.comment,
+      "Waktu": rev.createdAt,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan_Ulasan_Pembeli");
+    const fileName = `Laporan_Ulasan_Pembeli_Samirono_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    toast.success(`Laporan Excel ulasan "${fileName}" berhasil diunduh!`);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in font-sans text-navy-900" id="admin-reviews-tab">
       {/* Header Bar */}
-      <div className="bg-white border border-navy-200/60 p-5 sm:p-6 rounded-3xl shadow-3xs flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white border border-navy-200/60 p-5 sm:p-6 rounded-3xl shadow-3xs gap-4">
         <div>
           <h3 className="font-extrabold text-navy-900 text-lg uppercase tracking-wider flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-pastel-teal" />
@@ -49,9 +82,26 @@ export default function ReviewsTab({ reviews }: ReviewsTabProps) {
           </p>
         </div>
 
-        <span className="px-3.5 py-1.5 bg-pastel-teal-light border border-pastel-teal/20 text-pastel-teal font-black text-xs uppercase tracking-wider rounded-xl">
-          {reviews.length} Ulasan Masuk
-        </span>
+        <Button
+          onClick={handleExportExcel}
+          variant="outline"
+          className="px-4 h-10 border-navy-200 text-navy-700 hover:bg-navy-50 text-xs sm:text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+        >
+          <Download className="w-4 h-4 text-pastel-teal" />
+          <span>Ekspor Excel Ulasan</span>
+        </Button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" />
+        <Input
+          type="text"
+          placeholder="Cari pengulas, nama produk, atau isi ulasan..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 py-2.5 rounded-xl border-navy-200/60 focus-visible:ring-pastel-teal/20 focus-visible:border-pastel-teal bg-white text-xs sm:text-sm"
+        />
       </div>
 
       {/* Reviews Table */}
@@ -68,14 +118,14 @@ export default function ReviewsTab({ reviews }: ReviewsTabProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {reviews.length === 0 ? (
+              {filteredReviews.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="p-8 text-center text-xs sm:text-sm text-navy-400 italic">
-                    Belum ada ulasan pembeli terdaftar.
+                    Belum ada ulasan yang cocok dengan pencarian.
                   </TableCell>
                 </TableRow>
               ) : (
-                reviews.map((rev) => (
+                filteredReviews.map((rev) => (
                   <TableRow key={rev.id} className="border-b border-navy-100 hover:bg-navy-50/30 transition-colors">
                     <TableCell className="p-4 font-bold text-navy-900 text-xs sm:text-sm">
                       <div>

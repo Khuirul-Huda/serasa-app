@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Search, CheckCircle2, AlertCircle, Trash2, ShoppingBag } from "lucide-react";
+import { Search, CheckCircle2, AlertCircle, Trash2, ShoppingBag, Download } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
 import React, { useState, useMemo } from "react";
+import * as XLSX from "xlsx";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Table,
@@ -59,16 +61,52 @@ export default function ProductsTab({ products, categories, shops }: ProductsTab
     });
   };
 
+  const handleExportExcel = () => {
+    const exportData = products.map((product, index) => {
+      const shop = shops.find((s) => s.id === product.shopId);
+      const cat = categories.find((c) => c.id === product.categoryId);
+      return {
+        No: index + 1,
+        "Nama Produk": product.name,
+        "Toko Pemilik": shop ? shop.name : "-",
+        "Pemilik Toko": shop ? shop.ownerName : "-",
+        "Sektor Kategori": cat ? cat.name : "-",
+        "Harga": product.price,
+        "Satuan": product.unit,
+        "Rating": product.rating,
+        "Status Stok": product.isAvailable ? "Tersedia" : "Stok Habis",
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan_Produk_Desa");
+    const fileName = `Laporan_Katalog_Produk_Samirono_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    toast.success(`Laporan Excel produk "${fileName}" berhasil diunduh!`);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in font-sans text-navy-900" id="admin-products-tab">
       {/* Header Bar */}
-      <div className="bg-white border border-navy-200/60 p-5 sm:p-6 rounded-3xl shadow-3xs">
-        <h3 className="font-extrabold text-navy-900 text-lg uppercase tracking-wider">
-          Moderasi Produk Etalase Warga
-        </h3>
-        <p className="text-xs sm:text-sm text-navy-500 mt-1 font-normal">
-          Tinjau seluruh komoditas produk yang diunggah oleh pemilik UMKM Desa Samirono.
-        </p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white border border-navy-200/60 p-5 sm:p-6 rounded-3xl shadow-3xs gap-4">
+        <div>
+          <h3 className="font-extrabold text-navy-900 text-lg uppercase tracking-wider">
+            Moderasi Produk Etalase Warga
+          </h3>
+          <p className="text-xs sm:text-sm text-navy-500 mt-1 font-normal">
+            Tinjau seluruh komoditas produk yang diunggah oleh pemilik UMKM Desa Samirono.
+          </p>
+        </div>
+
+        <Button
+          onClick={handleExportExcel}
+          variant="outline"
+          className="px-4 h-10 border-navy-200 text-navy-700 hover:bg-navy-50 text-xs sm:text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-3xs flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+        >
+          <Download className="w-4 h-4 text-pastel-teal" />
+          <span>Ekspor Excel Produk</span>
+        </Button>
       </div>
 
       {/* Filter & Search Bar */}

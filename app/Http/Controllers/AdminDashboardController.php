@@ -44,19 +44,22 @@ class AdminDashboardController extends Controller
 
         $categories = $this->getCachedCategories();
 
-        $reviews = Review::with('product:id,name')
+        $reviews = Review::with('product')
             ->latest()
             ->take(100)
             ->get()
-            ->map(fn ($r) => [
-                'id' => $r->id,
-                'productId' => $r->product_id,
-                'productName' => $r->product?->name ?? 'Produk',
-                'userName' => $r->user_name,
-                'rating' => $r->rating,
-                'comment' => $r->comment,
-                'createdAt' => $r->created_at ? $r->created_at->diffForHumans() : 'Baru Saja',
-            ])->toArray();
+            ->map(function ($r): array {
+                /** @var Review $r */
+                return [
+                    'id' => $r->id,
+                    'productId' => $r->product_id,
+                    'productName' => $r->product instanceof Product ? $r->product->name : 'Produk',
+                    'userName' => $r->user_name,
+                    'rating' => $r->rating,
+                    'comment' => $r->comment,
+                    'createdAt' => $r->created_at ? $r->created_at->diffForHumans() : 'Baru Saja',
+                ];
+            })->toArray();
 
         $users = User::select(['id', 'name', 'email', 'role', 'created_at'])
             ->latest()
@@ -163,7 +166,7 @@ class AdminDashboardController extends Controller
                 $averageRating = Review::where('product_id', $product->id)->avg('rating') ?: 5.0;
 
                 $product->update([
-                    'rating' => round($averageRating, 1),
+                    'rating' => round((float) $averageRating, 1),
                     'reviews_count' => $reviewsCount,
                 ]);
             }

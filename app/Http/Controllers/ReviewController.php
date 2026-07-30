@@ -37,7 +37,7 @@ class ReviewController extends Controller
             $averageRating = Review::where('product_id', $product->id)->avg('rating') ?: 5.0;
 
             $product->update([
-                'rating' => round($averageRating, 1),
+                'rating' => round((float) $averageRating, 1),
                 'reviews_count' => $reviewsCount,
             ]);
         });
