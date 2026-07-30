@@ -13,7 +13,7 @@ import { send } from '@/routes/verification';
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
         <>
-            <Head title="Verifikasi Email - SAMIRONO ETALASE" />
+            <Head title="Verifikasi Email" />
 
             {status === 'verification-link-sent' && (
                 <div className="mb-4 p-3 bg-pastel-teal-light border border-pastel-teal/20 rounded-xl text-center text-xs font-bold text-pastel-teal">

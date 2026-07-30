@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import AppLogo from '@/components/app-logo';
 import type { AuthLayoutProps } from '@/types';
 
@@ -12,6 +12,10 @@ export default function AuthSplitLayout({
     title,
     description,
 }: AuthLayoutProps) {
+    const { settings } = usePage().props as any;
+    const appName = settings?.appName || 'Etalase UMKM Digital';
+    const villageName = settings?.villageName || 'Desa Samirono';
+
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0 font-sans text-navy-900 bg-navy-50/40">
             <div className="relative hidden h-full flex-col bg-navy-900 p-10 text-white lg:flex border-r border-navy-800 justify-between">
@@ -24,18 +28,18 @@ export default function AuthSplitLayout({
 
                 <div className="relative z-20 space-y-2">
                     <span className="text-xs font-black uppercase tracking-widest text-pastel-peach">
-                        SAMIRONO ETALASE
+                        {appName}
                     </span>
                     <h2 className="text-2xl font-black tracking-tight text-white leading-snug">
-                        Mendikdayakan Pelaku UMKM & Produk Kreatif Desa Samirono
+                        Mendikdayakan Pelaku UMKM & Produk Kreatif {villageName}
                     </h2>
                     <p className="text-xs text-navy-300 leading-relaxed font-normal">
-                        Kecamatan Getasan, Kabupaten Semarang. Hubungkan usaha Anda ke pasar eksternal secara digital.
+                        Hubungkan usaha Anda ke pasar eksternal secara digital.
                     </p>
                 </div>
 
-                <div className="text-[10px] text-navy-400 font-mono">
-                    © 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO
+                <div className="text-[10px] text-navy-400 font-mono uppercase">
+                    © {new Date().getFullYear()} {appName} - {villageName}
                 </div>
             </div>
 

@@ -50,6 +50,11 @@ export default function Navbar({
     }
   };
 
+  const appNameParts = (settings?.appName || "SAMIRONO ETALASE").split(" ");
+  const firstWord = appNameParts[0];
+  const restWords = appNameParts.slice(1).join(" ");
+  const initial = firstWord ? firstWord.charAt(0).toUpperCase() : "S";
+
   return (
     <header
       className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-navy-200/60 shadow-xs font-sans transition-all"
@@ -67,14 +72,15 @@ export default function Navbar({
             className="flex items-center gap-2.5 group cursor-pointer"
           >
             <div className="w-9 h-9 bg-pastel-teal rounded-2xl flex items-center justify-center text-white font-black text-base shadow-2xs group-hover:scale-105 transition-all duration-300">
-              S
+              {initial}
             </div>
             <div className="flex flex-col">
               <span className="text-navy-900 font-black text-base tracking-tight uppercase leading-none group-hover:text-pastel-teal transition-colors">
-                SAMIRONO <span className="text-pastel-teal">ETALASE</span>
+                {firstWord}{" "}
+                {restWords ? <span className="text-pastel-teal">{restWords}</span> : null}
               </span>
               <span className="text-[9px] text-navy-400 font-bold uppercase tracking-widest leading-tight mt-0.5">
-                Sentra UMKM Digital
+                {settings?.tagline || "Sentra UMKM Digital"}
               </span>
             </div>
           </Link>

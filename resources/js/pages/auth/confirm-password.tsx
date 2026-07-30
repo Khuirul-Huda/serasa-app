@@ -19,7 +19,7 @@ import { store } from '@/routes/password/confirm';
 export default function ConfirmPassword() {
     return (
         <>
-            <Head title="Konfirmasi Kata Sandi - SAMIRONO ETALASE" />
+            <Head title="Konfirmasi Kata Sandi" />
 
             <PasskeyVerify
                 routes={{

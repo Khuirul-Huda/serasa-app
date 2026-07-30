@@ -16,7 +16,7 @@ import { email } from "@/routes/password";
 export default function ForgotPassword({ status }: { status?: string }) {
   return (
     <>
-      <Head title="Lupa Sandi - SAMIRONO ETALASE" />
+      <Head title="Lupa Sandi" />
 
       {status && (
         <div className="mb-4 p-3 bg-pastel-teal-light border border-pastel-teal/20 rounded-xl text-center text-xs font-semibold text-pastel-teal">

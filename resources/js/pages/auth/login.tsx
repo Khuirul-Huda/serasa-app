@@ -41,7 +41,7 @@ export default function Login({ status, canResetPassword }: Props) {
 
   return (
     <>
-      <Head title="Masuk ke Portal - SAMIRONO ETALASE" />
+      <Head title="Masuk ke Portal UMKM" />
 
       <div className="space-y-6 font-sans text-navy-900">
         {/* Demo Mode Quick Access Card */}

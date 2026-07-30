@@ -14,7 +14,7 @@ export default function Dashboard() {
 
     return (
         <AppLayout>
-            <Head title="Pusat Kendali - SAMIRONO ETALASE" />
+            <Head title="Pusat Kendali Portal Desa" />
             
             <div className="max-w-5xl mx-auto p-6 space-y-6 font-sans text-navy-900 animate-fade-in">
                 {/* Header Welcome Box */}

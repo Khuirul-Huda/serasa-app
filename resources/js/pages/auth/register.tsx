@@ -21,7 +21,7 @@ type Props = {
 export default function Register({ passwordRules }: Props) {
   return (
     <>
-      <Head title="Daftar Akun - SAMIRONO ETALASE" />
+      <Head title="Daftar Akun Baru" />
 
       <div className="space-y-6 font-sans text-navy-900">
         <Form

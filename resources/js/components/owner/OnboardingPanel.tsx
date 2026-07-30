@@ -39,7 +39,7 @@ export default function OnboardingPanel({
                 <span className="text-pastel-teal">Toko Usaha Anda</span>
               </h2>
               <p className="text-xs sm:text-sm text-navy-600 font-normal leading-relaxed">
-                Gabung di portal <strong className="font-bold text-navy-800">SAMIRONO ETALASE</strong>. Hadirkan etalase digital terpusat untuk memperkenalkan komoditas pangan, olahan, kriya, maupun jasa Anda secara modern.
+                Gabung di portal etalase digital desa. Hadirkan etalase digital terpusat untuk memperkenalkan komoditas pangan, olahan, kriya, maupun jasa Anda secara modern.
               </p>
             </div>
 

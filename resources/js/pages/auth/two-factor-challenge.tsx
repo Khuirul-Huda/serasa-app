@@ -56,7 +56,7 @@ export default function TwoFactorChallenge() {
 
     return (
         <>
-            <Head title="Verifikasi 2-Faktor - SAMIRONO ETALASE" />
+            <Head title="Verifikasi 2-Faktor" />
 
             <div className="space-y-6 text-xs font-sans text-navy-900">
                 <Form
