@@ -392,6 +392,11 @@ export default function AdminPanel({
           shops={shops}
           products={products}
           categories={categories}
+          onNavigateToShops={(filter) => {
+            if (filter) setStatusFilter(filter);
+            setActiveSubTab("shops");
+          }}
+          onNavigateToProducts={() => setActiveSubTab("products")}
         />
       )}
 
