@@ -35,13 +35,33 @@ export default function ConfirmDialog({
     setMounted(true);
   }, []);
 
+  // Dismiss on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onCancel();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onCancel]);
+
   if (!isOpen || !mounted) return null;
 
   const isDanger = variant === "danger";
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans text-navy-900">
-      <div className="bg-white rounded-3xl border border-navy-200 shadow-2xl max-w-md w-full p-6 space-y-5 animate-scale-in">
+    <div
+      onClick={onCancel}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans text-navy-900 cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-3xl border border-navy-200 shadow-2xl max-w-md w-full p-6 space-y-5 animate-scale-in cursor-default"
+      >
         <div className="flex items-start gap-4">
           <div
             className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${

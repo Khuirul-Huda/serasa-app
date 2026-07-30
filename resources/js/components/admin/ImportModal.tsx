@@ -47,14 +47,33 @@ export default function ImportModal({
   onToggleAction,
   onSubmitImport,
 }: ImportModalProps) {
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const validCount = importRows.filter((r) => r.action === "import").length;
   const conflictCount = importRows.filter((r) => r.isConflict).length;
 
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans text-navy-900">
-      <div className="bg-white rounded-3xl border border-navy-200 shadow-2xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/60 backdrop-blur-xs animate-fade-in font-sans text-navy-900 cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-3xl border border-navy-200 shadow-2xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden cursor-default"
+      >
         {/* Modal Header */}
         <div className="p-6 border-b border-navy-100 flex justify-between items-center bg-navy-50/50">
           <div className="flex items-center gap-3">
