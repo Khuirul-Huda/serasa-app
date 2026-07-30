@@ -25,13 +25,64 @@ abstract class Controller
         return Cache::remember('app:settings', now()->addHour(), function () {
             $settings = Setting::pluck('value', 'key')->toArray();
 
+            $village = $settings['village_name'] ?? 'Desa Samirono';
+
+            $hotSearchesJson = $settings['hot_searches'] ?? null;
+            $hotSearches = $hotSearchesJson ? json_decode($hotSearchesJson, true) : null;
+            if (! is_array($hotSearches)) {
+                $hotSearches = [
+                    ['label' => 'Susu Segar', 'query' => 'susu'],
+                    ['label' => 'Keju Artisan', 'query' => 'keju'],
+                    ['label' => 'Tas Anyaman', 'query' => 'tas'],
+                    ['label' => 'Kopi Merbabu', 'query' => 'kopi'],
+                    ['label' => 'Keripik Jamur', 'query' => 'keripik'],
+                    ['label' => 'Gethuk Keju', 'query' => 'gethuk'],
+                ];
+            }
+
+            $promoSlidesJson = $settings['promo_slides'] ?? null;
+            $promoSlides = $promoSlidesJson ? json_decode($promoSlidesJson, true) : null;
+            if (! is_array($promoSlides)) {
+                $promoSlides = [
+                    [
+                        'id' => 'slide-1',
+                        'title' => 'Susu Sapi Murni '.$village,
+                        'tagline' => 'Spesial Murni Dari Peternakan Desa',
+                        'description' => 'Segar murni dari peternakan lereng gunung, diperah higienis harian oleh warga desa.',
+                        'image' => 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=800&q=80',
+                        'badge' => '🥛 SUSU SEGAR',
+                        'btnQuery' => 'susu',
+                    ],
+                    [
+                        'id' => 'slide-2',
+                        'title' => 'Keju Mozzarella & Ricotta',
+                        'tagline' => 'Karya Tani Unggulan '.$village,
+                        'description' => 'Diproduksi oleh sentra pengolahan dengan cita rasa keju artisan bersertifikat pangan.',
+                        'image' => 'https://images.unsplash.com/photo-1559561853-080268185995?auto=format&fit=crop&w=800&q=80',
+                        'badge' => '🧀 KEJU LOKAL',
+                        'btnQuery' => 'keju',
+                    ],
+                    [
+                        'id' => 'slide-3',
+                        'title' => 'Kerajinan Anyaman Bambu',
+                        'tagline' => '100% Produk Kreatif Ramah Lingkungan',
+                        'description' => 'Dianyam telaten dengan bambu pilihan lereng pegunungan untuk perabot estetis fungsional.',
+                        'image' => 'https://images.unsplash.com/photo-1590736969955-71cb94801759?auto=format&fit=crop&w=800&q=80',
+                        'badge' => '🎋 KRIYA BAMBU',
+                        'btnQuery' => 'anyaman',
+                    ],
+                ];
+            }
+
             return [
                 'appName' => $settings['app_name'] ?? 'Samirono Etalase',
                 'tagline' => $settings['tagline'] ?? 'Platform UMKM Warga',
-                'villageName' => $settings['village_name'] ?? 'Desa Samirono',
+                'villageName' => $village,
                 'description' => $settings['description'] ?? 'Platform digitalisasi kreatif',
                 'adminPhone' => $settings['admin_phone'] ?? '6285725912345',
                 'heroBanner' => $settings['hero_banner'] ?? 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1200&q=80',
+                'hotSearches' => $hotSearches,
+                'promoSlides' => $promoSlides,
             ];
         });
     }

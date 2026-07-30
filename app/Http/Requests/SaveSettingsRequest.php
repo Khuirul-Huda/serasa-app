@@ -34,6 +34,16 @@ class SaveSettingsRequest extends FormRequest
             'description' => 'required|string',
             'adminPhone' => 'required|string|max:30',
             'heroBanner' => 'required|url',
+            'hotSearches' => 'nullable|array',
+            'hotSearches.*.label' => 'required_with:hotSearches|string|max:50',
+            'hotSearches.*.query' => 'required_with:hotSearches|string|max:50',
+            'promoSlides' => 'nullable|array',
+            'promoSlides.*.title' => 'required_with:promoSlides|string|max:100',
+            'promoSlides.*.tagline' => 'nullable|string|max:150',
+            'promoSlides.*.description' => 'nullable|string|max:255',
+            'promoSlides.*.image' => 'nullable|url',
+            'promoSlides.*.badge' => 'nullable|string|max:50',
+            'promoSlides.*.btnQuery' => 'nullable|string|max:50',
         ];
     }
 }

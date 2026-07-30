@@ -34,6 +34,7 @@ export default function OwnerPanel({
     const [activeTab, setActiveTab] = useState<'catalog' | 'shop-profile'>(
         'catalog',
     );
+    const [isAddingProduct, setIsAddingProduct] = useState(false);
     const [editSuccess, setEditSuccess] = useState(false);
     const [searchCatalogQuery, setSearchCatalogQuery] = useState('');
     const [selectedCatalogCategory, setSelectedCatalogCategory] =

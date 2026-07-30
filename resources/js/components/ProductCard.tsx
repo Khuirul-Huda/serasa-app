@@ -18,19 +18,16 @@ interface ProductCardProps {
 export default function ProductCard({ product, shop }: ProductCardProps) {
     const hasDiscount =
         product.isAvailable &&
-        (product.price % 3 === 0 || product.price % 4 === 0);
-    const discountPercent = product.price % 4 === 0 ? 10 : 15;
+        (product.price >= 30000);
+    const discountPercent = 10;
     const originalPrice = hasDiscount
         ? Math.round((product.price * (100 + discountPercent)) / 100 / 1000) *
           1000
         : null;
 
-    const salesCount = Math.max(
-        10,
-        product.reviewsCount * 4 +
-            (Number(product.id.charCodeAt(product.id.length - 1)) % 15) +
-            3,
-    );
+    const salesCount = React.useMemo(() => {
+        return Math.max(10, (product.reviewsCount || 0) * 5 + 3);
+    }, [product.reviewsCount]);
 
     return (
         <article
@@ -91,22 +88,23 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
             <div className="flex flex-1 flex-col justify-between space-y-3 bg-white p-4">
                 <div className="space-y-1.5">
                     {shop && (
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex min-w-0 items-center gap-1.5">
                             <img
                                 src={shop.logo}
                                 alt={shop.name}
                                 width={20}
                                 height={20}
                                 loading="lazy"
-                                className="h-5 w-5 rounded-full border border-navy-200 object-cover"
+                                className="h-5 w-5 shrink-0 rounded-full border border-navy-200 object-cover"
                                 referrerPolicy="no-referrer"
                             />
                             <Link
                                 href={`/shops/${shop.id}`}
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex items-center gap-1 truncate text-xs font-bold text-navy-500 hover:text-pastel-teal"
+                                className="flex min-w-0 items-center gap-1 text-xs font-bold text-navy-500 hover:text-pastel-teal"
+                                title={shop.name}
                             >
-                                <span>{shop.name}</span>
+                                <span className="truncate">{shop.name}</span>
                                 {shop.isVerified && (
                                     <CheckCircle2
                                         className="h-3.5 w-3.5 shrink-0 fill-pastel-teal-light text-pastel-teal"

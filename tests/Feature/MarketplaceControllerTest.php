@@ -24,7 +24,13 @@ test('shops page can be loaded via normal http request and inertia xhr request',
 
 test('marketplace index can be loaded via normal http request and inertia xhr request', function () {
     $htmlResponse = $this->get(route('home'));
-    $htmlResponse->assertOk();
+    $htmlResponse->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('welcome')
+            ->has('settings.hotSearches')
+            ->has('settings.promoSlides')
+            ->has('settings.villageName')
+        );
 
     $inertiaResponse = $this->withHeaders([
         'X-Inertia' => 'true',

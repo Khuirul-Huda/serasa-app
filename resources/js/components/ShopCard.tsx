@@ -120,8 +120,8 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                             )}
                         </div>
 
-                        <h3 className="flex items-center gap-1 font-sans text-base leading-snug font-black text-navy-900 transition-colors group-hover:text-pastel-teal sm:text-lg">
-                            <Link href={`/shops/${shop.id}`}>{shop.name}</Link>
+                        <h3 className="flex min-w-0 items-center gap-1 font-sans text-base leading-snug font-black text-navy-900 transition-colors group-hover:text-pastel-teal sm:text-lg" title={shop.name}>
+                            <Link href={`/shops/${shop.id}`} className="truncate">{shop.name}</Link>
                         </h3>
 
                         <p className="-mt-0.5 text-xs font-bold tracking-wider text-navy-400 uppercase">

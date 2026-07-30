@@ -47,6 +47,21 @@ export interface Category {
     color: string;
 }
 
+export interface HotSearchItem {
+    label: string;
+    query: string;
+}
+
+export interface PromoSlideItem {
+    id: string;
+    title: string;
+    tagline: string;
+    description: string;
+    image: string;
+    badge: string;
+    btnQuery: string;
+}
+
 export interface AppSettings {
     appName: string;
     tagline: string;
@@ -54,6 +69,8 @@ export interface AppSettings {
     description: string;
     adminPhone: string;
     heroBanner: string;
+    hotSearches?: HotSearchItem[];
+    promoSlides?: PromoSlideItem[];
 }
 
 export interface Review {

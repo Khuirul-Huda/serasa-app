@@ -5,6 +5,7 @@ import React from 'react';
 interface MobileMenuProps {
     activeTab: string;
     isOpen?: boolean;
+    settings?: any;
     user?: any;
     onClose: () => void;
 }

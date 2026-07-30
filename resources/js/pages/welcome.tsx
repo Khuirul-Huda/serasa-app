@@ -54,6 +54,19 @@ export default function Welcome({
         });
     }, [products, searchQuery, selectedCategory]);
 
+    // Fast O(1) lookup maps for products rendering
+    const shopsMap = useMemo(() => {
+        const map = new Map<string, Shop>();
+        shops.forEach((s) => map.set(s.id, s));
+        return map;
+    }, [shops]);
+
+    const categoriesMap = useMemo(() => {
+        const map = new Map<string, Category>();
+        categories.forEach((c) => map.set(c.id, c));
+        return map;
+    }, [categories]);
+
     return (
         <MarketplaceLayout
             settings={settings}
@@ -69,7 +82,7 @@ export default function Welcome({
                 title={`${settings.appName} - ${settings.tagline}`}
                 description={
                     settings.description ||
-                    'Sentra UMKM digital kreatif Desa Samirono. Temukan produk lokal terbaik mulai dari kuliner segar hingga kerajinan anyaman bambu khas warga desa.'
+                    `Sentra UMKM digital kreatif ${settings.villageName}. Temukan produk lokal terbaik khas warga desa.`
                 }
                 image={settings.heroBanner}
                 siteName={settings.appName}
@@ -99,7 +112,7 @@ export default function Welcome({
                             </h2>
                             <p className="text-xs font-normal text-navy-500">
                                 Membeli produk lokal membantu perputaran ekonomi
-                                mandiri Desa Samirono.
+                                mandiri {settings.villageName}.
                             </p>
                         </div>
 
@@ -132,12 +145,8 @@ export default function Welcome({
                     ) : (
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                             {filteredProducts.map((product) => {
-                                const shop = shops.find(
-                                    (s) => s.id === product.shopId,
-                                );
-                                const category = categories.find(
-                                    (c) => c.id === product.categoryId,
-                                );
+                                const shop = shopsMap.get(product.shopId);
+                                const category = categoriesMap.get(product.categoryId);
 
                                 return (
                                     <ProductCard
@@ -157,11 +166,10 @@ export default function Welcome({
                     <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                         <div>
                             <h3 className="text-base font-black tracking-wider text-navy-900 uppercase">
-                                Kenali Toko Kreatif Samirono
+                                Kenali Toko Kreatif {settings.villageName}
                             </h3>
                             <p className="mt-0.5 text-xs text-navy-600">
-                                Profil produsen lokal, pengolah susu perah,
-                                pengerajin bambu, dan kuliner khas desa.
+                                Profil produsen lokal dan unit usaha kreatif {settings.villageName}.
                             </p>
                         </div>
 
@@ -193,7 +201,7 @@ export default function Welcome({
                                     referrerPolicy="no-referrer"
                                 />
                                 <div className="min-w-0 flex-1 space-y-1">
-                                    <div className="flex items-center gap-1.5">
+                                    <div className="flex min-w-0 items-center gap-1.5" title={shop.name}>
                                         <span className="block truncate text-xs font-bold text-navy-900">
                                             {shop.name}
                                         </span>

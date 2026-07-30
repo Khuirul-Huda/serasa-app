@@ -326,6 +326,14 @@ class AdminDashboardController extends Controller
         Setting::updateOrCreate(['key' => 'admin_phone'], ['value' => $request->adminPhone]);
         Setting::updateOrCreate(['key' => 'hero_banner'], ['value' => $request->heroBanner]);
 
+        if ($request->filled('hotSearches')) {
+            Setting::updateOrCreate(['key' => 'hot_searches'], ['value' => json_encode($request->hotSearches)]);
+        }
+
+        if ($request->filled('promoSlides')) {
+            Setting::updateOrCreate(['key' => 'promo_slides'], ['value' => json_encode($request->promoSlides)]);
+        }
+
         // Bust cached settings so all workers pick up new values immediately
         Cache::forget('app:settings');
         Cache::forget('app:categories');

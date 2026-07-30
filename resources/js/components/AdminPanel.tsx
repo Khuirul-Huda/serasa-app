@@ -521,7 +521,6 @@ export default function AdminPanel({
 
             {activeSubTab === 'config' && (
                 <ConfigTab
-                    settings={settings}
                     data={data}
                     setData={setData}
                     onSubmit={handleConfigSubmit}
