@@ -10,18 +10,20 @@ import type { AppSettings } from "@/types";
 interface MobileMenuProps {
   settings: AppSettings;
   activeTab: string;
-  isOpen: boolean;
+  isOpen?: boolean;
+  user?: any;
   onClose: () => void;
 }
 
 export default function MobileMenu({
   settings,
   activeTab,
-  isOpen,
+  isOpen = true,
+  user,
   onClose,
 }: MobileMenuProps) {
   const { auth } = usePage().props as any;
-  const user = auth?.user;
+  const currentUser = user || auth?.user;
 
   if (!isOpen) return null;
 
@@ -84,12 +86,12 @@ export default function MobileMenu({
 
         <div className="border-t border-navy-100 my-2" />
 
-        {user ? (
+        {currentUser ? (
           <div className="space-y-1">
             <div className="px-4 py-1 text-[10px] text-navy-400 font-bold uppercase tracking-wider">
-              Akun: {user.name}
+              Akun: {currentUser.name}
             </div>
-            {user.role === "admin" ? (
+            {currentUser.role === "admin" ? (
               <Link
                 href="/admin/dashboard"
                 onClick={onClose}

@@ -21,6 +21,25 @@ import {
 import React, { useState, useRef } from "react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
+import type { AppSettings, Shop, Product, Category } from "@/types";
+import type { AdminReview, AdminUser } from "@/pages/admin-dashboard";
+import StatsTab from "./admin/StatsTab";
+import ShopsTab from "./admin/ShopsTab";
+import ConfigTab from "./admin/ConfigTab";
+import ProductsTab from "./admin/ProductsTab";
+import ReviewsTab from "./admin/ReviewsTab";
+import CategoriesTab from "./admin/CategoriesTab";
+import UsersTab from "./admin/UsersTab";
+import ImportModal, { ParsedImportRow } from "./admin/ImportModal";
+
+interface AdminPanelProps {
+  settings: AppSettings;
+  shops: Shop[];
+  products: Product[];
+  categories: Category[];
+  reviews?: AdminReview[];
+  users?: AdminUser[];
+}
 
 export default function AdminPanel({
   settings,
@@ -183,7 +202,7 @@ export default function AdminPanel({
 
     router.post(
       "/admin/shops/bulk-import",
-      { shops: toImport },
+      { shops: toImport as any },
       {
         onSuccess: () => {
           setIsSubmittingImport(false);

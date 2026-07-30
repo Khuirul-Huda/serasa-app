@@ -26,6 +26,8 @@ export default function OwnerPanel({
   const [activeTab, setActiveTab] = useState<"catalog" | "shop-profile">("catalog");
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [editSuccess, setEditSuccess] = useState(false);
+  const [searchCatalogQuery, setSearchCatalogQuery] = useState("");
+  const [selectedCatalogCategory, setSelectedCatalogCategory] = useState("all");
 
   // 1. Inertia Form for Shop Registration
   const registerForm = useForm({
@@ -259,10 +261,11 @@ export default function OwnerPanel({
         <CatalogTab
           myProducts={myProducts}
           categories={categories}
-          addProductForm={addProductForm}
-          handleAddProductSubmit={handleAddProductSubmit}
-          isAddingProduct={isAddingProduct}
-          setIsAddingProduct={setIsAddingProduct}
+          searchCatalogQuery={searchCatalogQuery}
+          setSearchCatalogQuery={setSearchCatalogQuery}
+          selectedCatalogCategory={selectedCatalogCategory}
+          setSelectedCatalogCategory={setSelectedCatalogCategory}
+          onOpenAddModal={() => setIsAddingProduct(true)}
         />
       )}
     </div>
