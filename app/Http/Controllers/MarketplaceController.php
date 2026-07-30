@@ -8,6 +8,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -189,7 +190,7 @@ class MarketplaceController extends Controller
         $mappedProduct = $this->mapProduct($product);
         $mappedShop = $product->shop instanceof Shop ? $this->mapShop($product->shop) : [];
         $reviews = $product->reviews->map(function ($r) {
-            /** @var \App\Models\Review $r */
+            /** @var Review $r */
             return $this->mapReview($r);
         });
 
@@ -211,7 +212,7 @@ class MarketplaceController extends Controller
 
     /* MAPPING HELPERS */
 
-    private function mapReview(\App\Models\Review $review): array
+    private function mapReview(Review $review): array
     {
         return [
             'id' => $review->id,
