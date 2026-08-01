@@ -36,12 +36,12 @@ class AdminDashboardController extends Controller
             'id', 'name', 'owner_name', 'description', 'category', 'phone',
             'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
             'working_hours', 'user_id', 'nib', 'halal', 'pirt',
-        ])->get()->map(fn ($s) => $this->mapShop($s))->toArray();
+        ])->latest()->take(300)->get()->map(fn ($s) => $this->mapShop($s))->toArray();
 
         $products = Product::select([
             'id', 'shop_id', 'category_id', 'name', 'description', 'price',
             'unit', 'image', 'rating', 'reviews_count', 'is_available',
-        ])->get()->map(fn ($p) => $this->mapProduct($p))->toArray();
+        ])->latest()->take(500)->get()->map(fn ($p) => $this->mapProduct($p))->toArray();
 
         $categories = $this->getCachedCategories();
 
@@ -64,6 +64,7 @@ class AdminDashboardController extends Controller
 
         $users = User::select(['id', 'name', 'email', 'role', 'created_at'])
             ->latest()
+            ->take(200)
             ->get()
             ->map(fn ($u) => [
                 'id' => $u->id,
@@ -163,12 +164,13 @@ class AdminDashboardController extends Controller
             $review->delete();
 
             if ($product = Product::find($productId)) {
-                $reviewsCount = Review::where('product_id', $product->id)->count();
-                $averageRating = Review::where('product_id', $product->id)->avg('rating') ?: 5.0;
+                $stats = Review::where('product_id', $product->id)
+                    ->selectRaw('COUNT(*) as total_reviews, AVG(rating) as avg_rating')
+                    ->first();
 
                 $product->update([
-                    'rating' => round((float) $averageRating, 1),
-                    'reviews_count' => $reviewsCount,
+                    'rating' => round((float) ($stats->avg_rating ?? 5.0), 1),
+                    'reviews_count' => (int) ($stats->total_reviews ?? 0),
                 ]);
             }
         });
@@ -293,20 +295,24 @@ class AdminDashboardController extends Controller
     {
         $this->authorizeAdmin();
 
-        Setting::updateOrCreate(['key' => 'app_name'], ['value' => $request->appName]);
-        Setting::updateOrCreate(['key' => 'tagline'], ['value' => $request->tagline]);
-        Setting::updateOrCreate(['key' => 'village_name'], ['value' => $request->villageName]);
-        Setting::updateOrCreate(['key' => 'description'], ['value' => $request->description]);
-        Setting::updateOrCreate(['key' => 'admin_phone'], ['value' => $request->adminPhone]);
-        Setting::updateOrCreate(['key' => 'hero_banner'], ['value' => $request->heroBanner]);
+        $settingsData = [
+            ['key' => 'app_name', 'value' => $request->appName],
+            ['key' => 'tagline', 'value' => $request->tagline],
+            ['key' => 'village_name', 'value' => $request->villageName],
+            ['key' => 'description', 'value' => $request->description],
+            ['key' => 'admin_phone', 'value' => $request->adminPhone],
+            ['key' => 'hero_banner', 'value' => $request->heroBanner],
+        ];
 
         if ($request->filled('hotSearches')) {
-            Setting::updateOrCreate(['key' => 'hot_searches'], ['value' => json_encode($request->hotSearches)]);
+            $settingsData[] = ['key' => 'hot_searches', 'value' => json_encode($request->hotSearches)];
         }
 
         if ($request->filled('promoSlides')) {
-            Setting::updateOrCreate(['key' => 'promo_slides'], ['value' => json_encode($request->promoSlides)]);
+            $settingsData[] = ['key' => 'promo_slides', 'value' => json_encode($request->promoSlides)];
         }
+
+        Setting::upsert($settingsData, ['key'], ['value']);
 
         // Bust cached settings so all workers pick up new values immediately
         Cache::forget('app:settings');

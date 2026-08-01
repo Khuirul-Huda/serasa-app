@@ -27,8 +27,12 @@ wait_for_tcp "${REDIS_HOST:-redis}"  "${REDIS_PORT:-6379}"
 echo "==> Linking storage..."
 php artisan storage:link --force 2>/dev/null || true
 
-echo "==> Running migrations..."
-php artisan migrate --force --no-interaction
+if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
+    echo "==> Running migrations..."
+    php artisan migrate --force --no-interaction
+else
+    echo "==> Skipping automatic container migrations (set RUN_MIGRATIONS=true to enable)."
+fi
 
 echo "==> Warming caches..."
 php artisan config:cache

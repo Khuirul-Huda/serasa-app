@@ -43,7 +43,7 @@ class MarketplaceController extends Controller
         $products = $productQuery->select([
             'id', 'shop_id', 'category_id', 'name', 'description', 'price',
             'unit', 'image', 'rating', 'reviews_count', 'is_available',
-        ])->get()->map(fn ($p) => $this->mapProduct($p));
+        ])->latest()->take(60)->get()->map(fn ($p) => $this->mapProduct($p));
 
         $shops = Shop::select([
             'id', 'name', 'owner_name', 'description', 'category', 'phone',
@@ -85,7 +85,7 @@ class MarketplaceController extends Controller
         $products = Product::select([
             'id', 'shop_id', 'category_id', 'name', 'description', 'price',
             'unit', 'image', 'rating', 'reviews_count', 'is_available',
-        ])->where('is_available', true)->get()->map(fn ($p) => $this->mapProduct($p));
+        ])->where('is_available', true)->latest()->take(30)->get()->map(fn ($p) => $this->mapProduct($p));
 
         return Inertia::render('shops', [
             'settings' => $this->getAppSettings(),
@@ -112,7 +112,7 @@ class MarketplaceController extends Controller
         $products = Product::select([
             'id', 'shop_id', 'category_id', 'name', 'description', 'price',
             'unit', 'image', 'rating', 'reviews_count', 'is_available',
-        ])->where('is_available', true)->get()->map(fn ($p) => $this->mapProduct($p));
+        ])->where('is_available', true)->latest()->take(30)->get()->map(fn ($p) => $this->mapProduct($p));
 
         return Inertia::render('map', [
             'settings' => $this->getAppSettings(),

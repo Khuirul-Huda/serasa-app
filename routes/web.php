@@ -40,18 +40,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/merchant/products/{id}', [MerchantController::class, 'deleteProduct'])->name('merchant.products.delete');
 
     // Admin dashboard & approval management
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::post('/admin/shops/{id}/verify', [AdminDashboardController::class, 'toggleVerifyShop'])->name('admin.shops.verify');
-    Route::post('/admin/shops/{id}/permit', [AdminDashboardController::class, 'toggleShopPermit'])->name('admin.shops.permit');
-    Route::delete('/admin/shops/{id}', [AdminDashboardController::class, 'deleteShop'])->name('admin.shops.delete');
-    Route::post('/admin/shops/bulk-import', [AdminDashboardController::class, 'bulkImport'])->name('admin.shops.bulk-import');
-    Route::post('/admin/settings', [AdminDashboardController::class, 'saveSettings'])->name('admin.settings.save');
-    Route::post('/admin/products/{id}/toggle', [AdminDashboardController::class, 'toggleProduct'])->name('admin.products.toggle');
-    Route::delete('/admin/products/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.products.delete');
-    Route::delete('/admin/reviews/{id}', [AdminDashboardController::class, 'deleteReview'])->name('admin.reviews.delete');
-    Route::post('/admin/categories', [AdminDashboardController::class, 'addCategory'])->name('admin.categories.store');
-    Route::delete('/admin/categories/{id}', [AdminDashboardController::class, 'deleteCategory'])->name('admin.categories.delete');
-    Route::post('/admin/users/{id}/role', [AdminDashboardController::class, 'updateUserRole'])->name('admin.users.role');
+    Route::middleware(['can:admin'])->group(function () {
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::post('/admin/shops/{id}/verify', [AdminDashboardController::class, 'toggleVerifyShop'])->name('admin.shops.verify');
+        Route::post('/admin/shops/{id}/permit', [AdminDashboardController::class, 'toggleShopPermit'])->name('admin.shops.permit');
+        Route::delete('/admin/shops/{id}', [AdminDashboardController::class, 'deleteShop'])->name('admin.shops.delete');
+        Route::post('/admin/shops/bulk-import', [AdminDashboardController::class, 'bulkImport'])->name('admin.shops.bulk-import');
+        Route::post('/admin/settings', [AdminDashboardController::class, 'saveSettings'])->name('admin.settings.save');
+        Route::post('/admin/products/{id}/toggle', [AdminDashboardController::class, 'toggleProduct'])->name('admin.products.toggle');
+        Route::delete('/admin/products/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.products.delete');
+        Route::delete('/admin/reviews/{id}', [AdminDashboardController::class, 'deleteReview'])->name('admin.reviews.delete');
+        Route::post('/admin/categories', [AdminDashboardController::class, 'addCategory'])->name('admin.categories.store');
+        Route::delete('/admin/categories/{id}', [AdminDashboardController::class, 'deleteCategory'])->name('admin.categories.delete');
+        Route::post('/admin/users/{id}/role', [AdminDashboardController::class, 'updateUserRole'])->name('admin.users.role');
+    });
 });
 
 require __DIR__.'/settings.php';
