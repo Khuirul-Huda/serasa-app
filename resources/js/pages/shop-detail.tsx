@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import ProductCard from '@/components/ProductCard';
+import ShopCard from '@/components/ShopCard';
 import SEOHead from '@/components/SEOHead';
 import MarketplaceLayout from '@/layouts/marketplace-layout';
 import type { AppSettings, Category, Product, Shop } from '@/types';
@@ -26,6 +27,7 @@ interface ShopDetailProps {
     shop: Shop;
     products?: Product[];
     allProducts?: Product[];
+    relatedShops?: (Shop & { productCount?: number })[];
 }
 
 export default function ShopDetail({
@@ -34,6 +36,7 @@ export default function ShopDetail({
     shop,
     products = [],
     allProducts = [],
+    relatedShops = [],
 }: ShopDetailProps) {
     const shopProducts =
         products.length > 0 ? products : (shop as any).products || [];
@@ -294,6 +297,39 @@ export default function ShopDetail({
                         </ol>
                     )}
                 </section>
+
+                {/* Related Shops / UMKM Lainnya Section */}
+                {relatedShops.length > 0 && (
+                    <section
+                        className="space-y-4 pt-4 border-t border-navy-100"
+                        aria-label="Toko Serupa"
+                    >
+                        <div>
+                            <h2 className="flex items-center gap-2 text-base font-bold tracking-wider text-navy-900 uppercase">
+                                <Award
+                                    className="h-5 w-5 text-pastel-teal"
+                                    aria-hidden="true"
+                                />
+                                <span>
+                                    UMKM Serupa di Sektor {shop.category}
+                                </span>
+                            </h2>
+                            <p className="text-xs text-navy-500">
+                                Jelajahi rekomendasi usaha warga alternatif di {shop.dusun} dan sekitarnya.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                            {relatedShops.map((relShop) => (
+                                <ShopCard
+                                    key={relShop.id}
+                                    shop={relShop}
+                                    productCount={relShop.productCount || 0}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                )}
             </div>
         </MarketplaceLayout>
     );

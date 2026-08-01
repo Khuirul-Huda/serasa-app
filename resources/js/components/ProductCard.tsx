@@ -16,19 +16,6 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, shop }: ProductCardProps) {
-    const hasDiscount =
-        product.isAvailable &&
-        (product.price >= 30000);
-    const discountPercent = 10;
-    const originalPrice = hasDiscount
-        ? Math.round((product.price * (100 + discountPercent)) / 100 / 1000) *
-          1000
-        : null;
-
-    const salesCount = React.useMemo(() => {
-        return Math.max(10, (product.reviewsCount || 0) * 5 + 3);
-    }, [product.reviewsCount]);
-
     return (
         <article
             className="group flex h-full flex-col overflow-hidden rounded-2xl border border-navy-200/60 bg-white font-sans shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-pastel-teal hover:shadow-md"
@@ -59,18 +46,7 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
                     )}
                 </figure>
 
-                {/* Discount Badge Overlay */}
-                {hasDiscount && (
-                    <div
-                        className="pointer-events-none absolute top-2.5 left-2.5 z-10 flex items-center gap-0.5 rounded-md bg-pastel-coral px-2.5 py-1 text-xs font-black tracking-wide text-white uppercase shadow-xs"
-                        aria-label={`Diskon ${discountPercent}%`}
-                    >
-                        <span>{discountPercent}%</span>
-                        <span className="text-xs font-medium opacity-90">
-                            OFF
-                        </span>
-                    </div>
-                )}
+
 
                 {!product.isAvailable && (
                     <div
@@ -133,16 +109,7 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
                                 / {product.unit}
                             </span>
                         </div>
-                        {hasDiscount && originalPrice && (
-                            <div className="mt-0.5 flex items-center gap-1.5">
-                                <s className="text-xs text-navy-400">
-                                    {formatIDR(originalPrice)}
-                                </s>
-                                <mark className="rounded bg-pastel-coral-light px-1.5 text-xs font-extrabold text-pastel-coral not-italic">
-                                    -{discountPercent}%
-                                </mark>
-                            </div>
-                        )}
+
                     </div>
                 </div>
 
@@ -150,7 +117,7 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
                     <div
                         className="flex items-center gap-1.5 text-xs text-navy-500"
                         role="img"
-                        aria-label={`Rating ${product.rating} bintang, terjual ${salesCount}+`}
+                        aria-label={`Rating ${product.rating} bintang, ${product.reviewsCount} ulasan`}
                     >
                         <div className="flex items-center gap-0.5">
                             <Star
@@ -165,7 +132,7 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
                             |
                         </span>
                         <span className="truncate text-xs">
-                            Terjual {salesCount}+
+                            {product.reviewsCount} Ulasan
                         </span>
                     </div>
 

@@ -70,7 +70,8 @@ export default function OwnerPanel({
         _method: 'PUT',
     });
 
-    // Sync edits when shop changes
+    // Sync edits when shop data changes (not on form reference change to avoid infinite loop)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- editShopForm.setData is stable but the form object ref isn't
     useEffect(() => {
         if (myShop) {
             editShopForm.setData({
@@ -86,7 +87,7 @@ export default function OwnerPanel({
                 _method: 'PUT',
             });
         }
-    }, [myShop, activeTab, editShopForm]);
+    }, [myShop, activeTab]);
 
     const handleRegisterSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -146,7 +147,7 @@ export default function OwnerPanel({
                                         variant="outline"
                                         className="flex items-center gap-1.5 rounded-lg border-pastel-teal/20 bg-pastel-teal-light px-2.5 py-1 text-xs font-black tracking-wider text-pastel-teal uppercase"
                                     >
-                                        <CheckCircle2 className="h-4 w-4 animate-pulse fill-pastel-teal-light text-pastel-teal" />
+                                        <CheckCircle2 className="h-4 w-4 fill-pastel-teal-light text-pastel-teal" />
                                         <span>Terverifikasi</span>
                                     </Badge>
                                 ) : (

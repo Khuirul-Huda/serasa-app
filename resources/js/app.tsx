@@ -19,11 +19,10 @@ createInertiaApp({
             case name === 'product-detail':
             case name === 'merchant-dashboard':
             case name === 'admin-dashboard':
+            case name.startsWith('settings/'):
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
-            case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
             default:
                 return AppLayout;
         }

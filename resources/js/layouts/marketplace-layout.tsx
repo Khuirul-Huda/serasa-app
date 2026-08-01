@@ -9,12 +9,23 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import type { AppSettings, Category, Product, Shop } from '@/types';
 
+const defaultSettings: AppSettings = {
+    appName: 'Samirono Etalase',
+    tagline: 'Platform UMKM Warga',
+    villageName: 'Desa Samirono',
+    description: 'Platform digitalisasi kreatif',
+    adminPhone: '6285725912345',
+    heroBanner: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1200&q=80',
+    hotSearches: [],
+    promoSlides: [],
+};
+
 interface MarketplaceLayoutProps {
     children: React.ReactNode;
-    settings: AppSettings;
-    activeTab: 'katalog' | 'shops' | 'map' | 'merchant' | 'admin' | 'detail';
-    categories: Category[];
-    products: Product[];
+    settings?: AppSettings;
+    activeTab?: 'katalog' | 'shops' | 'map' | 'merchant' | 'admin' | 'detail';
+    categories?: Category[];
+    products?: Product[];
     shops?: Shop[];
     searchQuery?: string;
     setSearchQuery?: (query: string) => void;
@@ -24,10 +35,10 @@ interface MarketplaceLayoutProps {
 
 export default function MarketplaceLayout({
     children,
-    settings,
-    activeTab,
-    categories,
-    products,
+    settings = defaultSettings,
+    activeTab = 'admin',
+    categories = [],
+    products = [],
     shops = [],
     searchQuery = '',
     setSearchQuery,

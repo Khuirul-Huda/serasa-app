@@ -149,7 +149,27 @@ class MarketplaceController extends Controller
             return $this->mapProduct($p);
         });
 
-        // Limit to latest 12 for the "Produk Lainnya" sidebar — avoids full table scan
+        // Fetch up to 4 related shops in the same category or dusun
+        $relatedShops = Shop::select([
+            'id', 'name', 'owner_name', 'description', 'category', 'phone',
+            'address', 'dusun', 'image', 'logo', 'is_verified', 'lat', 'lng',
+            'working_hours', 'user_id',
+        ])->where('is_verified', true)
+            ->where('id', '!=', $shop->id)
+            ->where(function ($q) use ($shop) {
+                $q->where('category', $shop->category)
+                    ->orWhere('dusun', $shop->dusun);
+            })
+            ->withCount('products')
+            ->limit(4)
+            ->get()
+            ->map(function ($s) {
+                $mapped = $this->mapShop($s);
+                $mapped['productCount'] = $s->products_count;
+
+                return $mapped;
+            });
+
         $allProducts = Product::select([
             'id', 'shop_id', 'category_id', 'name', 'description', 'price',
             'unit', 'image', 'rating', 'reviews_count', 'is_available',
@@ -161,6 +181,7 @@ class MarketplaceController extends Controller
             'shop' => $mappedShop,
             'products' => $products,
             'allProducts' => $allProducts,
+            'relatedShops' => $relatedShops,
         ])->toResponse($request);
     }
 

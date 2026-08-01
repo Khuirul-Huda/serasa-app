@@ -19,7 +19,7 @@ Route::get('/products/{id}', [MarketplaceController::class, 'productDetail'])->n
 Route::get('/map', [MarketplaceController::class, 'map'])->name('map.index');
 Route::post('/products/{id}/reviews', [ReviewController::class, 'store'])
     ->name('reviews.store')
-    ->middleware('throttle:10,1');
+    ->middleware(['auth', 'throttle:10,1']);
 
 // Authenticated user page groups
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -14,6 +14,7 @@ interface MerchantDashboardProps {
     categories: Category[];
     myShop: Shop | undefined;
     myProducts: Product[];
+    products: Product[];
 }
 
 export default function MerchantDashboard({
@@ -21,15 +22,13 @@ export default function MerchantDashboard({
     categories,
     myShop,
     myProducts,
+    products,
 }: MerchantDashboardProps) {
-    // Use allProducts to satisfy the search navbar parameter, fallback to empty array
-    const allProducts: Product[] = [];
-
     return (
         <MarketplaceLayout
             settings={settings}
             categories={categories}
-            products={allProducts}
+            products={products}
             activeTab="merchant"
         >
             <Head title={`Kelola Toko Saya - ${settings.appName}`} />

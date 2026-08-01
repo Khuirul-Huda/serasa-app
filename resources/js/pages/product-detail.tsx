@@ -251,21 +251,16 @@ export default function ProductDetail({
                                 className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-pastel-coral py-3 text-xs font-bold tracking-wider text-white uppercase shadow-xs transition-all hover:bg-pastel-coral/90 disabled:opacity-50"
                             >
                                 <Phone className="h-4 w-4 text-white" />
-                                <span>Beli Langsung via WhatsApp</span>
+                                <span>Order via WhatsApp</span>
                             </button>
 
-                            <button
-                                onClick={() => {
-                                    toast.success(
-                                        `"${product.name}" ditambahkan ke keranjang belanja.`,
-                                    );
-                                }}
-                                disabled={!product.isAvailable}
-                                className="shadow-3xs flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-pastel-teal py-3 text-xs font-bold tracking-wider text-white uppercase transition-all hover:bg-pastel-teal/90 disabled:opacity-50"
+                            <Link
+                                href={`/shops/${shop.id}`}
+                                className="shadow-3xs flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white py-3 text-xs font-bold tracking-wider text-navy-700 uppercase transition-all hover:border-pastel-teal hover:text-pastel-teal"
                             >
-                                <ShoppingCart className="h-4 w-4 text-white" />
-                                <span>Simulasi Keranjang</span>
-                            </button>
+                                <ShoppingCart className="h-4 w-4 text-pastel-teal" />
+                                <span>Lihat Semua Produk Toko</span>
+                            </Link>
                         </div>
                     </div>
                 </article>
@@ -357,57 +352,79 @@ export default function ProductDetail({
                             </p>
                         </div>
 
+                        {!user ? (
+                            <div className="space-y-3 rounded-2xl border border-navy-200/60 bg-navy-50/60 p-5 text-center">
+                                <MessageSquare className="mx-auto h-8 w-8 text-navy-300" />
+                                <p className="text-sm font-medium text-navy-600">
+                                    Masuk ke akun Anda untuk menulis ulasan produk ini.
+                                </p>
+                                <Link
+                                    href="/login"
+                                    className="inline-flex items-center gap-1.5 rounded-xl bg-pastel-teal px-5 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-xs transition-all hover:bg-pastel-teal/90"
+                                >
+                                    Masuk Sekarang
+                                </Link>
+                            </div>
+                        ) : (
                         <form
                             onSubmit={handleReviewSubmit}
                             className="space-y-4 text-xs"
                         >
-                            <div className="space-y-1.5">
-                                <Label className="block text-xs font-bold tracking-wider text-navy-600 uppercase">
-                                    Nama Anda
-                                </Label>
-                                <Input
-                                    type="text"
-                                    required
-                                    placeholder="Contoh: Ibu Ranti"
-                                    value={data.userName}
-                                    onChange={(e) =>
-                                        setData('userName', e.target.value)
-                                    }
-                                    className="w-full rounded-xl border-navy-200/60 bg-white px-4 py-2 text-sm font-medium text-navy-800 transition-all focus:border-pastel-teal focus:ring-2 focus:ring-pastel-teal/20 focus:outline-none"
-                                />
-                                {errors.userName && (
-                                    <span className="font-semibold text-pastel-coral">
-                                        {errors.userName}
-                                    </span>
-                                )}
-                            </div>
+                            <input type="hidden" value={data.userName} />
 
                             <div className="space-y-1.5">
                                 <Label className="block text-xs font-bold tracking-wider text-navy-600 uppercase">
                                     Rating Bintang
                                 </Label>
-                                <select
-                                    value={data.rating}
-                                    onChange={(e) =>
-                                        setData(
-                                            'rating',
-                                            Number(e.target.value),
-                                        )
-                                    }
-                                    className="w-full cursor-pointer rounded-xl border border-navy-200/60 bg-white px-4 py-2.5 text-xs font-bold tracking-wider text-navy-700 uppercase outline-none focus:border-pastel-teal focus:ring-2 focus:ring-pastel-teal/20"
-                                >
-                                    <option value={5}>
-                                        ⭐⭐⭐⭐⭐ (5 - Sangat Puas)
-                                    </option>
-                                    <option value={4}>
-                                        ⭐⭐⭐⭐ (4 - Puas)
-                                    </option>
-                                    <option value={3}>
-                                        ⭐⭐⭐ (3 - Biasa Saja)
-                                    </option>
-                                    <option value={2}>⭐⭐ (2 - Kurang)</option>
-                                    <option value={1}>⭐ (1 - Kecewa)</option>
-                                </select>
+                                <div className="flex items-center gap-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setData('rating', star)}
+                                            onMouseEnter={(e) => {
+                                                const parent = e.currentTarget.parentElement;
+                                                if (!parent) return;
+                                                parent.querySelectorAll('[data-star]').forEach((el) => {
+                                                    const val = Number(el.getAttribute('data-star'));
+                                                    el.classList.toggle('text-pastel-peach', val <= star);
+                                                    el.classList.toggle('fill-pastel-peach', val <= star);
+                                                    el.classList.toggle('text-navy-200', val > star);
+                                                    el.classList.toggle('fill-navy-200', val > star);
+                                                });
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                const parent = e.currentTarget.parentElement;
+                                                if (!parent) return;
+                                                parent.querySelectorAll('[data-star]').forEach((el) => {
+                                                    const val = Number(el.getAttribute('data-star'));
+                                                    el.classList.toggle('text-pastel-peach', val <= data.rating);
+                                                    el.classList.toggle('fill-pastel-peach', val <= data.rating);
+                                                    el.classList.toggle('text-navy-200', val > data.rating);
+                                                    el.classList.toggle('fill-navy-200', val > data.rating);
+                                                });
+                                            }}
+                                            className="cursor-pointer p-0.5 transition-transform hover:scale-110"
+                                            aria-label={`${star} bintang`}
+                                        >
+                                            <Star
+                                                data-star={star}
+                                                className={`h-7 w-7 transition-colors ${
+                                                    star <= data.rating
+                                                        ? 'fill-pastel-peach text-pastel-peach'
+                                                        : 'fill-navy-200 text-navy-200'
+                                                }`}
+                                            />
+                                        </button>
+                                    ))}
+                                    <span className="ml-2 text-xs font-bold text-navy-500">
+                                        {data.rating === 5 && 'Sangat Puas'}
+                                        {data.rating === 4 && 'Puas'}
+                                        {data.rating === 3 && 'Biasa Saja'}
+                                        {data.rating === 2 && 'Kurang'}
+                                        {data.rating === 1 && 'Kecewa'}
+                                    </span>
+                                </div>
                             </div>
 
                             <div className="space-y-1.5">
@@ -444,6 +461,7 @@ export default function ProductDetail({
                                 </span>
                             </Button>
                         </form>
+                        )}
                     </div>
                 </div>
             </div>

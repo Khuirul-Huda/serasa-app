@@ -175,7 +175,22 @@ export default function Welcome({
                             </div>
 
                             {/* Pagination Controls Bar */}
-                            {totalPages > 1 && (
+                            {totalPages > 1 && (() => {
+                                const scrollToCatalog = () => document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+
+                                // Build page numbers with ellipsis: [1, '...', 4, 5, 6, '...', 20]
+                                const pages: (number | '...')[] = [];
+                                const delta = 1;
+                                const rangeStart = Math.max(2, currentPage - delta);
+                                const rangeEnd = Math.min(totalPages - 1, currentPage + delta);
+
+                                pages.push(1);
+                                if (rangeStart > 2) pages.push('...');
+                                for (let i = rangeStart; i <= rangeEnd; i++) pages.push(i);
+                                if (rangeEnd < totalPages - 1) pages.push('...');
+                                if (totalPages > 1) pages.push(totalPages);
+
+                                return (
                                 <div className="flex flex-col items-center justify-between gap-4 border-t border-navy-100 pt-6 sm:flex-row">
                                     <div className="text-xs font-bold text-navy-500">
                                         Halaman {currentPage} dari {totalPages} ({filteredProducts.length} Produk Total)
@@ -185,33 +200,42 @@ export default function Welcome({
                                             disabled={currentPage === 1}
                                             onClick={() => {
                                                 setCurrentPage((prev) => Math.max(prev - 1, 1));
-                                                document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                                                scrollToCatalog();
                                             }}
                                             className="cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-1.5 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40"
                                         >
                                             &laquo; Prev
                                         </button>
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                            <button
-                                                key={page}
-                                                onClick={() => {
-                                                    setCurrentPage(page);
-                                                    document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
-                                                }}
-                                                className={`h-8 w-8 cursor-pointer rounded-xl text-xs font-extrabold transition-all ${
-                                                    page === currentPage
-                                                        ? 'bg-pastel-teal text-white shadow-2xs'
-                                                        : 'border border-navy-200 bg-white text-navy-700 hover:border-pastel-teal hover:text-pastel-teal'
-                                                }`}
-                                            >
-                                                {page}
-                                            </button>
-                                        ))}
+                                        {pages.map((page, idx) =>
+                                            page === '...' ? (
+                                                <span
+                                                    key={`ellipsis-${idx}`}
+                                                    className="px-1 text-xs font-bold text-navy-400 select-none"
+                                                >
+                                                    …
+                                                </span>
+                                            ) : (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => {
+                                                        setCurrentPage(page);
+                                                        scrollToCatalog();
+                                                    }}
+                                                    className={`h-8 w-8 cursor-pointer rounded-xl text-xs font-extrabold transition-all ${
+                                                        page === currentPage
+                                                            ? 'bg-pastel-teal text-white shadow-2xs'
+                                                            : 'border border-navy-200 bg-white text-navy-700 hover:border-pastel-teal hover:text-pastel-teal'
+                                                    }`}
+                                                >
+                                                    {page}
+                                                </button>
+                                            ),
+                                        )}
                                         <button
                                             disabled={currentPage === totalPages}
                                             onClick={() => {
                                                 setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-                                                document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                                                scrollToCatalog();
                                             }}
                                             className="cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-1.5 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40"
                                         >
@@ -219,7 +243,8 @@ export default function Welcome({
                                         </button>
                                     </div>
                                 </div>
-                            )}
+                                );
+                            })()}
                         </div>
                     )}
                 </div>

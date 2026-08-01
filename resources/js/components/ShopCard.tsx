@@ -134,14 +134,14 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                             </Link>
                         </h3>
 
-                        <p className="-mt-0.5 text-xs font-bold tracking-wider text-navy-400 uppercase">
+                        <p className="-mt-0.5 text-xs font-bold text-navy-400">
                             Pemilik:{' '}
                             <span className="font-black text-navy-700">
                                 {shop.ownerName}
                             </span>
                         </p>
 
-                        <p className="line-clamp-2 pt-0.5 text-xs leading-relaxed font-normal text-navy-600 sm:text-sm">
+                        <p className="line-clamp-2 pt-0.5 text-sm leading-relaxed font-normal text-navy-600">
                             {shop.description}
                         </p>
                     </div>
@@ -160,7 +160,7 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                         </div>
 
                         <div className="flex items-center justify-between gap-2 pt-0.5">
-                            <div className="flex items-center gap-1.5 rounded-lg border border-navy-200/50 bg-navy-100/60 px-2.5 py-1 text-xs font-bold tracking-wider text-navy-700 uppercase">
+                            <div className="flex items-center gap-1.5 rounded-lg border border-navy-200/50 bg-navy-100/60 px-2.5 py-1 text-xs font-bold text-navy-700">
                                 <ShoppingBag
                                     className="h-3.5 w-3.5 shrink-0 text-pastel-teal"
                                     aria-hidden="true"
@@ -169,7 +169,7 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                             </div>
 
                             {shop.jamKerja && (
-                                <div className="flex items-center gap-1 text-xs font-bold tracking-wider text-navy-500 uppercase">
+                                <div className="flex items-center gap-1 text-xs font-bold text-navy-500">
                                     <Clock
                                         className="h-3.5 w-3.5 shrink-0 text-pastel-teal"
                                         aria-hidden="true"
@@ -183,7 +183,7 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                     <div className="grid grid-cols-2 gap-2 pt-1">
                         <button
                             onClick={handleContactWhatsApp}
-                            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-navy-200 px-3 py-2.5 text-xs font-extrabold tracking-wider text-navy-700 uppercase shadow-2xs transition-all hover:border-pastel-teal/30 hover:bg-pastel-teal-light hover:text-pastel-teal"
+                            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-navy-200 px-3 py-2.5 text-xs font-extrabold text-navy-700 shadow-2xs transition-all hover:border-pastel-teal/30 hover:bg-pastel-teal-light hover:text-pastel-teal"
                             aria-label={`Hubungi ${shop.name} via WhatsApp`}
                         >
                             <Phone
@@ -194,7 +194,7 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                         </button>
                         <Link
                             href={`/shops/${shop.id}`}
-                            className="group/btn flex items-center justify-center gap-1.5 rounded-xl bg-pastel-teal px-3 py-2.5 text-xs font-extrabold tracking-wider text-white uppercase shadow-2xs transition-all hover:bg-pastel-teal/90"
+                            className="group/btn flex items-center justify-center gap-1.5 rounded-xl bg-pastel-coral px-3 py-2.5 text-xs font-extrabold tracking-wider text-white uppercase shadow-2xs transition-all hover:bg-pastel-coral/90"
                             aria-label={`Lihat katalog ${shop.name}`}
                         >
                             <span>Katalog</span>

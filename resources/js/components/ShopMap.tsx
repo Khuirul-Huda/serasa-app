@@ -27,12 +27,13 @@ const createCustomMarker = (
     color: string = '#00B4D8',
     isSelected: boolean = false,
 ) => {
+    const scale = isSelected ? 'scale(1.25)' : 'scale(1)';
+
     return L.divIcon({
         html: `
-      <div class="flex flex-col items-center justify-center relative select-none">
-        <div class="absolute w-8 h-8 rounded-full animate-ping opacity-25" style="background-color: ${color};"></div>
-        <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-white shadow-md border-2 border-white transition-all transform ${isSelected ? 'scale-125' : 'hover:scale-110'}" style="background-color: ${color};">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store text-white"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7"/><path d="M14 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7"/><path d="M6 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7"/></svg>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;user-select:none;">
+        <div style="width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);border:2px solid #fff;transition:transform .2s;transform:${scale};background-color:${color};">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7"/><path d="M14 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7"/><path d="M6 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7"/></svg>
         </div>
       </div>
     `,

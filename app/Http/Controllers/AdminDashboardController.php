@@ -7,6 +7,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\ProcessShopImportAction;
 use App\Http\Requests\SaveSettingsRequest;
 use App\Models\Category;
 use App\Models\Product;
@@ -244,16 +245,17 @@ class AdminDashboardController extends Controller
     /**
      * Bulk import or update shops from parsed Excel.
      */
-    public function bulkImport(Request $request): RedirectResponse
+    public function bulkImport(Request $request, ProcessShopImportAction $action): RedirectResponse
     {
         $this->authorizeAdmin();
 
         $validated = $request->validate([
             'shops' => 'required|array',
             'shops.*.name' => 'required|string',
-            'shops.*.owner_name' => 'required|string',
-            'shops.*.category' => 'required|string',
-            'shops.*.address' => 'required|string',
+            'shops.*.owner_name' => 'nullable|string',
+            'shops.*.ownerName' => 'nullable|string',
+            'shops.*.category' => 'nullable|string',
+            'shops.*.address' => 'nullable|string',
             'shops.*.dusun' => 'nullable|string',
             'shops.*.phone' => 'nullable|string',
             'shops.*.description' => 'nullable|string',
@@ -263,37 +265,9 @@ class AdminDashboardController extends Controller
             'shops.*.is_verified' => 'nullable|boolean',
         ]);
 
-        DB::transaction(function () use ($validated) {
-            foreach ($validated['shops'] as $item) {
-                $id = ! empty($item['id']) ? $item['id'] : ('shop-'.Str::slug($item['name']));
+        $importedCount = $action->execute($validated['shops']);
 
-                Shop::updateOrCreate(
-                    ['id' => $id],
-                    [
-                        'name' => $item['name'],
-                        'owner_name' => $item['owner_name'],
-                        'description' => $item['description'] ?? ('UMKM '.$item['name'].' Desa Samirono'),
-                        'category' => $item['category'],
-                        'phone' => $item['phone'] ?? '6285725912345',
-                        'address' => $item['address'],
-                        'dusun' => $item['dusun'] ?? 'Desa Samirono',
-                        'image' => $item['image'] ?? 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=800',
-                        'logo' => $item['logo'] ?? 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=150',
-                        'is_verified' => $item['is_verified'] ?? true,
-                        'lat' => $item['lat'] ?? -7.38,
-                        'lng' => $item['lng'] ?? 110.42,
-                        'nib' => $item['nib'] ?? false,
-                        'halal' => $item['halal'] ?? false,
-                        'pirt' => $item['pirt'] ?? false,
-                    ]
-                );
-            }
-        });
-
-        Cache::forget('app:settings');
-        Cache::forget('app:categories');
-
-        return redirect()->back();
+        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data toko.");
     }
 
     /**

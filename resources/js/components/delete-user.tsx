@@ -20,17 +20,17 @@ export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-4 border-t border-navy-100 font-sans">
             <Heading
                 variant="small"
-                title="Delete account"
-                description="Delete your account and all of its resources"
+                title="Hapus Akun Pengguna"
+                description="Hapus akun Anda beserta seluruh data terkait secara permanen"
             />
-            <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
-                <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
-                    <p className="font-medium">Warning</p>
-                    <p className="text-sm">
-                        Please proceed with caution, this cannot be undone.
+            <div className="space-y-3 rounded-2xl border border-pastel-coral/30 bg-pastel-coral-light/40 p-4">
+                <div className="space-y-0.5 text-pastel-coral">
+                    <p className="font-bold text-xs uppercase tracking-wider">Peringatan Penting</p>
+                    <p className="text-xs font-normal">
+                        Harap berhati-hati, tindakan ini tidak dapat dibatalkan.
                     </p>
                 </div>
 
@@ -39,19 +39,19 @@ export default function DeleteUser() {
                         <Button
                             variant="destructive"
                             data-test="delete-user-button"
+                            className="bg-pastel-coral hover:bg-pastel-coral/90 text-white font-bold text-xs rounded-xl"
                         >
-                            Delete account
+                            Hapus Akun Saya
                         </Button>
                     </DialogTrigger>
-                    <DialogContent>
-                        <DialogTitle>
-                            Are you sure you want to delete your account?
+                    <DialogContent className="rounded-3xl font-sans">
+                        <DialogTitle className="text-navy-900 font-black">
+                            Apakah Anda yakin ingin menghapus akun Anda?
                         </DialogTitle>
-                        <DialogDescription>
-                            Once your account is deleted, all of its resources
-                            and data will also be permanently deleted. Please
-                            enter your password to confirm you would like to
-                            permanently delete your account.
+                        <DialogDescription className="text-xs text-navy-600 leading-relaxed">
+                            Setelah akun Anda dihapus, seluruh data toko, produk,
+                            dan riwayat akan terhapus secara permanen. Silakan
+                            masukkan kata sandi Anda untuk mengonfirmasi penghapusan permanen ini.
                         </DialogDescription>
 
                         <Form
@@ -70,29 +70,30 @@ export default function DeleteUser() {
                                             htmlFor="password"
                                             className="sr-only"
                                         >
-                                            Password
+                                            Kata Sandi
                                         </Label>
 
                                         <PasswordInput
                                             id="password"
                                             name="password"
                                             ref={passwordInput}
-                                            placeholder="Password"
+                                            placeholder="Masukkan kata sandi Anda"
                                             autoComplete="current-password"
                                         />
 
                                         <InputError message={errors.password} />
                                     </div>
 
-                                    <DialogFooter className="gap-2">
+                                    <DialogFooter className="gap-2 sm:gap-0">
                                         <DialogClose asChild>
                                             <Button
                                                 variant="secondary"
                                                 onClick={() =>
                                                     resetAndClearErrors()
                                                 }
+                                                className="rounded-xl border border-navy-200"
                                             >
-                                                Cancel
+                                                Batal
                                             </Button>
                                         </DialogClose>
 
@@ -100,12 +101,13 @@ export default function DeleteUser() {
                                             variant="destructive"
                                             disabled={processing}
                                             asChild
+                                            className="bg-pastel-coral hover:bg-pastel-coral/90 rounded-xl font-bold"
                                         >
                                             <button
                                                 type="submit"
                                                 data-test="confirm-delete-user-button"
                                             >
-                                                Delete account
+                                                Ya, Hapus Akun Permanen
                                             </button>
                                         </Button>
                                     </DialogFooter>

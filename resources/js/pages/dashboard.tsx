@@ -4,7 +4,7 @@
  */
 
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Store, ShieldCheck, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Store, ShieldCheck, ShoppingBag, ArrowRight, UserCheck, Key, Settings, Clock } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 
@@ -35,8 +35,41 @@ export default function Dashboard() {
                         <strong className="font-bold text-navy-800 uppercase">
                             {user?.role || 'pengguna'}
                         </strong>
-                        . Akses panel manajemen UMKM Anda di bawah ini.
+                        . Kelola akun dan akses panel manajemen UMKM Anda di bawah ini.
                     </p>
+                </div>
+
+                {/* Account Summary Stats Row */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="flex items-center gap-3.5 rounded-2xl border border-navy-200/60 bg-white p-4 shadow-2xs">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pastel-teal-light text-pastel-teal">
+                            <UserCheck className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                            <span className="block text-[11px] font-bold text-navy-400">Pengguna Terdaftar</span>
+                            <span className="truncate block text-sm font-black text-navy-900">{user?.name}</span>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3.5 rounded-2xl border border-navy-200/60 bg-white p-4 shadow-2xs">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pastel-peach-light text-pastel-peach">
+                            <ShieldCheck className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                            <span className="block text-[11px] font-bold text-navy-400">Hak Akses</span>
+                            <span className="truncate block text-sm font-black text-navy-900 uppercase">{user?.role || 'User'}</span>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3.5 rounded-2xl border border-navy-200/60 bg-white p-4 shadow-2xs">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pastel-lavender-light text-pastel-lavender">
+                            <Clock className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                            <span className="block text-[11px] font-bold text-navy-400">Email Akun</span>
+                            <span className="truncate block text-xs font-bold text-navy-800">{user?.email}</span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Quick Navigation Cards */}
@@ -108,6 +141,33 @@ export default function Dashboard() {
                             <ArrowRight className="h-4 w-4 text-pastel-teal" />
                         </div>
                     </Link>
+                </div>
+
+                {/* Account Settings Shortcut Box */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-3xl border border-navy-200/60 bg-white p-5 shadow-2xs">
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-100 text-navy-700">
+                            <Settings className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-navy-900">Pengaturan Akun & Keamanan</h3>
+                            <p className="text-xs text-navy-500">Ubah nama, email, atau perbarui kata sandi akun Anda.</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Link
+                            href="/settings/profile"
+                            className="rounded-xl border border-navy-200 px-4 py-2 text-xs font-bold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal"
+                        >
+                            Profil
+                        </Link>
+                        <Link
+                            href="/settings/password"
+                            className="rounded-xl border border-navy-200 px-4 py-2 text-xs font-bold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal"
+                        >
+                            Kata Sandi
+                        </Link>
+                    </div>
                 </div>
             </div>
         </AppLayout>

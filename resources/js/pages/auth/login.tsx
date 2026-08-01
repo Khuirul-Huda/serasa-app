@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Head, useForm, Link, router } from '@inertiajs/react';
+import { Head, useForm, Link, router, usePage } from '@inertiajs/react';
 import { Store, ShieldCheck, Sparkles } from 'lucide-react';
 import React from 'react';
 import InputError from '@/components/input-error';
@@ -19,6 +19,8 @@ type Props = {
 };
 
 export default function Login({ status, canResetPassword }: Props) {
+    const { isDemo } = usePage().props as any;
+
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
@@ -45,7 +47,8 @@ export default function Login({ status, canResetPassword }: Props) {
             <Head title="Masuk ke Portal UMKM" />
 
             <div className="space-y-6 font-sans text-navy-900">
-                {/* Demo Mode Quick Access Card */}
+                {/* Demo Mode Quick Access Card — hidden in production */}
+                {isDemo && (
                 <div className="space-y-3.5 rounded-2xl border border-pastel-teal/20 bg-pastel-teal-light/30 p-5 shadow-2xs">
                     <div className="flex items-center gap-1.5 text-navy-900">
                         <Sparkles className="h-4 w-4 animate-pulse fill-pastel-teal/20 text-pastel-teal" />
@@ -87,7 +90,9 @@ export default function Login({ status, canResetPassword }: Props) {
                         </button>
                     </div>
                 </div>
+                )}
 
+                {isDemo && (
                 <div className="relative flex items-center py-1">
                     <div className="flex-grow border-t border-navy-200/60"></div>
                     <span className="mx-4 flex-shrink font-mono text-xs font-bold tracking-widest text-navy-400 uppercase">
@@ -95,6 +100,7 @@ export default function Login({ status, canResetPassword }: Props) {
                     </span>
                     <div className="flex-grow border-t border-navy-200/60"></div>
                 </div>
+                )}
 
                 {/* Manual Form */}
                 <form

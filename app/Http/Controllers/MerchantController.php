@@ -52,11 +52,17 @@ class MerchantController extends Controller
             'id', 'name', 'icon_name', 'description', 'color',
         ])->get()->map(fn ($c) => $this->mapCategory($c));
 
+        $allProducts = Product::select([
+            'id', 'shop_id', 'category_id', 'name', 'description', 'price',
+            'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        ])->get()->map(fn ($p) => $this->mapProduct($p))->toArray();
+
         return Inertia::render('merchant-dashboard', [
             'settings' => $this->getAppSettings(),
             'myShop' => $myShop,
             'myProducts' => $myProducts,
             'categories' => $categories,
+            'products' => $allProducts,
         ]);
     }
 
