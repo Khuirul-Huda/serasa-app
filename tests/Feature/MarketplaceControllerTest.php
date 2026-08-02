@@ -52,6 +52,61 @@ test('map page can be loaded via normal http request and inertia xhr request', f
     $inertiaResponse->assertOk();
 });
 
+test('map page includes shops with null lat or lng coordinates in shops list', function () {
+    $user = User::factory()->create();
+
+    $shopWithCoords = Shop::create([
+        'id' => (string) Str::ulid(),
+        'user_id' => $user->id,
+        'name' => 'Toko Punya Koordinat',
+        'owner_name' => 'Pemilik A',
+        'description' => 'Deskripsi Toko A',
+        'category' => 'Kuliner',
+        'phone' => '628123456789',
+        'address' => 'Jl. Samirono 1',
+        'dusun' => 'Dusun I',
+        'image' => 'https://example.com/image.jpg',
+        'logo' => 'https://example.com/logo.jpg',
+        'is_verified' => true,
+        'lat' => -7.3822,
+        'lng' => 110.4287,
+    ]);
+
+    $shopWithoutCoords = Shop::create([
+        'id' => (string) Str::ulid(),
+        'user_id' => $user->id,
+        'name' => 'Toko Tanpa Koordinat',
+        'owner_name' => 'Pemilik B',
+        'description' => 'Deskripsi Toko B',
+        'category' => 'Kuliner',
+        'phone' => '628123456789',
+        'address' => 'Jl. Samirono 2',
+        'dusun' => 'Dusun II',
+        'image' => 'https://example.com/image.jpg',
+        'logo' => 'https://example.com/logo.jpg',
+        'is_verified' => true,
+        'lat' => null,
+        'lng' => null,
+    ]);
+
+    $response = $this->get(route('map.index'));
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('map')
+        ->where('shops', function ($shops) use ($shopWithCoords, $shopWithoutCoords) {
+            $shopsCollection = collect($shops);
+            $withCoords = $shopsCollection->firstWhere('id', $shopWithCoords->id);
+            $withoutCoords = $shopsCollection->firstWhere('id', $shopWithoutCoords->id);
+
+            return $withCoords !== null
+                && $withoutCoords !== null
+                && $withoutCoords['lat'] === null
+                && $withoutCoords['lng'] === null;
+        })
+    );
+});
+
 test('shop detail page can be loaded via normal http request and inertia xhr request', function () {
     $user = User::factory()->create();
     $shop = Shop::create([

@@ -61,7 +61,7 @@ export default function ShopMap({
         return ['all', ...Array.from(list)];
     }, [shops]);
 
-    // Filtered shops to show on map
+    // Filtered shops to show on map sidebar
     const mapShops = useMemo(() => {
         return shops.filter((shop) => {
             const matchSearch =
