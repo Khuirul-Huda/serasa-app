@@ -14,8 +14,10 @@ import {
     Award,
 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import type { Shop, Product, Category } from '@/types';
+import AddProductForm from './owner/AddProductForm';
 import CatalogTab from './owner/CatalogTab';
 import OnboardingPanel from './owner/OnboardingPanel';
 import ShopProfileTab from './owner/ShopProfileTab';
@@ -103,6 +105,29 @@ export default function OwnerPanel({
             onSuccess: () => {
                 setEditSuccess(true);
                 setTimeout(() => setEditSuccess(false), 3000);
+            },
+        });
+    };
+
+    // 3. Inertia Form for Adding New Product
+    const addProductForm = useForm({
+        name: '',
+        categoryId: categories[0]?.id || 'cat-kuliner',
+        price: '',
+        unit: 'Pcs',
+        description: '',
+        image: null as File | null,
+        images: [] as File[],
+    });
+
+    const handleAddProductSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        addProductForm.post('/merchant/products', {
+            forceFormData: true,
+            onSuccess: () => {
+                toast.success('Produk baru berhasil diluncurkan!');
+                setIsAddingProduct(false);
+                addProductForm.reset();
             },
         });
     };
@@ -297,17 +322,25 @@ export default function OwnerPanel({
                 />
             )}
 
-            {activeTab === 'catalog' && (
-                <CatalogTab
-                    myProducts={myProducts}
-                    categories={categories}
-                    searchCatalogQuery={searchCatalogQuery}
-                    setSearchCatalogQuery={setSearchCatalogQuery}
-                    selectedCatalogCategory={selectedCatalogCategory}
-                    setSelectedCatalogCategory={setSelectedCatalogCategory}
-                    onOpenAddModal={() => setIsAddingProduct(true)}
-                />
-            )}
+            {activeTab === 'catalog' &&
+                (isAddingProduct ? (
+                    <AddProductForm
+                        form={addProductForm}
+                        categories={categories}
+                        onSubmit={handleAddProductSubmit}
+                        onCancel={() => setIsAddingProduct(false)}
+                    />
+                ) : (
+                    <CatalogTab
+                        myProducts={myProducts}
+                        categories={categories}
+                        searchCatalogQuery={searchCatalogQuery}
+                        setSearchCatalogQuery={setSearchCatalogQuery}
+                        selectedCatalogCategory={selectedCatalogCategory}
+                        setSelectedCatalogCategory={setSelectedCatalogCategory}
+                        onOpenAddModal={() => setIsAddingProduct(true)}
+                    />
+                ))}
         </div>
     );
 }

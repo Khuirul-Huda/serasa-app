@@ -14,7 +14,7 @@ import {
     MapPin,
     ChevronRight,
 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import SEOHead from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -42,6 +42,14 @@ export default function ProductDetail({
 }: ProductDetailProps) {
     const { auth } = usePage().props as any;
     const user = auth?.user;
+
+    const galleryImages =
+        product.images && product.images.length > 0
+            ? product.images
+            : [product.image];
+    const [selectedImage, setSelectedImage] = useState<string>(
+        galleryImages[0] || product.image,
+    );
 
     const category = categories.find((c) => c.id === product.categoryId);
 
@@ -143,22 +151,48 @@ export default function ProductDetail({
 
                 {/* Master Product Specifications Box */}
                 <article className="shadow-3xs grid grid-cols-1 gap-8 overflow-hidden rounded-3xl border border-navy-200/60 bg-white p-6 sm:p-8 md:grid-cols-12">
-                    {/* Left Column: Product Image (Column span 5) */}
-                    <div className="relative aspect-square overflow-hidden rounded-2xl border border-navy-200/60 bg-navy-50 md:col-span-5">
-                        <img
-                            src={product.image}
-                            alt={product.name}
-                            width={500}
-                            height={500}
-                            loading="eager"
-                            className="h-full w-full object-cover"
-                            referrerPolicy="no-referrer"
-                        />
-                        {!product.isAvailable && (
-                            <div className="backdrop-blur-3xs absolute inset-0 flex items-center justify-center bg-navy-900/80">
-                                <span className="rounded-full border border-pastel-coral/80 bg-pastel-coral px-5 py-2 text-xs font-extrabold tracking-widest text-white uppercase">
-                                    Stok Habis
-                                </span>
+                    {/* Left Column: Product Gallery (Column span 5) */}
+                    <div className="space-y-3 md:col-span-5">
+                        <div className="relative aspect-square overflow-hidden rounded-2xl border border-navy-200/60 bg-navy-50">
+                            <img
+                                src={selectedImage}
+                                alt={product.name}
+                                width={500}
+                                height={500}
+                                loading="eager"
+                                className="h-full w-full object-cover transition-all duration-300"
+                                referrerPolicy="no-referrer"
+                            />
+                            {!product.isAvailable && (
+                                <div className="backdrop-blur-3xs absolute inset-0 flex items-center justify-center bg-navy-900/80">
+                                    <span className="rounded-full border border-pastel-coral/80 bg-pastel-coral px-5 py-2 text-xs font-extrabold tracking-widest text-white uppercase">
+                                        Stok Habis
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Gallery Thumbnails Strip */}
+                        {galleryImages.length > 1 && (
+                            <div className="flex items-center gap-2 overflow-x-auto py-1">
+                                {galleryImages.map((imgUrl, index) => (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        onClick={() => setSelectedImage(imgUrl)}
+                                        className={`relative aspect-square h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
+                                            selectedImage === imgUrl
+                                                ? 'scale-105 border-pastel-teal ring-2 ring-pastel-teal/20'
+                                                : 'border-navy-200/80 opacity-70 hover:border-navy-400 hover:opacity-100'
+                                        }`}
+                                    >
+                                        <img
+                                            src={imgUrl}
+                                            alt={`${product.name} foto ${index + 1}`}
+                                            className="h-full w-full object-cover"
+                                        />
+                                    </button>
+                                ))}
                             </div>
                         )}
                     </div>

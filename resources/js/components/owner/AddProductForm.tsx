@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import { X, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +23,37 @@ export default function AddProductForm({
     onSubmit,
     onCancel,
 }: AddProductFormProps) {
+    const [previews, setPreviews] = useState<string[]>([]);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFiles = Array.from(e.target.files || []);
+        if (selectedFiles.length === 0) {
+            return;
+        }
+
+        const existingFiles = (form.data.images || []) as File[];
+        const combinedFiles = [...existingFiles, ...selectedFiles].slice(0, 5);
+
+        form.setData('images', combinedFiles);
+        form.setData('image', combinedFiles[0] || null);
+
+        const newPreviews = combinedFiles.map((file) =>
+            typeof file === 'string' ? file : URL.createObjectURL(file),
+        );
+        setPreviews(newPreviews);
+    };
+
+    const handleRemoveImage = (index: number) => {
+        const existingFiles = (form.data.images || []) as File[];
+        const updatedFiles = existingFiles.filter((_, i) => i !== index);
+
+        form.setData('images', updatedFiles);
+        form.setData('image', updatedFiles[0] || null);
+
+        const updatedPreviews = previews.filter((_, i) => i !== index);
+        setPreviews(updatedPreviews);
+    };
+
     return (
         <div className="shadow-3xs space-y-4 rounded-3xl border border-navy-200/60 bg-white p-6 font-sans text-navy-900">
             <div>
@@ -30,7 +62,7 @@ export default function AddProductForm({
                 </h4>
                 <p className="mt-0.5 text-xs font-normal text-navy-500 sm:text-sm">
                     Lengkapi parameters berikut untuk menampilkan produk di
-                    etalase utama.
+                    etalase utama. Anda dapat mengunggah hingga 5 foto produk.
                 </p>
             </div>
 
@@ -106,18 +138,55 @@ export default function AddProductForm({
                     </div>
                 </div>
 
-                <div className="space-y-1.5">
-                    <Label className="block text-xs font-bold tracking-wider text-navy-500 uppercase">
-                        Foto Produk (File Upload)
-                    </Label>
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <Label className="block text-xs font-bold tracking-wider text-navy-500 uppercase">
+                            Foto Produk (Maksimal 5 Foto)
+                        </Label>
+                        <span className="text-2xs font-semibold text-navy-400">
+                            {previews.length} / 5 Foto Terpilih
+                        </span>
+                    </div>
+
                     <Input
                         type="file"
                         accept="image/*"
-                        onChange={(e) =>
-                            form.setData('image', e.target.files?.[0] || null)
-                        }
-                        className="cursor-pointer rounded-xl border-navy-200/60 bg-white py-1 text-xs text-navy-500 focus-visible:border-pastel-teal focus-visible:ring-pastel-teal/20"
+                        multiple
+                        disabled={previews.length >= 5}
+                        onChange={handleFileChange}
+                        className="cursor-pointer rounded-xl border-navy-200/60 bg-white py-1 text-xs text-navy-500 focus-visible:border-pastel-teal focus-visible:ring-pastel-teal/20 disabled:cursor-not-allowed disabled:opacity-50"
                     />
+
+                    {/* Multi-image thumbnail preview grid */}
+                    {previews.length > 0 && (
+                        <div className="grid grid-cols-5 gap-2 pt-2">
+                            {previews.map((src, index) => (
+                                <div
+                                    key={index}
+                                    className="group relative aspect-square overflow-hidden rounded-xl border border-navy-200 bg-navy-50"
+                                >
+                                    <img
+                                        src={src}
+                                        alt={`Preview ${index + 1}`}
+                                        className="h-full w-full object-cover"
+                                    />
+                                    {index === 0 && (
+                                        <span className="absolute top-1 left-1 rounded bg-pastel-teal px-1.5 py-0.5 text-[9px] font-black text-white uppercase shadow-xs">
+                                            Sampul
+                                        </span>
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveImage(index)}
+                                        className="absolute top-1 right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-navy-900/70 text-white opacity-90 transition-opacity hover:bg-pastel-coral group-hover:opacity-100"
+                                        title="Hapus foto ini"
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div className="space-y-1.5">
