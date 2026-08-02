@@ -43,7 +43,7 @@ services:
     environment:
       POSTGRES_DB:          ${POSTGRES_DB:-serasa}
       POSTGRES_USER:        ${POSTGRES_USER:-serasa}
-      POSTGRES_PASSWORD:    ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_PASSWORD:    ${POSTGRES_PASSWORD:-${DB_PASSWORD:-serasa}}
       POSTGRES_INITDB_ARGS: "--data-checksums"
     volumes:
       - postgres-data:/var/lib/postgresql/data
