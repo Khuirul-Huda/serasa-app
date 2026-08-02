@@ -16,7 +16,7 @@ class Product extends Model
 
     protected $fillable = [
         'id', 'shop_id', 'category_id', 'name', 'description',
-        'price', 'unit', 'image', 'rating', 'reviews_count', 'is_available',
+        'price', 'unit', 'image', 'images', 'rating', 'reviews_count', 'is_available',
     ];
 
     protected $casts = [
@@ -24,7 +24,17 @@ class Product extends Model
         'rating' => 'double',
         'reviews_count' => 'integer',
         'is_available' => 'boolean',
+        'images' => 'array',
     ];
+
+    public function getGalleryAttribute(): array
+    {
+        if (! empty($this->images) && is_array($this->images)) {
+            return $this->images;
+        }
+
+        return $this->image ? [$this->image] : [];
+    }
 
     public function shop(): BelongsTo
     {
