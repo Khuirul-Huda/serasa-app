@@ -15,8 +15,8 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import ProductCard from '@/components/ProductCard';
-import ShopCard from '@/components/ShopCard';
 import SEOHead from '@/components/SEOHead';
+import ShopCard from '@/components/ShopCard';
 import MarketplaceLayout from '@/layouts/marketplace-layout';
 import type { AppSettings, Category, Product, Shop } from '@/types';
 import { getWhatsAppLink } from '@/utils';
@@ -42,9 +42,13 @@ export default function ShopDetail({
         products.length > 0 ? products : (shop as any).products || [];
 
     const handleContactWhatsApp = () => {
-        if (!shop.phone) return;
+        if (!shop.phone) {
+            return;
+        }
+
         const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
         const url = getWhatsAppLink(shop.phone, message);
+
         if (url) {
             window.open(url, '_blank');
         }
@@ -91,7 +95,7 @@ export default function ShopDetail({
                         className="h-3.5 w-3.5 shrink-0 text-navy-300"
                         aria-hidden="true"
                     />
-                    <span className="max-w-[240px] shrink-0 truncate font-bold text-navy-800">
+                    <span className="max-w-60 shrink-0 truncate font-bold text-navy-800">
                         {shop.name}
                     </span>
                 </nav>
@@ -245,13 +249,25 @@ export default function ShopDetail({
                                         </span>
                                     </button>
 
-                                    <Link
-                                        href="/map"
-                                        className="shadow-3xs flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-navy-900 py-3 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-navy-800"
-                                    >
-                                        <MapPin className="h-4 w-4 text-pastel-teal" />
-                                        <span>Lihat di Peta Desa</span>
-                                    </Link>
+                                    {shop.lat != null && shop.lng != null ? (
+                                        <Link
+                                            href="/map"
+                                            className="shadow-3xs flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-navy-900 py-3 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-navy-800"
+                                        >
+                                            <MapPin className="h-4 w-4 text-pastel-teal" />
+                                            <span>Lihat di Peta Desa</span>
+                                        </Link>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            disabled
+                                            className="shadow-3xs flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-navy-200 py-3 text-xs font-bold tracking-wider text-navy-400 uppercase opacity-75"
+                                            title="Titik lokasi peta belum diatur oleh pemilik toko"
+                                        >
+                                            <MapPin className="h-4 w-4 text-navy-400" />
+                                            <span>Lihat di Peta Desa</span>
+                                        </button>
+                                    )}
                                 </div>
                             </aside>
                         </div>

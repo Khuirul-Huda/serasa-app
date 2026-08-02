@@ -69,7 +69,7 @@ export default function UserMenu() {
                 <UserIcon className="h-3.5 w-3.5 text-pastel-teal" />
                 <span>Halo, </span>
                 <span className="text-pastel-teal underline">
-                    {user.name} ({user.role === 'admin' ? 'Admin' : 'Owner'})
+                    {user.name} ({user.role === 'admin' ? 'Admin' : user.role === 'owner' ? 'Owner Toko' : 'Pengguna'})
                 </span>
                 <ChevronDown className="h-3 w-3 text-pastel-teal" />
             </button>

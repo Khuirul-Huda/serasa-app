@@ -44,7 +44,7 @@ export default function Login({ status, canResetPassword }: Props) {
 
     return (
         <>
-            <Head title="Masuk ke Portal UMKM" />
+            <Head title="Masuk ke Akun SERASA" />
 
             <div className="space-y-6 font-sans text-navy-900">
                 {/* Demo Mode Quick Access Card — hidden in production */}
@@ -177,18 +177,18 @@ export default function Login({ status, canResetPassword }: Props) {
                         disabled={processing}
                         className="shadow-3xs mt-2 w-full cursor-pointer rounded-xl bg-pastel-teal py-3.5 text-xs font-extrabold tracking-wider text-white uppercase transition-all hover:bg-pastel-teal/90 disabled:opacity-50"
                     >
-                        {processing ? 'Memproses...' : 'Masuk ke Akun Toko'}
+                        {processing ? 'Memproses...' : 'Masuk ke Akun'}
                     </Button>
                 </form>
 
                 {/* Footer info */}
                 <div className="text-center text-xs font-medium text-navy-400">
-                    Belum memiliki akun toko?{' '}
+                    Belum memiliki akun?{' '}
                     <Link
                         href="/register"
                         className="font-bold text-pastel-teal hover:underline"
                     >
-                        Daftarkan Toko UMKM Baru
+                        Daftar Akun Baru
                     </Link>
                 </div>
             </div>

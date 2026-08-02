@@ -38,7 +38,7 @@ export default function Register({ passwordRules }: Props) {
                                         htmlFor="name"
                                         className="block text-xs font-bold tracking-wider text-navy-500 uppercase"
                                     >
-                                        Nama Lengkap Pemilik
+                                        Nama Lengkap
                                     </Label>
                                     <Input
                                         id="name"
@@ -47,7 +47,7 @@ export default function Register({ passwordRules }: Props) {
                                         autoFocus
                                         tabIndex={1}
                                         autoComplete="name"
-                                        placeholder="Contoh: Pak Budi Santoso"
+                                        placeholder="Contoh: Budi Santoso"
                                         className="w-full rounded-xl border border-navy-200/60 px-4 py-2.5 text-xs transition-all focus:border-pastel-teal focus:ring-pastel-teal/20 sm:text-sm"
                                     />
                                     <InputError message={errors.name} />
@@ -58,7 +58,7 @@ export default function Register({ passwordRules }: Props) {
                                         htmlFor="email"
                                         className="block text-xs font-bold tracking-wider text-navy-500 uppercase"
                                     >
-                                        Alamat Email Pengguna
+                                        Alamat Email
                                     </Label>
                                     <Input
                                         id="email"
@@ -120,11 +120,11 @@ export default function Register({ passwordRules }: Props) {
                                 className="shadow-3xs mt-2 w-full cursor-pointer rounded-xl bg-pastel-teal py-3.5 text-xs font-extrabold tracking-wider text-white uppercase transition-all hover:bg-pastel-teal/90 disabled:opacity-50"
                             >
                                 {processing && <Spinner />}
-                                Daftar Akun Toko Baru
+                                Daftar Akun Baru
                             </Button>
 
                             <div className="pt-1 text-center text-xs font-medium text-navy-400">
-                                Sudah memiliki akun toko terdaftar?{' '}
+                                Sudah memiliki akun?{' '}
                                 <Link
                                     href={login()}
                                     tabIndex={6}

@@ -25,8 +25,6 @@ class MerchantController extends Controller
      */
     public function dashboard(): Response
     {
-        $this->authorizeOwner();
-
         $user = auth()->user();
         $shop = Shop::select([
             'id', 'name', 'owner_name', 'description', 'category', 'phone',
@@ -71,12 +69,14 @@ class MerchantController extends Controller
      */
     public function registerShop(RegisterShopRequest $request): RedirectResponse
     {
-        $this->authorizeOwner();
-
         $user = auth()->user();
 
         if (Shop::where('user_id', $user->id)->exists()) {
             return redirect()->back()->withErrors(['message' => 'Anda sudah memiliki toko terdaftar.']);
+        }
+
+        if ($user->role !== 'owner' && $user->role !== 'admin') {
+            $user->update(['role' => 'owner']);
         }
 
         $id = 'shop-'.Str::slug($request->name).'-'.rand(100, 999);
