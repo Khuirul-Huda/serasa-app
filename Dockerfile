@@ -5,6 +5,7 @@
 ##############################################################
 FROM oven/bun:1.2-alpine AS assets
 
+ENV NODE_ENV=production
 WORKDIR /app
 
 # bun.lock (text format) — since Bun 1.1.35; not bun.lockb
@@ -47,6 +48,9 @@ FROM dunglas/frankenphp:1.4-php8.3-alpine AS runtime
 
 LABEL org.opencontainers.image.title="serasa-app" \
       org.opencontainers.image.source="https://github.com/your-org/serasa-app"
+
+ENV OCTANE_SERVER=frankenphp \
+    PORT=8000
 
 # ── System packages ───────────────────────────────────────────
 # netcat-openbsd: TCP wait in entrypoint.sh

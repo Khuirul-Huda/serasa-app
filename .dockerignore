@@ -45,5 +45,11 @@ public/build
 # ── Fat binaries not needed in image (FrankenPHP is in base) ──
 frankenphp
 
+# ── AI Agent & Docs Metadata ─────────────────────────────────
+.agents/
+.claude/
+docs/
+*.md
+
 # NOTE: docker/ is intentionally NOT excluded because the
 # Dockerfile COPYs Caddyfile and php/*.ini from it.

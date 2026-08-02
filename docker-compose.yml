@@ -142,13 +142,8 @@ services:
   # ── Scheduler ────────────────────────────────────────────────
   scheduler:
     <<: *app-base
-    entrypoint: ["sh", "-c"]
-    command:
-      - |
-        while true; do
-          php artisan schedule:run --no-interaction
-          sleep 60
-        done
+    entrypoint: ["php", "artisan"]
+    command: ["schedule:work"]
     depends_on:
       app:
         condition: service_healthy

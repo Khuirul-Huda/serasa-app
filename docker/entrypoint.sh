@@ -45,5 +45,8 @@ echo "==> Starting Octane..."
 exec php artisan octane:frankenphp \
     --host=0.0.0.0 \
     --port=8000 \
-    --workers=auto \
-    --max-requests=500
+    --admin-port=2019 \
+    --caddyfile=/etc/caddy/Caddyfile \
+    --workers="${OCTANE_WORKERS:-auto}" \
+    --max-requests="${OCTANE_MAX_REQUESTS:-500}"
+
