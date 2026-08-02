@@ -77,9 +77,9 @@ RUN install-php-extensions \
 COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/10-opcache.ini
 COPY docker/php/app.ini     /usr/local/etc/php/conf.d/20-app.ini
 
-# ── Caddy data dirs — owned by www-data for TLS cert storage ──
+# ── Caddy data dirs & FrankenPHP binary permissions ──────────
 RUN mkdir -p /data/caddy /config/caddy \
-    && chown -R www-data:www-data /data/caddy /config/caddy
+    && chown -R www-data:www-data /data/caddy /config/caddy /usr/local/bin/frankenphp /usr/local/bin
 
 WORKDIR /app
 
