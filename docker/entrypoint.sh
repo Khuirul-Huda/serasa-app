@@ -40,6 +40,12 @@ php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
+# If custom arguments are passed (e.g. queue worker, scheduler, or SSR server), run them
+if [ $# -gt 0 ]; then
+    echo "==> Executing command: $@"
+    exec "$@"
+fi
+
 echo "==> Starting Octane..."
 # exec makes PHP PID 1 so Docker SIGTERM is forwarded correctly.
 exec php artisan octane:frankenphp \

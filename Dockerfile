@@ -17,7 +17,7 @@ COPY resources/     resources/
 COPY public/        public/
 COPY vite.config.ts tsconfig.json components.json ./
 
-RUN bun run build
+RUN bun run build:ssr
 
 ##############################################################
 # Stage 2 — Composer: install PHP production dependencies
@@ -55,7 +55,8 @@ ENV OCTANE_SERVER=frankenphp \
 # ── System packages ───────────────────────────────────────────
 # netcat-openbsd: TCP wait in entrypoint.sh
 # procps:         provides pgrep for queue worker healthcheck
-RUN apk add --no-cache netcat-openbsd procps
+# nodejs:         provides Node runtime for Inertia SSR server
+RUN apk add --no-cache netcat-openbsd procps nodejs
 
 # ── PHP extensions ────────────────────────────────────────────
 # install-php-extensions compiles from source; cache is in
@@ -86,8 +87,9 @@ RUN mkdir -p /data/caddy /config/caddy \
 WORKDIR /app
 
 # ── Application source from build stages ─────────────────────
-COPY --from=vendor --chown=www-data:www-data /app              /app
-COPY --from=assets --chown=www-data:www-data /app/public/build /app/public/build
+COPY --from=vendor --chown=www-data:www-data /app               /app
+COPY --from=assets --chown=www-data:www-data /app/public/build  /app/public/build
+COPY --from=assets --chown=www-data:www-data /app/bootstrap/ssr /app/bootstrap/ssr
 
 # ── FrankenPHP / Caddy config ─────────────────────────────────
 # --link and --chown cannot be combined reliably; chown separately

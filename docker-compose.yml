@@ -100,7 +100,7 @@ services:
       start_period: 10s
     # ports: ["6379:6379"]  # uncomment for local debugging only
 
-  # ── App — FrankenPHP + Octane ─────────────────────────────────
+  # ── App — FrankenPHP + Octane Web Server ────────────────────
   app:
     <<: *app-base
     ports:
@@ -117,11 +117,28 @@ services:
       retries: 3
       start_period: 45s
 
-  # ── Queue worker ─────────────────────────────────────────────
+  # ── Inertia SSR Node Renderer ────────────────────────────────
+  ssr:
+    <<: *app-base
+    command: ["php", "artisan", "inertia:start-ssr"]
+    environment:
+      INERTIA_SSR_PORT: 13714
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:13714"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # ── Queue Worker (Redis) ─────────────────────────────────────
   queue:
     <<: *app-base
-    entrypoint: ["php", "artisan"]
     command:
+      - php
+      - artisan
       - queue:work
       - redis
       - --sleep=3
@@ -132,30 +149,23 @@ services:
       app:
         condition: service_healthy
     healthcheck:
-      # pgrep is provided by procps (installed in Dockerfile)
+      # pgrep is provided by procps in Dockerfile
       test: ["CMD", "pgrep", "-f", "queue:work"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 30s
 
-  # ── Scheduler ────────────────────────────────────────────────
+  # ── Scheduler (Cron Worker) ──────────────────────────────────
   scheduler:
     <<: *app-base
-    entrypoint: ["php", "artisan"]
-    command: ["schedule:work"]
+    command: ["php", "artisan", "schedule:work"]
     depends_on:
       app:
         condition: service_healthy
-
-  # ── Mailpit — dev mail catcher (opt-in) ──────────────────────
-  mailpit:
-    image: axllent/mailpit:latest
-    restart: unless-stopped
-    ports:
-      - "8025:8025"  # Web UI
-      - "1025:1025"  # SMTP
-    networks:
-      - backend
-    profiles:
-      - dev
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "schedule:work"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
