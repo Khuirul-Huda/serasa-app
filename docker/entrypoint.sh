@@ -54,5 +54,6 @@ exec php artisan octane:frankenphp \
     --admin-port=2019 \
     --caddyfile=/etc/caddy/Caddyfile \
     --workers="${OCTANE_WORKERS:-auto}" \
-    --max-requests="${OCTANE_MAX_REQUESTS:-500}"
+    --max-requests="${OCTANE_MAX_REQUESTS:-500}" \
+    --skip-checks
 
