@@ -32,6 +32,9 @@ class AddProductRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'unit' => 'required|string|max:50',
             'categoryId' => 'required|string|exists:categories,id',
+            'description' => 'nullable|string',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'file|image|max:2048',
             'image' => $this->hasFile('image') ? 'file|image|max:2048' : 'nullable|string',
         ];
     }

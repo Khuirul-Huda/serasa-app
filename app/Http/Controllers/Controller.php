@@ -130,6 +130,7 @@ abstract class Controller
             'price' => (float) $product->price,
             'unit' => $product->unit,
             'image' => $product->image,
+            'images' => $product->gallery,
             'rating' => (float) $product->rating,
             'reviewsCount' => (int) $product->reviews_count,
             'isAvailable' => (bool) $product->is_available,

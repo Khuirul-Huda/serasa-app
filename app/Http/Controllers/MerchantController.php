@@ -163,6 +163,14 @@ class MerchantController extends Controller
         $user = auth()->user();
         $shop = Shop::where('user_id', $user->id)->firstOrFail();
 
+        $imageUrls = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('products', 'public');
+                $imageUrls[] = asset('storage/'.$path);
+            }
+        }
+
         $fallbackImages = [
             'cat-kuliner' => 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&q=80&w=600',
             'cat-pertanian' => 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&q=80&w=600',
@@ -171,11 +179,14 @@ class MerchantController extends Controller
             'cat-fashion' => 'https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&q=80&w=600',
         ];
 
-        $image = $request->image ?: ($fallbackImages[$request->categoryId] ?? 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600');
+        $image = ! empty($imageUrls) ? $imageUrls[0] : ($request->image ?: ($fallbackImages[$request->categoryId] ?? 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600'));
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image') && empty($imageUrls)) {
             $path = $request->file('image')->store('products', 'public');
             $image = asset('storage/'.$path);
+            $imageUrls = [$image];
+        } elseif (empty($imageUrls)) {
+            $imageUrls = [$image];
         }
 
         $id = 'prod-'.Str::slug($request->name).'-'.rand(100, 999);
@@ -189,6 +200,7 @@ class MerchantController extends Controller
             'price' => $request->price,
             'unit' => $request->unit,
             'image' => $image,
+            'images' => $imageUrls,
             'rating' => 5.0,
             'reviews_count' => 0,
             'is_available' => true,
