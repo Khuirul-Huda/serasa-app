@@ -24,6 +24,9 @@ wait_for_tcp() {
 wait_for_tcp "${DB_HOST:-postgres}"  "${DB_PORT:-5432}"
 wait_for_tcp "${REDIS_HOST:-redis}"  "${REDIS_PORT:-6379}"
 
+export APP_BASE_PATH="${APP_BASE_PATH:-/app}"
+export APP_PUBLIC_PATH="${APP_PUBLIC_PATH:-/app/public}"
+
 echo "==> Linking storage..."
 php artisan storage:link --force 2>/dev/null || true
 
@@ -34,8 +37,8 @@ else
     echo "==> Skipping automatic container migrations (set RUN_MIGRATIONS=true to enable)."
 fi
 
-echo "==> Warming caches..."
-php artisan config:cache
+echo "==> Clearing config cache for Octane worker mode..."
+php artisan config:clear
 php artisan route:cache
 php artisan view:cache
 php artisan event:cache
