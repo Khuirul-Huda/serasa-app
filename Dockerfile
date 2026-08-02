@@ -1,27 +1,7 @@
 # syntax=docker/dockerfile:1.9
 
 ##############################################################
-# Stage 1 — Bun: install JS deps and build frontend assets
-##############################################################
-FROM oven/bun:1.2-alpine AS assets
-
-ENV NODE_ENV=production \
-    SKIP_WAYFINDER=1
-WORKDIR /app
-
-# bun.lock (text format) — since Bun 1.1.35; not bun.lockb
-COPY package.json bun.lock ./
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile
-
-COPY resources/     resources/
-COPY public/        public/
-COPY vite.config.ts tsconfig.json components.json ./
-
-RUN bun run build:ssr
-
-##############################################################
-# Stage 2 — Composer: install PHP production dependencies
+# Stage 1 — Vendor: install PHP production dependencies
 ##############################################################
 FROM composer:2.8 AS vendor
 
@@ -43,6 +23,28 @@ COPY . .
 RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
 
 ##############################################################
+# Stage 2 — Assets: PHP + Bun for Wayfinder & frontend assets
+##############################################################
+FROM dunglas/frankenphp:1.4-php8.3-alpine AS assets
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+# Install Node and copy Bun binary from official Bun image
+RUN apk add --no-cache nodejs
+COPY --from=oven/bun:1.2-alpine /usr/local/bin/bun /usr/local/bin/bun
+
+# Copy full source and PHP vendor from vendor stage
+COPY --from=vendor /app /app
+
+# Install JS dependencies
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
+
+# Generate Wayfinder TypeScript definitions via PHP and build frontend & SSR bundles
+RUN bun run build:ssr
+
+##############################################################
 # Stage 3 — Runtime: FrankenPHP + Octane worker mode
 ##############################################################
 FROM dunglas/frankenphp:1.4-php8.3-alpine AS runtime
@@ -60,10 +62,6 @@ ENV OCTANE_SERVER=frankenphp \
 RUN apk add --no-cache netcat-openbsd procps nodejs
 
 # ── PHP extensions ────────────────────────────────────────────
-# install-php-extensions compiles from source; cache is in
-# /usr/local/lib/php/extensions and varies per PHP version.
-# We skip a build cache here — the layer cache is sufficient
-# since extensions only change when the FROM image changes.
 RUN install-php-extensions \
         pdo_pgsql \
         pgsql \
@@ -93,7 +91,6 @@ COPY --from=assets --chown=www-data:www-data /app/public/build  /app/public/buil
 COPY --from=assets --chown=www-data:www-data /app/bootstrap/ssr /app/bootstrap/ssr
 
 # ── FrankenPHP / Caddy config ─────────────────────────────────
-# --link and --chown cannot be combined reliably; chown separately
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 RUN chown www-data:www-data /etc/caddy/Caddyfile
 
@@ -102,8 +99,6 @@ COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh
 
 # ── Runtime-writable directories ─────────────────────────────
-# Caches are generated at container start by entrypoint.sh,
-# not here — they require live env vars, DB, and Redis.
 RUN mkdir -p \
         storage/framework/sessions \
         storage/framework/views \
