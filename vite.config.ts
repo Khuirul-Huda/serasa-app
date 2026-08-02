@@ -25,9 +25,9 @@ export default defineConfig({
             },
         }),
         tailwindcss(),
-        wayfinder({
-            formVariants: true,
-            command: process.env.SKIP_WAYFINDER ? 'true' : 'php artisan wayfinder:generate',
-        }),
-    ],
+        !process.env.SKIP_WAYFINDER &&
+            wayfinder({
+                formVariants: true,
+            }),
+    ].filter(Boolean),
 });
