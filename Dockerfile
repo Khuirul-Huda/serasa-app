@@ -5,7 +5,8 @@
 ##############################################################
 FROM oven/bun:1.2-alpine AS assets
 
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    SKIP_WAYFINDER=1
 WORKDIR /app
 
 # bun.lock (text format) — since Bun 1.1.35; not bun.lockb
