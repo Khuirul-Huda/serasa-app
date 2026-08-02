@@ -147,22 +147,29 @@ export default function ShopMap({
         markersLayer.clearLayers();
 
         mapShops.forEach((shop) => {
+            if (shop.lat == null || shop.lng == null) {
+                return;
+            }
+
+            const lat = shop.lat;
+            const lng = shop.lng;
+
             const isSelected = activePin?.id === shop.id;
             const color = isSelected ? '#F07167' : '#00B4D8'; // coral for selected, teal for default
 
-            const marker = L.marker([shop.lat, shop.lng], {
+            const marker = L.marker([lat, lng], {
                 icon: createCustomMarker(color, isSelected),
             });
 
             marker.on('click', () => {
                 setActivePin(shop);
-                map.setView([shop.lat, shop.lng], 16, { animate: true });
+                map.setView([lat, lng], 16, { animate: true });
             });
 
             marker.addTo(markersLayer);
         });
 
-        if (mapShops.length > 0 && !activePin) {
+        if (markersLayer.getLayers().length > 0 && !activePin) {
             const bounds = markersLayer.getBounds();
             map.fitBounds(bounds, { padding: [40, 40] });
         }
@@ -173,7 +180,7 @@ export default function ShopMap({
         setActivePin(shop);
         const map = mapInstanceRef.current;
 
-        if (map) {
+        if (map && shop.lat != null && shop.lng != null) {
             map.setView([shop.lat, shop.lng], 16, { animate: true });
         }
     };

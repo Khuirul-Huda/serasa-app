@@ -29,9 +29,20 @@ export function truncateText(text: string, limit: number): string {
 /**
  * Generates a dynamic WhatsApp link for direct customer-to-merchant communications.
  */
-export function getWhatsAppLink(phone: string, message: string): string {
+export function getWhatsAppLink(
+    phone: string | null | undefined,
+    message: string,
+): string | null {
+    if (!phone) {
+        return null;
+    }
+
     // Normalize phone number (ensure no plus signs, spaces, or leading zeros if possible)
     let cleanPhone = phone.replace(/[^0-9]/g, '');
+
+    if (!cleanPhone) {
+        return null;
+    }
 
     if (cleanPhone.startsWith('0')) {
         cleanPhone = '62' + cleanPhone.substring(1);

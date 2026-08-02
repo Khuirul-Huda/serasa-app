@@ -24,14 +24,14 @@ export interface Shop {
     ownerName: string;
     description: string;
     category: string;
-    phone: string;
+    phone: string | null;
     address: string;
     dusun: string;
     image: string;
     logo: string;
     isVerified: boolean;
-    lat: number;
-    lng: number;
+    lat: number | null;
+    lng: number | null;
     jamKerja?: string;
     userId?: number | null;
     nib?: boolean;

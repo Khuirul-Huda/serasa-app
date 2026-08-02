@@ -10,6 +10,7 @@ import {
     RefreshCw,
     AlertTriangle,
     CheckCircle2,
+    Download,
 } from 'lucide-react';
 import React from 'react';
 import { createPortal } from 'react-dom';
@@ -129,17 +130,27 @@ export default function ImportModal({
                             Format didukung: .xlsx atau .xls dengan kolom Nama
                             Pemilik, Alamat, No WA, Nama Toko, dll.
                         </span>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            disabled={isParsing}
-                            onClick={() => fileInputRef.current?.click()}
-                            className="mt-3 cursor-pointer rounded-xl border-navy-200 text-xs font-bold tracking-wider text-navy-700 uppercase hover:bg-pastel-teal-light hover:text-pastel-teal sm:text-sm"
-                        >
-                            {isParsing
-                                ? 'Membaca File...'
-                                : 'Browse File Excel'}
-                        </Button>
+                        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                disabled={isParsing}
+                                onClick={() => fileInputRef.current?.click()}
+                                className="cursor-pointer rounded-xl border-navy-200 text-xs font-bold tracking-wider text-navy-700 uppercase hover:bg-pastel-teal-light hover:text-pastel-teal sm:text-sm"
+                            >
+                                {isParsing
+                                    ? 'Membaca File...'
+                                    : 'Browse File Excel'}
+                            </Button>
+                            <a
+                                href="/templates/Template_Import_UMKM_2026.xlsx"
+                                download="Template_Import_UMKM_2026.xlsx"
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-pastel-teal/30 bg-white px-4 py-2.5 text-xs font-bold tracking-wider text-pastel-teal uppercase shadow-2xs transition-all hover:bg-pastel-teal hover:text-white sm:text-sm"
+                            >
+                                <Download className="h-4 w-4" />
+                                <span>Unduh Template Excel</span>
+                            </a>
+                        </div>
                     </div>
 
                     {/* Parsed Rows Table */}

@@ -157,6 +157,15 @@ export default function ShopsTab({
                 </div>
 
                 <div className="flex w-full flex-wrap items-center gap-2.5 md:w-auto">
+                    <a
+                        href="/templates/Template_Import_UMKM_2026.xlsx"
+                        download="Template_Import_UMKM_2026.xlsx"
+                        className="shadow-3xs flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-pastel-teal/30 bg-pastel-teal-light/40 px-4 text-xs font-bold tracking-wider text-pastel-teal uppercase transition-all hover:bg-pastel-teal hover:text-white sm:flex-none sm:text-sm"
+                    >
+                        <Download className="h-4 w-4" />
+                        <span>Unduh Template</span>
+                    </a>
+
                     <Button
                         onClick={handleExportExcel}
                         variant="outline"

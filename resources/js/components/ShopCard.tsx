@@ -26,9 +26,17 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
     const handleContactWhatsApp = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+
+        if (!shop.phone) {
+            return;
+        }
+
         const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
         const url = getWhatsAppLink(shop.phone, message);
-        window.open(url, '_blank');
+
+        if (url) {
+            window.open(url, '_blank');
+        }
     };
 
     return (
@@ -183,14 +191,24 @@ export default function ShopCard({ shop, productCount }: ShopCardProps) {
                     <div className="grid grid-cols-2 gap-2 pt-1">
                         <button
                             onClick={handleContactWhatsApp}
-                            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-navy-200 px-3 py-2.5 text-xs font-extrabold text-navy-700 shadow-2xs transition-all hover:border-pastel-teal/30 hover:bg-pastel-teal-light hover:text-pastel-teal"
+                            disabled={!shop.phone}
+                            className={`flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2.5 text-xs font-extrabold shadow-2xs transition-all ${
+                                shop.phone
+                                    ? 'cursor-pointer border-navy-200 text-navy-700 hover:border-pastel-teal/30 hover:bg-pastel-teal-light hover:text-pastel-teal'
+                                    : 'cursor-not-allowed border-navy-100 bg-navy-50 text-navy-300'
+                            }`}
+                            title={
+                                shop.phone
+                                    ? `Hubungi ${shop.name} via WhatsApp`
+                                    : 'Kontak WhatsApp Belum Tersedia'
+                            }
                             aria-label={`Hubungi ${shop.name} via WhatsApp`}
                         >
                             <Phone
-                                className="h-4 w-4 text-pastel-teal"
+                                className={`h-4 w-4 ${shop.phone ? 'text-pastel-teal' : 'text-navy-300'}`}
                                 aria-hidden="true"
                             />
-                            <span>Kontak WA</span>
+                            <span>{shop.phone ? 'Kontak WA' : 'Tanpa WA'}</span>
                         </button>
                         <Link
                             href={`/shops/${shop.id}`}

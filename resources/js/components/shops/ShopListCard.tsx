@@ -13,9 +13,17 @@ export default function ShopListCard({ shop, productCount }: ShopListCardProps) 
     const handleContactWhatsApp = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+
+        if (!shop.phone) {
+            return;
+        }
+
         const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
         const url = getWhatsAppLink(shop.phone, message);
-        window.open(url, '_blank');
+
+        if (url) {
+            window.open(url, '_blank');
+        }
     };
 
     return (
@@ -96,10 +104,16 @@ export default function ShopListCard({ shop, productCount }: ShopListCardProps) 
                     <div className="flex items-center gap-2">
                         <button
                             onClick={handleContactWhatsApp}
-                            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-navy-200 px-3 py-2 text-xs font-extrabold tracking-wider text-navy-700 uppercase shadow-2xs transition-all hover:border-pastel-teal/30 hover:bg-pastel-teal-light hover:text-pastel-teal"
+                            disabled={!shop.phone}
+                            className={`flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wider uppercase shadow-2xs transition-all ${
+                                shop.phone
+                                    ? 'cursor-pointer border-navy-200 text-navy-700 hover:border-pastel-teal/30 hover:bg-pastel-teal-light hover:text-pastel-teal'
+                                    : 'cursor-not-allowed border-navy-100 bg-navy-50 text-navy-300'
+                            }`}
+                            title={shop.phone ? `Hubungi ${shop.name} via WhatsApp` : 'Kontak WhatsApp Belum Tersedia'}
                         >
-                            <Phone className="h-3.5 w-3.5 text-pastel-teal" />
-                            <span>WA</span>
+                            <Phone className={`h-3.5 w-3.5 ${shop.phone ? 'text-pastel-teal' : 'text-navy-300'}`} />
+                            <span>{shop.phone ? 'WA' : 'Tanpa WA'}</span>
                         </button>
                         <Link
                             href={`/shops/${shop.id}`}

@@ -1,7 +1,7 @@
 import { Search, LayoutGrid, List, X } from 'lucide-react';
 import React from 'react';
-import type { Category } from '@/types';
 import type { SortOption, ViewMode } from '@/hooks/useShopFilters';
+import type { Category } from '@/types';
 
 interface ShopFilterToolbarProps {
     searchQuery: string;

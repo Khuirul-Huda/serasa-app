@@ -42,9 +42,12 @@ export default function ShopDetail({
         products.length > 0 ? products : (shop as any).products || [];
 
     const handleContactWhatsApp = () => {
+        if (!shop.phone) return;
         const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat profil toko digital Anda di platform SERASA Desa Samirono. Saya ingin menanyakan produk-produk kreatif Anda.`;
         const url = getWhatsAppLink(shop.phone, message);
-        window.open(url, '_blank');
+        if (url) {
+            window.open(url, '_blank');
+        }
     };
 
     return (
@@ -227,10 +230,19 @@ export default function ShopDetail({
                                 <div className="space-y-2">
                                     <button
                                         onClick={handleContactWhatsApp}
-                                        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-pastel-teal py-3 text-xs font-bold tracking-wider text-white uppercase shadow-xs transition-all hover:bg-pastel-teal/90"
+                                        disabled={!shop.phone}
+                                        className={`flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold tracking-wider uppercase shadow-xs transition-all ${
+                                            shop.phone
+                                                ? 'cursor-pointer bg-pastel-teal text-white hover:bg-pastel-teal/90'
+                                                : 'cursor-not-allowed bg-navy-200 text-navy-400'
+                                        }`}
                                     >
                                         <Phone className="h-4 w-4" />
-                                        <span>Hubungi Toko (WhatsApp)</span>
+                                        <span>
+                                            {shop.phone
+                                                ? 'Hubungi Toko (WhatsApp)'
+                                                : 'Kontak WA Belum Tersedia'}
+                                        </span>
                                     </button>
 
                                     <Link

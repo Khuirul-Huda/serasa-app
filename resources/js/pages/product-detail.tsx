@@ -18,7 +18,6 @@ import React from 'react';
 import { toast } from 'sonner';
 import SEOHead from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import MarketplaceLayout from '@/layouts/marketplace-layout';
 import type { AppSettings, Category, Product, Shop, Review } from '@/types';
@@ -57,9 +56,16 @@ export default function ProductDetail({
     });
 
     const handleContactWhatsApp = () => {
+        if (!shop.phone) {
+            return;
+        }
+
         const message = `Halo ${shop.ownerName} dari ${shop.name}, saya melihat produk digital Anda "${product.name}" di platform SERASA Desa Samirono dan tertarik untuk membeli.`;
         const url = getWhatsAppLink(shop.phone, message);
-        window.open(url, '_blank');
+
+        if (url) {
+            window.open(url, '_blank');
+        }
     };
 
     const handleReviewSubmit = (e: React.FormEvent) => {
@@ -122,7 +128,7 @@ export default function ProductDetail({
                     />
                     <Link
                         href={`/shops/${shop.id}`}
-                        className="max-w-[180px] shrink-0 truncate font-bold transition-colors hover:text-pastel-teal"
+                        className="max-w-45 shrink-0 truncate font-bold transition-colors hover:text-pastel-teal"
                     >
                         {shop.name}
                     </Link>
@@ -130,7 +136,7 @@ export default function ProductDetail({
                         className="h-3.5 w-3.5 shrink-0 text-navy-300"
                         aria-hidden="true"
                     />
-                    <span className="max-w-[200px] shrink-0 truncate font-bold text-navy-800">
+                    <span className="max-w-50 shrink-0 truncate font-bold text-navy-800">
                         {product.name}
                     </span>
                 </nav>
@@ -247,11 +253,15 @@ export default function ProductDetail({
                         <div className="grid grid-cols-1 gap-3 border-t border-navy-100 pt-4 sm:grid-cols-2">
                             <button
                                 onClick={handleContactWhatsApp}
-                                disabled={!product.isAvailable}
-                                className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-pastel-coral py-3 text-xs font-bold tracking-wider text-white uppercase shadow-xs transition-all hover:bg-pastel-coral/90 disabled:opacity-50"
+                                disabled={!product.isAvailable || !shop.phone}
+                                className={`flex items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold tracking-wider uppercase shadow-xs transition-all ${
+                                    product.isAvailable && shop.phone
+                                        ? 'cursor-pointer bg-pastel-coral text-white hover:bg-pastel-coral/90'
+                                        : 'cursor-not-allowed bg-navy-200 text-navy-400'
+                                } disabled:opacity-50`}
                             >
                                 <Phone className="h-4 w-4 text-white" />
-                                <span>Order via WhatsApp</span>
+                                <span>{shop.phone ? 'Order via WhatsApp' : 'WA Belum Tersedia'}</span>
                             </button>
 
                             <Link
@@ -302,7 +312,7 @@ export default function ProductDetail({
                                 pertama memberikan penilaian!
                             </div>
                         ) : (
-                            <ol className="max-h-[400px] list-none divide-y divide-navy-100 overflow-y-auto p-0 pr-1">
+                            <ol className="max-h-100 list-none divide-y divide-navy-100 overflow-y-auto p-0 pr-1">
                                 {productReviews.map((rev: Review) => (
                                     <li
                                         key={rev.id}
@@ -384,9 +394,14 @@ export default function ProductDetail({
                                             onClick={() => setData('rating', star)}
                                             onMouseEnter={(e) => {
                                                 const parent = e.currentTarget.parentElement;
-                                                if (!parent) return;
+
+                                                if (!parent) {
+                                                    return;
+                                                }
+
                                                 parent.querySelectorAll('[data-star]').forEach((el) => {
                                                     const val = Number(el.getAttribute('data-star'));
+
                                                     el.classList.toggle('text-pastel-peach', val <= star);
                                                     el.classList.toggle('fill-pastel-peach', val <= star);
                                                     el.classList.toggle('text-navy-200', val > star);
@@ -395,9 +410,14 @@ export default function ProductDetail({
                                             }}
                                             onMouseLeave={(e) => {
                                                 const parent = e.currentTarget.parentElement;
-                                                if (!parent) return;
+
+                                                if (!parent) {
+                                                    return;
+                                                }
+
                                                 parent.querySelectorAll('[data-star]').forEach((el) => {
                                                     const val = Number(el.getAttribute('data-star'));
+
                                                     el.classList.toggle('text-pastel-peach', val <= data.rating);
                                                     el.classList.toggle('fill-pastel-peach', val <= data.rating);
                                                     el.classList.toggle('text-navy-200', val > data.rating);

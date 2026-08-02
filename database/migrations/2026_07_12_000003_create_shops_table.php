@@ -14,14 +14,14 @@ return new class extends Migration
             $table->string('owner_name');
             $table->text('description');
             $table->string('category'); // e.g. "Pertanian & Susu"
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->string('address');
             $table->string('dusun');
             $table->string('image');
             $table->string('logo');
             $table->boolean('is_verified')->default(false);
-            $table->double('lat');
-            $table->double('lng');
+            $table->double('lat')->nullable();
+            $table->double('lng')->nullable();
             $table->string('working_hours')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
