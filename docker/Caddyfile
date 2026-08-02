@@ -1,11 +1,11 @@
 {
 	{$CADDY_GLOBAL_OPTIONS}
 
-	admin {$CADDY_SERVER_ADMIN_HOST}:{$CADDY_SERVER_ADMIN_PORT}
+	admin {$CADDY_SERVER_ADMIN_HOST:localhost}:{$CADDY_SERVER_ADMIN_PORT:2019}
 
 	frankenphp {
 		worker {
-			file "{$APP_PUBLIC_PATH}/frankenphp-worker.php"
+			file "{$APP_PUBLIC_PATH:/app/public}/frankenphp-worker.php"
 			{$CADDY_SERVER_WORKER_DIRECTIVE}
 			{$CADDY_SERVER_WATCH_DIRECTIVES}
 		}
@@ -14,13 +14,13 @@
 
 {$CADDY_EXTRA_CONFIG}
 
-{$CADDY_SERVER_SERVER_NAME} {
+{$CADDY_SERVER_SERVER_NAME:http://:8000} {
 	log {
-		level {$CADDY_SERVER_LOG_LEVEL}
+		level {$CADDY_SERVER_LOG_LEVEL:INFO}
 
 		# Redact sensitive parameters from access logs
 		format filter {
-			wrap {$CADDY_SERVER_LOGGER}
+			wrap {$CADDY_SERVER_LOGGER:console}
 			fields {
 				uri query {
 					replace authorization REDACTED
@@ -52,7 +52,7 @@
 	header @static_assets Cache-Control "public, max-age=86400, must-revalidate"
 
 	route {
-		root * "{$APP_PUBLIC_PATH}"
+		root * "{$APP_PUBLIC_PATH:/app/public}"
 
 		# Mercure / extra directives
 		{$CADDY_SERVER_EXTRA_DIRECTIVES}
