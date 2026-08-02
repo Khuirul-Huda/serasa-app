@@ -15,11 +15,12 @@ import {
     Clock,
 } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import type { Shop } from '@/types';
+import type { AppSettings, Shop } from '@/types';
 
 interface ShopMapProps {
     shops: Shop[];
     villageName?: string;
+    settings?: AppSettings;
 }
 
 // Custom DivIcon marker generator using SVG matching soft pastel teal theme
@@ -46,14 +47,19 @@ const createCustomMarker = (
 export default function ShopMap({
     shops,
     villageName = 'Desa Samirono',
+    settings,
 }: ShopMapProps) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [activePin, setActivePin] = useState<Shop | null>(null);
 
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
     const markersLayerRef = useRef<L.FeatureGroup | null>(null);
+
+    const defaultLat = settings?.mapCenterLat ?? -7.3822;
+    const defaultLng = settings?.mapCenterLng ?? 110.4287;
+    const defaultZoom = settings?.mapZoom ?? 15;
 
     const categories = useMemo(() => {
         const list = new Set(shops.map((s) => s.category));
@@ -88,8 +94,8 @@ export default function ShopMap({
         if (!mapInstanceRef.current) {
             // Center of Desa Samirono (Getasan)
             const map = L.map(mapContainerRef.current, {
-                center: [-7.3822, 110.4287],
-                zoom: 15,
+                center: [defaultLat, defaultLng],
+                zoom: defaultZoom,
                 scrollWheelZoom: true,
             });
 

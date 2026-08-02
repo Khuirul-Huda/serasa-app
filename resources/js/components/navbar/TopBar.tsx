@@ -20,7 +20,10 @@ export default function TopBar({ settings }: TopBarProps) {
                 <div className="flex items-center gap-4">
                     <span className="flex items-center gap-1.5 font-semibold text-pastel-teal">
                         <Globe className="h-3.5 w-3.5" />
-                        <span>{settings.villageName} Getasan</span>
+                        <span>
+                            {settings.villageName}
+                            {settings.kecamatanName ? `, ${settings.kecamatanName}` : ''}
+                        </span>
                     </span>
                     <span className="text-navy-300">|</span>
                     <a

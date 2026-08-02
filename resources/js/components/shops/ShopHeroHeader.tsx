@@ -1,33 +1,40 @@
 import { Store, ShieldCheck, MapPin } from 'lucide-react';
 import React from 'react';
+import type { AppSettings } from '@/types';
 
 interface ShopHeroHeaderProps {
+    settings?: AppSettings;
     totalShops: number;
     verifiedShopsCount: number;
     dusunCount: number;
 }
 
 export default function ShopHeroHeader({
+    settings,
     totalShops,
     verifiedShopsCount,
     dusunCount,
 }: ShopHeroHeaderProps) {
+    const village = settings?.villageName || 'Desa Samirono';
+    const kecamatan = settings?.kecamatanName || 'Kecamatan Getasan';
+    const kabupaten = settings?.kabupatenName || 'Kabupaten Semarang';
+
     return (
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
             {/* Bento Tile 1: Editorial Overview */}
             <div className="relative flex flex-col justify-between space-y-6 overflow-hidden rounded-3xl border border-navy-200/60 bg-white p-6 shadow-2xs sm:p-8 lg:col-span-8">
                 <div className="space-y-3">
                     <span className="block font-mono text-xs font-bold tracking-wider text-navy-400 uppercase">
-                        Kecamatan Getasan, Kabupaten Semarang
+                        {kecamatan}, {kabupaten}
                     </span>
 
                     <h1 className="sm:text-3.5xl text-2xl leading-tight font-black tracking-tight text-navy-900 uppercase">
                         Direktori Rumah Produksi{' '}
-                        <span className="text-pastel-teal">Desa Samirono</span>
+                        <span className="text-pastel-teal">{village}</span>
                     </h1>
 
                     <p className="max-w-xl text-xs leading-relaxed font-normal text-navy-500 sm:text-sm">
-                        Temukan produsen olahan susu murni, pengrajin bambu, dan kuliner lokal Samirono. Hubungi langsung pemilik toko atau jelajahi katalog produk mereka.
+                        Temukan produsen olahan produk lokal, kerajinan, dan kuliner khas {village}. Hubungi langsung pemilik toko atau jelajahi katalog produk mereka.
                     </p>
                 </div>
             </div>

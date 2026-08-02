@@ -173,3 +173,56 @@ test('admin can update user role', function () {
 
     expect($user->fresh()->role)->toBe('owner');
 });
+
+test('admin can save hero and flash sale settings', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->post(route('admin.settings.save'), [
+            'appName' => 'Etalase Desa Samirono',
+            'tagline' => 'Platform UMKM Unggulan',
+            'villageName' => 'Desa Samirono',
+            'kecamatanName' => 'Kecamatan Getasan',
+            'kabupatenName' => 'Kabupaten Semarang',
+            'description' => 'Portal Resmi UMKM Warga',
+            'adminPhone' => '6285725900000',
+            'heroBanner' => 'https://example.com/hero.jpg',
+            'mapCenterLat' => -7.3712,
+            'mapCenterLng' => 110.4561,
+            'mapZoom' => 15,
+            'footerCredits' => '© 2026 TIM KKN TEST',
+            'flashSaleTitle' => 'PROMO FLASH WARGA',
+            'flashSaleProductId' => 'prod-123',
+            'flashSaleHours' => 5,
+            'flashSaleMinutes' => 30,
+            'flashSaleTag' => 'Diskon Spesial',
+            'flashSaleProgress' => 92,
+            'promoSlides' => [
+                [
+                    'id' => 'slide-1',
+                    'title' => 'Susu Murni Promo',
+                    'tagline' => 'Diskon Warga',
+                    'description' => 'Deskripsi susu murni',
+                    'image' => 'https://example.com/susu.jpg',
+                    'badge' => 'SUSU SEGAR',
+                    'btnQuery' => 'susu',
+                ],
+            ],
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('settings', [
+        'key' => 'flash_sale_title',
+        'value' => 'PROMO FLASH WARGA',
+    ]);
+
+    $this->assertDatabaseHas('settings', [
+        'key' => 'kecamatan_name',
+        'value' => 'Kecamatan Getasan',
+    ]);
+
+    $this->assertDatabaseHas('settings', [
+        'key' => 'footer_credits',
+        'value' => '© 2026 TIM KKN TEST',
+    ]);
+});

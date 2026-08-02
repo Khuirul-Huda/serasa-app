@@ -78,11 +78,23 @@ abstract class Controller
                 'appName' => $settings['app_name'] ?? 'Samirono Etalase',
                 'tagline' => $settings['tagline'] ?? 'Platform UMKM Warga',
                 'villageName' => $village,
+                'kecamatanName' => $settings['kecamatan_name'] ?? 'Kecamatan Getasan',
+                'kabupatenName' => $settings['kabupaten_name'] ?? 'Kabupaten Semarang',
                 'description' => $settings['description'] ?? 'Platform digitalisasi kreatif',
                 'adminPhone' => $settings['admin_phone'] ?? '6285725912345',
                 'heroBanner' => $settings['hero_banner'] ?? 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1200&q=80',
+                'mapCenterLat' => isset($settings['map_center_lat']) ? (float) $settings['map_center_lat'] : -7.371239,
+                'mapCenterLng' => isset($settings['map_center_lng']) ? (float) $settings['map_center_lng'] : 110.456123,
+                'mapZoom' => isset($settings['map_zoom']) ? (int) $settings['map_zoom'] : 14,
+                'footerCredits' => $settings['footer_credits'] ?? '© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO',
                 'hotSearches' => $hotSearches,
                 'promoSlides' => $promoSlides,
+                'flashSaleTitle' => $settings['flash_sale_title'] ?? 'KEJAR DISKON WARGA',
+                'flashSaleProductId' => $settings['flash_sale_product_id'] ?? null,
+                'flashSaleHours' => isset($settings['flash_sale_hours']) ? (int) $settings['flash_sale_hours'] : 3,
+                'flashSaleMinutes' => isset($settings['flash_sale_minutes']) ? (int) $settings['flash_sale_minutes'] : 44,
+                'flashSaleTag' => $settings['flash_sale_tag'] ?? 'Diskon Harian',
+                'flashSaleProgress' => isset($settings['flash_sale_progress']) ? (int) $settings['flash_sale_progress'] : 87,
             ];
         });
     }

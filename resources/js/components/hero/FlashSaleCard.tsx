@@ -15,9 +15,12 @@ interface FlashSaleCardProps {
 }
 
 export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCardProps) {
+    const initialHours = settings.flashSaleHours !== undefined ? settings.flashSaleHours : 3;
+    const initialMinutes = settings.flashSaleMinutes !== undefined ? settings.flashSaleMinutes : 44;
+
     const [timeLeft, setTimeLeft] = useState({
-        hours: 3,
-        minutes: 44,
+        hours: initialHours,
+        minutes: initialMinutes,
         seconds: 12,
     });
 
@@ -31,13 +34,17 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                 } else if (prev.hours > 0) {
                     return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
                 } else {
-                    return { hours: 3, minutes: 44, seconds: 12 };
+                    return { hours: initialHours, minutes: initialMinutes, seconds: 12 };
                 }
             });
         }, 1000);
 
         return () => clearInterval(timer);
-    }, []);
+    }, [initialHours, initialMinutes]);
+
+    const title = settings.flashSaleTitle || 'KEJAR DISKON WARGA';
+    const tag = settings.flashSaleTag || 'Diskon Harian';
+    const progress = settings.flashSaleProgress ?? 87;
 
     return (
         <div className="flex h-[280px] flex-col justify-between rounded-3xl border border-navy-200/60 bg-white p-5 shadow-2xs sm:h-[340px] lg:col-span-4">
@@ -46,7 +53,7 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                     <div className="flex items-center gap-1.5 text-pastel-coral">
                         <Flame className="h-5 w-5 animate-pulse fill-pastel-coral/50" />
                         <span className="text-xs font-black tracking-wider uppercase">
-                            KEJAR DISKON WARGA
+                            {title}
                         </span>
                     </div>
                     <div className="flex items-center gap-1 font-mono text-xs">
@@ -110,12 +117,12 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                 <div className="space-y-1 pt-1">
                     <div className="flex justify-between text-xs font-bold text-navy-500">
                         <span>Tersisa Stok Terbatas</span>
-                        <span className="text-pastel-coral">Diskon Harian</span>
+                        <span className="text-pastel-coral">{tag}</span>
                     </div>
                     <div className="h-2 w-full overflow-hidden rounded-full bg-navy-100">
                         <div
-                            className="h-full rounded-full bg-pastel-coral"
-                            style={{ width: '87%' }}
+                            className="h-full rounded-full bg-pastel-coral transition-all duration-500"
+                            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
                         />
                     </div>
                 </div>

@@ -299,9 +299,21 @@ class AdminDashboardController extends Controller
             ['key' => 'app_name', 'value' => $request->appName],
             ['key' => 'tagline', 'value' => $request->tagline],
             ['key' => 'village_name', 'value' => $request->villageName],
+            ['key' => 'kecamatan_name', 'value' => $request->kecamatanName ?? 'Kecamatan Getasan'],
+            ['key' => 'kabupaten_name', 'value' => $request->kabupatenName ?? 'Kabupaten Semarang'],
             ['key' => 'description', 'value' => $request->description],
             ['key' => 'admin_phone', 'value' => $request->adminPhone],
             ['key' => 'hero_banner', 'value' => $request->heroBanner],
+            ['key' => 'map_center_lat', 'value' => (string) ($request->mapCenterLat ?? -7.371239)],
+            ['key' => 'map_center_lng', 'value' => (string) ($request->mapCenterLng ?? 110.456123)],
+            ['key' => 'map_zoom', 'value' => (string) ($request->mapZoom ?? 14)],
+            ['key' => 'footer_credits', 'value' => $request->footerCredits ?? '© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO'],
+            ['key' => 'flash_sale_title', 'value' => $request->flashSaleTitle ?? 'KEJAR DISKON WARGA'],
+            ['key' => 'flash_sale_product_id', 'value' => $request->flashSaleProductId ?? ''],
+            ['key' => 'flash_sale_hours', 'value' => (string) ($request->flashSaleHours ?? 3)],
+            ['key' => 'flash_sale_minutes', 'value' => (string) ($request->flashSaleMinutes ?? 44)],
+            ['key' => 'flash_sale_tag', 'value' => $request->flashSaleTag ?? 'Diskon Harian'],
+            ['key' => 'flash_sale_progress', 'value' => (string) ($request->flashSaleProgress ?? 87)],
         ];
 
         if ($request->filled('hotSearches')) {

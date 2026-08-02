@@ -67,11 +67,23 @@ export interface AppSettings {
     appName: string;
     tagline: string;
     villageName: string;
+    kecamatanName?: string;
+    kabupatenName?: string;
     description: string;
     adminPhone: string;
     heroBanner: string;
+    mapCenterLat?: number;
+    mapCenterLng?: number;
+    mapZoom?: number;
+    footerCredits?: string;
     hotSearches?: HotSearchItem[];
     promoSlides?: PromoSlideItem[];
+    flashSaleTitle?: string;
+    flashSaleProductId?: string;
+    flashSaleHours?: number;
+    flashSaleMinutes?: number;
+    flashSaleTag?: string;
+    flashSaleProgress?: number;
 }
 
 export interface Review {

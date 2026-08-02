@@ -31,10 +31,10 @@ export default function Hero({
     setSearchQuery,
     totalProducts,
 }: HeroProps) {
-    const featuredProduct =
-        products.length > 0
-            ? products.find((p) => p.isAvailable) || products[0]
-            : null;
+    const featuredProduct = settings.flashSaleProductId
+        ? products.find((p) => p.id === settings.flashSaleProductId) ||
+          (products.length > 0 ? products.find((p) => p.isAvailable) || products[0] : null)
+        : (products.length > 0 ? products.find((p) => p.isAvailable) || products[0] : null);
 
     const slides = settings.promoSlides || [
         {

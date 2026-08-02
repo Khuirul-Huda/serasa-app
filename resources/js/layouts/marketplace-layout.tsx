@@ -90,9 +90,8 @@ export default function MarketplaceLayout({
                                 </span>
                             </Link>
                             <p className="text-xs leading-relaxed font-normal text-navy-300">
-                                Platform digitalisasi & sentra promosi produk
-                                usaha warga {settings.villageName}, Kecamatan
-                                Getasan, Kabupaten Semarang.
+                                {settings.description ||
+                                    `Platform digitalisasi & sentra promosi produk usaha warga ${settings.villageName}, ${settings.kecamatanName || 'Kecamatan Getasan'}, ${settings.kabupatenName || 'Kabupaten Semarang'}.`}
                             </p>
                         </div>
 
@@ -136,7 +135,7 @@ export default function MarketplaceLayout({
 
                     {/* Bottom Copyright & Credit Row */}
                     <div className="flex flex-col items-center justify-between gap-4 border-t border-navy-800/80 pt-6 font-mono text-xs text-navy-400 sm:flex-row">
-                        <p>© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO.</p>
+                        <p>{settings.footerCredits || '© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO.'}</p>
                         <p className="flex items-center gap-1 font-sans text-xs text-navy-300">
                             Dibuat dengan{' '}
                             <Heart className="h-3 w-3 fill-pastel-coral text-pastel-coral" />{' '}

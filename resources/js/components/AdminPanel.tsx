@@ -78,9 +78,56 @@ export default function AdminPanel({
         appName: settings.appName,
         tagline: settings.tagline,
         villageName: settings.villageName,
+        kecamatanName: settings.kecamatanName || 'Kecamatan Getasan',
+        kabupatenName: settings.kabupatenName || 'Kabupaten Semarang',
         description: settings.description,
         adminPhone: settings.adminPhone,
         heroBanner: settings.heroBanner,
+        mapCenterLat: settings.mapCenterLat !== undefined ? settings.mapCenterLat : -7.371239,
+        mapCenterLng: settings.mapCenterLng !== undefined ? settings.mapCenterLng : 110.456123,
+        mapZoom: settings.mapZoom !== undefined ? settings.mapZoom : 14,
+        footerCredits: settings.footerCredits || '© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO',
+        flashSaleTitle: settings.flashSaleTitle || 'KEJAR DISKON WARGA',
+        flashSaleProductId: settings.flashSaleProductId || '',
+        flashSaleHours: settings.flashSaleHours !== undefined ? settings.flashSaleHours : 3,
+        flashSaleMinutes: settings.flashSaleMinutes !== undefined ? settings.flashSaleMinutes : 44,
+        flashSaleTag: settings.flashSaleTag || 'Diskon Harian',
+        flashSaleProgress: settings.flashSaleProgress !== undefined ? settings.flashSaleProgress : 87,
+        hotSearches: settings.hotSearches || [
+            { label: 'Susu Sapi', query: 'susu' },
+            { label: 'Keju', query: 'keju' },
+            { label: 'Anyaman Bambu', query: 'anyaman' },
+            { label: 'Tempe Daun', query: 'tempe' },
+        ],
+        promoSlides: settings.promoSlides || [
+            {
+                id: 'slide-1',
+                title: `Susu Sapi Murni ${settings.villageName}`,
+                tagline: 'Diskon 10% Spesial Minggu Ini',
+                description: 'Segar murni dari peternakan lereng gunung, diperah higienis harian oleh warga desa.',
+                image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=800&q=80',
+                badge: '🥛 SUSU SEGAR',
+                btnQuery: 'susu',
+            },
+            {
+                id: 'slide-2',
+                title: 'Keju Mozzarella & Ricotta',
+                tagline: `Karya Tani Unggulan ${settings.villageName}`,
+                description: 'Diproduksi oleh sentra pengolahan dengan cita rasa keju artisan bersertifikat pangan.',
+                image: 'https://images.unsplash.com/photo-1559561853-080268185995?auto=format&fit=crop&w=800&q=80',
+                badge: '🧀 KEJU LOKAL',
+                btnQuery: 'keju',
+            },
+            {
+                id: 'slide-3',
+                title: 'Kerajinan Anyaman Bambu',
+                tagline: '100% Produk Kreatif Ramah Lingkungan',
+                description: 'Dianyam telaten dengan bambu pilihan lereng pegunungan untuk perabot estetis fungsional.',
+                image: 'https://images.unsplash.com/photo-1590736969955-71cb94801759?auto=format&fit=crop&w=800&q=80',
+                badge: '🎋 KRIYA BAMBU',
+                btnQuery: 'anyaman',
+            },
+        ],
     });
 
     const totalShops = shops.length;
@@ -523,6 +570,7 @@ export default function AdminPanel({
                 <ConfigTab
                     data={data}
                     setData={setData}
+                    products={products}
                     onSubmit={handleConfigSubmit}
                     processing={processing}
                     saveSuccess={saveSuccess}
