@@ -6,6 +6,9 @@
 	frankenphp {
 		worker {
 			file "{$APP_PUBLIC_PATH:/app/public}/frankenphp-worker.php"
+			env FRANKENPHP_WORKER 1
+			env APP_PUBLIC_PATH "{$APP_PUBLIC_PATH:/app/public}"
+			env APP_BASE_PATH "{$APP_BASE_PATH:/app}"
 			{$CADDY_SERVER_WORKER_DIRECTIVE}
 			{$CADDY_SERVER_WATCH_DIRECTIVES}
 		}

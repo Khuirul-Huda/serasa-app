@@ -24,6 +24,7 @@ wait_for_tcp() {
 wait_for_tcp "${DB_HOST:-postgres}"  "${DB_PORT:-5432}"
 wait_for_tcp "${REDIS_HOST:-redis}"  "${REDIS_PORT:-6379}"
 
+export FRANKENPHP_WORKER=1
 export APP_BASE_PATH="${APP_BASE_PATH:-/app}"
 export APP_PUBLIC_PATH="${APP_PUBLIC_PATH:-/app/public}"
 
