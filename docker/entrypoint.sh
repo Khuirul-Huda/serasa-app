@@ -37,11 +37,11 @@ else
     echo "==> Skipping automatic container migrations (set RUN_MIGRATIONS=true to enable)."
 fi
 
-echo "==> Clearing config cache for Octane worker mode..."
+echo "==> Preparing Octane worker environment..."
 php artisan config:clear
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
+php artisan route:clear
+php artisan view:clear
+php artisan event:clear
 
 # If custom arguments are passed (e.g. queue worker, scheduler, or SSR server), run them
 if [ $# -gt 0 ]; then
