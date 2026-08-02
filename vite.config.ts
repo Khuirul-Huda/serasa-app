@@ -25,8 +25,9 @@ export default defineConfig({
             },
         }),
         tailwindcss(),
-        wayfinder({
-            formVariants: true,
-        }),
-    ],
+        !process.env.SKIP_WAYFINDER &&
+            wayfinder({
+                formVariants: true,
+            }),
+    ].filter(Boolean),
 });

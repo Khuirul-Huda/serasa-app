@@ -1,7 +1,27 @@
 # syntax=docker/dockerfile:1.9
 
 ##############################################################
-# Stage 1 — Vendor: install PHP production dependencies
+# Stage 1 — Bun: install JS deps and build frontend assets
+##############################################################
+FROM oven/bun:1.2-alpine AS assets
+
+ENV NODE_ENV=production \
+    SKIP_WAYFINDER=1
+WORKDIR /app
+
+# bun.lock (text format) — since Bun 1.1.35; not bun.lockb
+COPY package.json bun.lock ./
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
+
+COPY resources/     resources/
+COPY public/        public/
+COPY vite.config.ts tsconfig.json components.json ./
+
+RUN bun run build:ssr
+
+##############################################################
+# Stage 2 — Composer: install PHP production dependencies
 ##############################################################
 FROM composer:2.8 AS vendor
 
@@ -21,28 +41,6 @@ RUN --mount=type=cache,target=/root/.composer/cache \
 # Copy full source so classmap covers all app classes
 COPY . .
 RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
-
-##############################################################
-# Stage 2 — Assets: PHP + Bun for Wayfinder & frontend assets
-##############################################################
-FROM dunglas/frankenphp:1.4-php8.3-alpine AS assets
-
-ENV NODE_ENV=production
-WORKDIR /app
-
-# Install Node and copy Bun binary from official Bun image
-RUN apk add --no-cache nodejs
-COPY --from=oven/bun:1.2-alpine /usr/local/bin/bun /usr/local/bin/bun
-
-# Copy full source and PHP vendor from vendor stage
-COPY --from=vendor /app /app
-
-# Install JS dependencies
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile
-
-# Generate Wayfinder TypeScript definitions via PHP and build frontend & SSR bundles
-RUN bun run build:ssr
 
 ##############################################################
 # Stage 3 — Runtime: FrankenPHP + Octane worker mode
