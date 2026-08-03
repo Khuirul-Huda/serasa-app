@@ -47,7 +47,7 @@ export default function MarketplaceLayout({
 }: MarketplaceLayoutProps) {
     return (
         <div
-            className="flex min-h-screen flex-col bg-navy-50/40 font-sans text-navy-900 antialiased"
+            className="flex min-h-screen flex-col bg-navy-50/40 font-sans text-navy-900 antialiased dark:bg-navy-950/90 dark:text-navy-100"
             id="serasa-root-container"
         >
             {/* Navbar wrapper */}
@@ -68,7 +68,7 @@ export default function MarketplaceLayout({
 
             {/* FOOTER */}
             <footer
-                className="mt-16 border-t border-navy-800 bg-navy-900 py-12 font-sans text-navy-400"
+                className="mt-16 border-t border-navy-800 bg-navy-900 py-12 font-sans text-navy-400 dark:border-navy-900 dark:bg-navy-950"
                 id="serasa-footer"
             >
                 <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
