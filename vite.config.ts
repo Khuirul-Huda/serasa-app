@@ -30,4 +30,7 @@ export default defineConfig({
                 formVariants: true,
             }),
     ].filter(Boolean),
+    ssr: {
+        noExternal: true,
+    },
 });
