@@ -81,7 +81,7 @@ export default function HeroSearchSection({
                     <span>Populer:</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5">
-                    {hotSearches.map((item) => (
+                    {hotSearches.slice(0, 5).map((item) => (
                         <button
                             key={item.query}
                             onClick={() => setSearchQuery(item.query)}
@@ -97,7 +97,7 @@ export default function HeroSearchSection({
                 </div>
             </div>
 
-            {/* Category Filter Pills Bar (Flex-Wrap Minimalist) */}
+            {/* Category Filter Pills Bar (Top 5 Minimalist) */}
             <div className="flex flex-wrap items-center gap-1.5 border-t border-navy-100 pt-2.5 sm:gap-2 dark:border-navy-800">
                 <button
                     onClick={() => setSelectedCategory('all')}
@@ -110,7 +110,7 @@ export default function HeroSearchSection({
                     Semua Komoditas ({totalProducts})
                 </button>
 
-                {categories.map((cat) => (
+                {categories.slice(0, 5).map((cat) => (
                     <button
                         key={cat.id}
                         onClick={() => setSelectedCategory(cat.id)}
