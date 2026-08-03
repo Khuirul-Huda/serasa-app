@@ -37,7 +37,7 @@ export default function PromoSlider({ slides, onSelectQuery }: PromoSliderProps)
     };
 
     return (
-        <div className="group/slider relative h-[280px] overflow-hidden rounded-3xl border border-navy-200/60 bg-navy-900 shadow-xs sm:h-[340px] lg:col-span-8">
+        <div className="group/slider relative h-[280px] overflow-hidden rounded-3xl border border-navy-200/60 bg-navy-900 shadow-xs sm:h-[340px] lg:col-span-8 dark:border-navy-800">
             {slides.map((slide, index) => (
                 <div
                     key={slide.id || `slide-${index}`}

@@ -71,11 +71,11 @@ export default function Hero({
 
     return (
         <div
-            className="relative overflow-hidden border-b border-navy-200/60 bg-navy-50/40 pt-6 pb-10 font-sans"
+            className="relative overflow-hidden border-b border-navy-200/60 bg-navy-50/40 pt-6 pb-10 font-sans dark:border-navy-800 dark:bg-navy-950/60"
             id="serasa-hero"
         >
             {/* Background Subtle Pattern */}
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(oklch(0.82_0.01_250)_1px,transparent_1px)] bg-size-[18px_18px] opacity-40" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(oklch(0.82_0.01_250)_1px,transparent_1px)] bg-size-[18px_18px] opacity-40 dark:bg-[radial-gradient(oklch(0.35_0.02_250)_1px,transparent_1px)]" />
 
             <div className="relative mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
                 {/* Marketplace Banner Slider & Sidebar Promos */}

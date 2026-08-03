@@ -47,7 +47,7 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
     const progress = settings.flashSaleProgress ?? 87;
 
     return (
-        <div className="flex h-[280px] flex-col justify-between rounded-3xl border border-navy-200/60 bg-white p-5 shadow-2xs sm:h-[340px] lg:col-span-4">
+        <div className="flex h-[280px] flex-col justify-between rounded-3xl border border-navy-200/60 bg-white p-5 shadow-2xs sm:h-[340px] lg:col-span-4 dark:border-navy-800 dark:bg-navy-900/90">
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-pastel-coral">
@@ -57,14 +57,14 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                         </span>
                     </div>
                     <div className="flex items-center gap-1 font-mono text-xs">
-                        <span className="rounded-md bg-navy-900 px-1.5 py-0.5 text-xs font-bold text-white">
+                        <span className="rounded-md bg-navy-900 px-1.5 py-0.5 text-xs font-bold text-white dark:bg-navy-950">
                             {String(timeLeft.hours).padStart(2, '0')}
                         </span>
-                        <span className="text-navy-400">:</span>
-                        <span className="rounded-md bg-navy-900 px-1.5 py-0.5 text-xs font-bold text-white">
+                        <span className="text-navy-400 dark:text-navy-500">:</span>
+                        <span className="rounded-md bg-navy-900 px-1.5 py-0.5 text-xs font-bold text-white dark:bg-navy-950">
                             {String(timeLeft.minutes).padStart(2, '0')}
                         </span>
-                        <span className="text-navy-400">:</span>
+                        <span className="text-navy-400 dark:text-navy-500">:</span>
                         <span className="animate-pulse rounded-md bg-pastel-coral px-1.5 py-0.5 text-xs font-bold text-white">
                             {String(timeLeft.seconds).padStart(2, '0')}
                         </span>
@@ -74,9 +74,9 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                 {featuredProduct ? (
                     <div
                         onClick={() => router.visit(`/products/${featuredProduct.id}`)}
-                        className="group/promo flex cursor-pointer gap-3.5 rounded-2xl border border-pastel-coral/20 bg-pastel-coral-light/40 p-3 transition-all hover:border-pastel-coral/40 hover:bg-pastel-coral-light"
+                        className="group/promo flex cursor-pointer gap-3.5 rounded-2xl border border-pastel-coral/20 bg-pastel-coral-light/40 p-3 transition-all hover:border-pastel-coral/40 hover:bg-pastel-coral-light dark:border-pastel-coral/30 dark:bg-navy-950 dark:hover:bg-navy-800"
                     >
-                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-pastel-coral/20 bg-navy-100 transition-transform duration-300 group-hover/promo:scale-105">
+                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-pastel-coral/20 bg-navy-100 transition-transform duration-300 group-hover/promo:scale-105 dark:border-navy-800 dark:bg-navy-900">
                             <img
                                 src={featuredProduct.image}
                                 alt={featuredProduct.name}
@@ -89,17 +89,17 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                             />
                         </div>
                         <div className="space-y-1">
-                            <span className="inline-block rounded-md bg-pastel-coral-light px-1.5 py-0.5 text-xs font-black text-pastel-coral uppercase">
+                            <span className="inline-block rounded-md bg-pastel-coral-light px-1.5 py-0.5 text-xs font-black text-pastel-coral uppercase dark:bg-pastel-coral/20">
                                 Stok Terbatas
                             </span>
-                            <h4 className="line-clamp-1 text-xs leading-snug font-bold text-navy-800 transition-colors group-hover/promo:text-pastel-coral">
+                            <h4 className="line-clamp-1 text-xs leading-snug font-bold text-navy-800 transition-colors group-hover/promo:text-pastel-coral dark:text-navy-100">
                                 {featuredProduct.name}
                             </h4>
                             <div className="flex items-baseline gap-1">
-                                <span className="text-xs font-black text-navy-900">
+                                <span className="text-xs font-black text-navy-900 dark:text-white">
                                     {formatIDR(featuredProduct.price)}
                                 </span>
-                                <span className="text-xs font-medium text-navy-400">
+                                <span className="text-xs font-medium text-navy-400 dark:text-navy-400">
                                     / {featuredProduct.unit}
                                 </span>
                             </div>
@@ -109,17 +109,17 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                         </div>
                     </div>
                 ) : (
-                    <div className="rounded-2xl bg-navy-50 p-4 text-center text-xs text-navy-400">
+                    <div className="rounded-2xl bg-navy-50 p-4 text-center text-xs text-navy-400 dark:bg-navy-950 dark:text-navy-500">
                         Belum ada produk promo
                     </div>
                 )}
 
                 <div className="space-y-1 pt-1">
-                    <div className="flex justify-between text-xs font-bold text-navy-500">
+                    <div className="flex justify-between text-xs font-bold text-navy-500 dark:text-navy-400">
                         <span>Tersisa Stok Terbatas</span>
                         <span className="text-pastel-coral">{tag}</span>
                     </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-navy-100">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800">
                         <div
                             className="h-full rounded-full bg-pastel-coral transition-all duration-500"
                             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
@@ -128,7 +128,7 @@ export default function FlashSaleCard({ settings, featuredProduct }: FlashSaleCa
                 </div>
             </div>
 
-            <div className="flex items-center justify-between border-t border-navy-100 pt-3 text-xs font-medium text-navy-500">
+            <div className="flex items-center justify-between border-t border-navy-100 pt-3 text-xs font-medium text-navy-500 dark:border-navy-800 dark:text-navy-400">
                 <div className="flex items-center gap-1">
                     <ThumbsUp className="h-3.5 w-3.5 text-pastel-teal" />
                     <span>100% Produk Desa</span>
