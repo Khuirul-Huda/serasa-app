@@ -35,6 +35,9 @@ export default function Navbar({
     const { auth } = usePage().props as any;
     const user = auth?.user;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(
+        Boolean(searchQuery),
+    );
 
     const handleSearchChange = (val: string) => {
         if (setSearchQuery) {
@@ -149,6 +152,18 @@ export default function Navbar({
 
                     {/* Right side interactions */}
                     <div className="flex shrink-0 items-center gap-1 sm:gap-3 md:gap-4">
+                        {/* Mobile Search Toggle Button */}
+                        <button
+                            onClick={() =>
+                                setIsMobileSearchOpen(!isMobileSearchOpen)
+                            }
+                            className="cursor-pointer rounded-xl p-2 text-navy-600 transition-colors hover:bg-navy-50 hover:text-pastel-teal sm:hidden dark:text-navy-300 dark:hover:bg-navy-800 dark:hover:text-pastel-teal"
+                            aria-label="Toggle search"
+                            title="Cari produk"
+                        >
+                            <Search className="h-5 w-5" />
+                        </button>
+
                         <CartDropdown />
                         <NotificationDropdown shops={shops} />
 
@@ -198,29 +213,35 @@ export default function Navbar({
                     </div>
                 </div>
 
-                {/* Row 2: Full-Width Mobile Search Bar (Visible on < sm) */}
-                <div className="mt-2 block sm:hidden">
-                    <div className="relative w-full">
-                        <input
-                            type="text"
-                            placeholder="Cari produk desa..."
-                            value={searchQuery}
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                            className="w-full rounded-xl border border-navy-200 bg-navy-50 py-2 pr-9 pl-9 text-xs font-medium text-navy-800 placeholder-navy-400 transition-all focus:border-pastel-teal focus:bg-white focus:ring-2 focus:ring-pastel-teal/15 focus:outline-none dark:border-navy-800 dark:bg-navy-950 dark:text-navy-100 dark:placeholder-navy-500 dark:focus:bg-navy-950"
-                            id="global-search-input-mobile"
-                        />
-                        <Search className="absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-navy-400 dark:text-navy-500" />
+                {/* Row 2: Mobile Search Bar (Expandable on < sm) */}
+                {(isMobileSearchOpen || searchQuery) && (
+                    <div className="mt-2 block animate-fade-in sm:hidden">
+                        <div className="relative w-full">
+                            <input
+                                type="text"
+                                placeholder="Cari produk desa..."
+                                value={searchQuery}
+                                onChange={(e) =>
+                                    handleSearchChange(e.target.value)
+                                }
+                                autoFocus
+                                className="w-full rounded-xl border border-navy-200 bg-navy-50 py-2 pr-9 pl-9 text-xs font-medium text-navy-800 placeholder-navy-400 transition-all focus:border-pastel-teal focus:bg-white focus:ring-2 focus:ring-pastel-teal/15 focus:outline-none dark:border-navy-800 dark:bg-navy-950 dark:text-navy-100 dark:placeholder-navy-500 dark:focus:bg-navy-950"
+                                id="global-search-input-mobile"
+                            />
+                            <Search className="absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-navy-400 dark:text-navy-500" />
 
-                        {searchQuery && (
                             <button
-                                onClick={() => handleSearchChange('')}
+                                onClick={() => {
+                                    handleSearchChange('');
+                                    setIsMobileSearchOpen(false);
+                                }}
                                 className="absolute top-1/2 right-3 -translate-y-1/2 p-0.5 text-navy-400 hover:text-navy-600 dark:text-navy-500 dark:hover:text-navy-300"
                             >
                                 <X className="h-3.5 w-3.5" />
                             </button>
-                        )}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {/* 3. MOBILE MENU DROPDOWN */}
