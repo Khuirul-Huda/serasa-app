@@ -14,7 +14,7 @@ interface TopBarProps {
 
 export default function TopBar({ settings }: TopBarProps) {
     return (
-        <div className="hidden border-b border-navy-200/60 bg-navy-50 px-4 py-1.5 text-xs text-navy-600 sm:block">
+        <div className="hidden border-b border-navy-200/60 bg-navy-50 px-4 py-1.5 text-xs text-navy-600 sm:block dark:border-navy-900 dark:bg-navy-950 dark:text-navy-400">
             <div className="mx-auto flex max-w-7xl items-center justify-between">
                 {/* Left side links */}
                 <div className="flex items-center gap-4">
@@ -25,7 +25,7 @@ export default function TopBar({ settings }: TopBarProps) {
                             {settings.kecamatanName ? `, ${settings.kecamatanName}` : ''}
                         </span>
                     </span>
-                    <span className="text-navy-300">|</span>
+                    <span className="text-navy-300 dark:text-navy-700">|</span>
                     <a
                         href={`https://wa.me/${settings.adminPhone}`}
                         target="_blank"
