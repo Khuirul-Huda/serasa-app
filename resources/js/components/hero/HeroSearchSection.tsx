@@ -75,17 +75,17 @@ export default function HeroSearchSection({
             </div>
 
             {/* Quick Search Tag Chips */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-                <div className="flex shrink-0 items-center gap-1 text-xs font-extrabold tracking-wider text-navy-400 uppercase dark:text-navy-500">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+                <div className="flex shrink-0 items-center gap-1 text-[11px] font-extrabold tracking-wider text-navy-400 uppercase dark:text-navy-500">
                     <Tag className="h-3 w-3 text-pastel-coral" />
                     <span>Populer:</span>
                 </div>
-                <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto">
+                <div className="flex flex-wrap items-center gap-1.5">
                     {hotSearches.map((item) => (
                         <button
                             key={item.query}
                             onClick={() => setSearchQuery(item.query)}
-                            className={`shrink-0 cursor-pointer rounded-xl px-3 py-1 text-xs font-bold transition-all ${
+                            className={`cursor-pointer rounded-xl px-2.5 py-1 text-xs font-bold transition-all ${
                                 searchQuery === item.query
                                     ? 'shadow-3xs bg-pastel-teal text-white'
                                     : 'bg-navy-100/60 text-navy-700 hover:bg-pastel-teal-light hover:text-pastel-teal dark:bg-navy-950 dark:text-navy-300 dark:hover:bg-navy-800 dark:hover:text-pastel-teal'
@@ -97,11 +97,11 @@ export default function HeroSearchSection({
                 </div>
             </div>
 
-            {/* Category Filter Pills Bar */}
-            <div className="no-scrollbar flex items-center gap-2 overflow-x-auto border-t border-navy-100 pt-2 dark:border-navy-800">
+            {/* Category Filter Pills Bar (Flex-Wrap Minimalist) */}
+            <div className="flex flex-wrap items-center gap-1.5 border-t border-navy-100 pt-2.5 sm:gap-2 dark:border-navy-800">
                 <button
                     onClick={() => setSelectedCategory('all')}
-                    className={`shrink-0 cursor-pointer rounded-xl px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all ${
+                    className={`cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-all sm:px-3.5 sm:py-2 ${
                         selectedCategory === 'all'
                             ? 'bg-pastel-teal text-white shadow-xs'
                             : 'border border-navy-200/50 bg-navy-50 text-navy-600 hover:bg-navy-100 dark:border-navy-800 dark:bg-navy-950 dark:text-navy-300 dark:hover:bg-navy-800'
@@ -114,7 +114,7 @@ export default function HeroSearchSection({
                     <button
                         key={cat.id}
                         onClick={() => setSelectedCategory(cat.id)}
-                        className={`shrink-0 cursor-pointer rounded-xl px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all ${
+                        className={`cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-all sm:px-3.5 sm:py-2 ${
                             selectedCategory === cat.id
                                 ? 'bg-pastel-teal text-white shadow-xs'
                                 : 'border border-navy-200/50 bg-navy-50 text-navy-600 hover:bg-navy-100 dark:border-navy-800 dark:bg-navy-950 dark:text-navy-300 dark:hover:bg-navy-800'
