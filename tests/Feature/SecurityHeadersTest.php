@@ -20,7 +20,22 @@ test('security headers middleware adds valid content security policy including l
     expect($csp)->toContain('style-src-elem');
     expect($csp)->toContain('font-src');
     expect($csp)->toContain('https://fonts.bunny.net');
+    expect($csp)->toContain('https://fonts.googleapis.com');
     expect($csp)->toContain('http:');
     expect($csp)->toContain('http://localhost:5173');
     expect($csp)->not->toContain('[::1]');
+});
+
+test('security headers middleware includes upgrade-insecure-requests on secure requests', function () {
+    $middleware = new SecurityHeaders;
+    $request = Request::create('https://samirono.levitation.web.id/', 'GET');
+
+    $response = $middleware->handle($request, function ($req) {
+        return new Response('OK');
+    });
+
+    $csp = $response->headers->get('Content-Security-Policy');
+
+    expect($csp)->not->toBeNull();
+    expect($csp)->toContain('upgrade-insecure-requests');
 });

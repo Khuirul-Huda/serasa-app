@@ -38,12 +38,15 @@ class SecurityHeaders
                 'https://lh3.googleusercontent.com',
                 'https://storage.googleapis.com',
                 'https://*.tile.openstreetmap.org',
+                'https://*.basemaps.cartocdn.com',
+                'https://*.cartocdn.com',
             ],
             'font-src' => [
                 "'self'",
                 'data:',
                 'https://fonts.bunny.net',
                 'https://fonts.gstatic.com',
+                'https://fonts.googleapis.com',
             ],
             'script-src' => ["'self'", "'unsafe-inline'"],
             'script-src-elem' => ["'self'", "'unsafe-inline'"],
@@ -62,6 +65,10 @@ class SecurityHeaders
             'connect-src' => ["'self'", 'ws:', 'wss:'],
             'worker-src' => ['blob:'],
         ];
+
+        if ($request->isSecure() || app()->isProduction() || str_starts_with((string) config('app.url'), 'https://')) {
+            $directives['upgrade-insecure-requests'] = [];
+        }
 
         if (app()->environment('local', 'testing')) {
             $devHosts = [
@@ -107,7 +114,8 @@ class SecurityHeaders
 
         $cspHeader = [];
         foreach ($directives as $name => $values) {
-            $cspHeader[] = $name.' '.implode(' ', array_unique($values));
+            $uniqueValues = array_filter(array_unique($values));
+            $cspHeader[] = count($uniqueValues) > 0 ? $name.' '.implode(' ', $uniqueValues) : $name;
         }
 
         $response->headers->set('X-Content-Type-Options', 'nosniff');
