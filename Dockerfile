@@ -45,7 +45,7 @@ RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
 ##############################################################
 # Stage 3 — Runtime: FrankenPHP + Octane worker mode
 ##############################################################
-FROM dunglas/frankenphp:1.4-php8.4-alpine AS runtime
+FROM dunglas/frankenphp:1.5-php8.4-alpine AS runtime
 
 LABEL org.opencontainers.image.title="serasa-app" \
       org.opencontainers.image.source="https://github.com/your-org/serasa-app"
