@@ -45,11 +45,24 @@ export default function MarketplaceLayout({
     selectedCategory = 'all',
     setSelectedCategory,
 }: MarketplaceLayoutProps) {
+    const appNameParts = (settings?.appName || 'Samirono Etalase').split(' ');
+    const firstWord = appNameParts[0];
+    const restWords = appNameParts.slice(1).join(' ');
+    const initial = firstWord ? firstWord.charAt(0).toUpperCase() : 'S';
+
     return (
         <div
             className="flex min-h-screen flex-col bg-navy-50/40 font-sans text-navy-900 antialiased dark:bg-navy-950/90 dark:text-navy-100"
             id="serasa-root-container"
         >
+            {/* Skip to Content for Accessibility */}
+            <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-xl focus:bg-pastel-teal focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white focus:shadow-lg"
+            >
+                Langsung ke konten utama
+            </a>
+
             {/* Navbar wrapper */}
             <Navbar
                 settings={settings}
@@ -64,7 +77,9 @@ export default function MarketplaceLayout({
             />
 
             {/* Main Content Area */}
-            <main className="flex-grow">{children}</main>
+            <main id="main-content" className="flex-grow">
+                {children}
+            </main>
 
             {/* FOOTER */}
             <footer
@@ -80,13 +95,15 @@ export default function MarketplaceLayout({
                                 className="group flex cursor-pointer items-center gap-2.5 text-left"
                             >
                                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-pastel-teal text-sm font-black text-white shadow-2xs transition-colors group-hover:bg-pastel-teal/90">
-                                    S
+                                    {initial}
                                 </div>
                                 <span className="text-base font-black tracking-wide text-white uppercase">
-                                    SAMIRONO{' '}
-                                    <span className="text-pastel-teal">
-                                        ETALASE
-                                    </span>
+                                    {firstWord}{' '}
+                                    {restWords ? (
+                                        <span className="text-pastel-teal">
+                                            {restWords}
+                                        </span>
+                                    ) : null}
                                 </span>
                             </Link>
                             <p className="text-xs leading-relaxed font-normal text-navy-300">
@@ -119,7 +136,7 @@ export default function MarketplaceLayout({
                                 href="/merchant/dashboard"
                                 className="transition-colors hover:text-pastel-teal"
                             >
-                                Daftar Toko
+                                Kelola Toko
                             </Link>
                             <a
                                 href={`https://wa.me/${settings.adminPhone}`}
@@ -135,7 +152,7 @@ export default function MarketplaceLayout({
 
                     {/* Bottom Copyright & Credit Row */}
                     <div className="flex flex-col items-center justify-between gap-4 border-t border-navy-800/80 pt-6 font-mono text-xs text-navy-400 sm:flex-row">
-                        <p>{settings.footerCredits || '© 2026 TIM KKN UNNES GIAT 16 DESA SAMIRONO.'}</p>
+                        <p>{settings.footerCredits || `© 2026 ${settings.appName || 'SAMIRONO ETALASE'}.`}</p>
                         <p className="flex items-center gap-1 font-sans text-xs text-navy-300">
                             Dibuat dengan{' '}
                             <Heart className="h-3 w-3 fill-pastel-coral text-pastel-coral" />{' '}

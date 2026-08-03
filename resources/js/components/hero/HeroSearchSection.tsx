@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { router } from '@inertiajs/react';
-import { Search, Tag } from 'lucide-react';
+import { Tag } from 'lucide-react';
 import React from 'react';
 import type { AppSettings, Category } from '@/types';
 
@@ -36,44 +35,8 @@ export default function HeroSearchSection({
         { label: 'Gethuk Keju', query: 'gethuk' },
     ];
 
-    const placeholderText = `Cari produk UMKM ${settings.villageName} (misal: ${hotSearches.map((h) => h.query).join(', ')}...)`;
-
-    const handleSearchSubmit = () => {
-        router.get('/', {
-            search: searchQuery,
-            category: selectedCategory,
-        });
-    };
-
     return (
-        <div className="space-y-4 rounded-3xl border border-navy-200/60 bg-white p-4 shadow-2xs sm:p-5 dark:border-navy-800 dark:bg-navy-900/90">
-            <div className="flex flex-col items-center gap-3 sm:flex-row">
-                <div className="relative w-full flex-grow">
-                    <input
-                        type="text"
-                        placeholder={placeholderText}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                handleSearchSubmit();
-                            }
-                        }}
-                        className="w-full rounded-2xl border border-navy-200/60 bg-navy-50 py-3 pr-4 pl-11 text-xs font-medium text-navy-800 placeholder-navy-400 transition-all focus:border-pastel-teal focus:ring-2 focus:ring-pastel-teal/20 focus:outline-none sm:text-sm dark:border-navy-800 dark:bg-navy-950 dark:text-navy-100 dark:placeholder-navy-500"
-                        id="hero-search-input"
-                    />
-                    <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-navy-400 dark:text-navy-500" />
-                </div>
-
-                <button
-                    onClick={handleSearchSubmit}
-                    className="flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-pastel-teal px-7 py-3 text-xs font-extrabold tracking-wider text-white uppercase shadow-xs transition-all hover:bg-pastel-teal/90 sm:w-auto"
-                >
-                    <Search className="h-4 w-4" />
-                    <span>Cari Katalog</span>
-                </button>
-            </div>
-
+        <div className="space-y-3 rounded-2xl border border-navy-200/60 bg-white p-3 shadow-2xs sm:p-4 dark:border-navy-800 dark:bg-navy-900/90">
             {/* Quick Search Tag Chips */}
             <div className="flex flex-wrap items-center gap-2 text-xs">
                 <div className="flex shrink-0 items-center gap-1 text-[11px] font-extrabold tracking-wider text-navy-400 uppercase dark:text-navy-500">
@@ -84,8 +47,9 @@ export default function HeroSearchSection({
                     {hotSearches.slice(0, 5).map((item) => (
                         <button
                             key={item.query}
+                            type="button"
                             onClick={() => setSearchQuery(item.query)}
-                            className={`cursor-pointer rounded-xl px-2.5 py-1 text-xs font-bold transition-all ${
+                            className={`min-h-[36px] cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold transition-all sm:min-h-[auto] sm:px-2.5 sm:py-1 ${
                                 searchQuery === item.query
                                     ? 'shadow-3xs bg-pastel-teal text-white'
                                     : 'bg-navy-100/60 text-navy-700 hover:bg-pastel-teal-light hover:text-pastel-teal dark:bg-navy-950 dark:text-navy-300 dark:hover:bg-navy-800 dark:hover:text-pastel-teal'
@@ -97,24 +61,26 @@ export default function HeroSearchSection({
                 </div>
             </div>
 
-            {/* Category Filter Pills Bar (Top 5 Minimalist) */}
-            <div className="flex flex-wrap items-center gap-1.5 border-t border-navy-100 pt-2.5 sm:gap-2 dark:border-navy-800">
+            {/* Category Filter Pills Bar */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0">
                 <button
+                    type="button"
                     onClick={() => setSelectedCategory('all')}
-                    className={`cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-all sm:px-3.5 sm:py-2 ${
+                    className={`min-h-[36px] shrink-0 cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider transition-all sm:min-h-[auto] sm:px-3.5 sm:py-2 ${
                         selectedCategory === 'all'
                             ? 'bg-pastel-teal text-white shadow-xs'
                             : 'border border-navy-200/50 bg-navy-50 text-navy-600 hover:bg-navy-100 dark:border-navy-800 dark:bg-navy-950 dark:text-navy-300 dark:hover:bg-navy-800'
                     }`}
                 >
-                    Semua Komoditas ({totalProducts})
+                    Semua ({totalProducts})
                 </button>
 
-                {categories.slice(0, 5).map((cat) => (
+                {categories.map((cat) => (
                     <button
                         key={cat.id}
+                        type="button"
                         onClick={() => setSelectedCategory(cat.id)}
-                        className={`cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-all sm:px-3.5 sm:py-2 ${
+                        className={`min-h-[36px] shrink-0 cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider transition-all sm:min-h-[auto] sm:px-3.5 sm:py-2 ${
                             selectedCategory === cat.id
                                 ? 'bg-pastel-teal text-white shadow-xs'
                                 : 'border border-navy-200/50 bg-navy-50 text-navy-600 hover:bg-navy-100 dark:border-navy-800 dark:bg-navy-950 dark:text-navy-300 dark:hover:bg-navy-800'

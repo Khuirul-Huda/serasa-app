@@ -1,12 +1,13 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import { Store, ShoppingBag, MapPin } from 'lucide-react';
 import React from 'react';
+import type { AppSettings } from '@/types';
 
 interface MobileMenuProps {
     activeTab: string;
     isOpen?: boolean;
-    settings?: any;
-    user?: any;
+    settings?: AppSettings;
+    user?: { name: string; role: string } | null;
     onClose: () => void;
 }
 

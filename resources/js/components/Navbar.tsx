@@ -32,7 +32,7 @@ export default function Navbar({
     setSearchQuery,
     shops = [],
 }: NavbarProps) {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<{ auth?: { user?: { name: string; role: string } | null } }>().props;
     const user = auth?.user;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(
@@ -141,8 +141,10 @@ export default function Navbar({
 
                             {searchQuery && (
                                 <button
+                                    type="button"
                                     onClick={() => handleSearchChange('')}
                                     className="absolute top-1/2 right-3 -translate-y-1/2 p-0.5 text-navy-400 hover:text-navy-600 dark:text-navy-500 dark:hover:text-navy-300"
+                                    aria-label="Hapus kata kunci pencarian"
                                 >
                                     <X className="h-3.5 w-3.5" />
                                 </button>
@@ -154,11 +156,12 @@ export default function Navbar({
                     <div className="flex shrink-0 items-center gap-1 sm:gap-3 md:gap-4">
                         {/* Mobile Search Toggle Button */}
                         <button
+                            type="button"
                             onClick={() =>
                                 setIsMobileSearchOpen(!isMobileSearchOpen)
                             }
                             className="cursor-pointer rounded-xl p-2 text-navy-600 transition-colors hover:bg-navy-50 hover:text-pastel-teal sm:hidden dark:text-navy-300 dark:hover:bg-navy-800 dark:hover:text-pastel-teal"
-                            aria-label="Toggle search"
+                            aria-label={isMobileSearchOpen ? 'Tutup pencarian' : 'Buka pencarian'}
                             title="Cari produk"
                         >
                             <Search className="h-5 w-5" />

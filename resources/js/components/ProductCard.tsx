@@ -75,7 +75,7 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
                             <Link
                                 href={`/shops/${shop.id}`}
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex min-w-0 items-center gap-1 text-xs font-bold text-navy-500 hover:text-pastel-teal dark:text-navy-400 dark:hover:text-pastel-teal"
+                                className="flex min-w-0 items-center gap-1 text-[13px] font-bold text-navy-500 hover:text-pastel-teal dark:text-navy-400 dark:hover:text-pastel-teal"
                                 title={shop.name}
                             >
                                 <span className="truncate">{shop.name}</span>
@@ -103,17 +103,16 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
                             >
                                 {formatIDR(product.price)}
                             </data>
-                            <span className="text-xs font-normal text-navy-400 dark:text-navy-400">
+                            <span className="text-[13px] font-normal text-navy-400 dark:text-navy-400">
                                 / {product.unit}
                             </span>
                         </div>
-
                     </div>
                 </div>
 
-                <footer className="flex items-center justify-between gap-1 border-t border-navy-100 pt-2 dark:border-navy-800/80">
+                <footer className="flex items-center justify-between gap-1 border-t border-navy-100 pt-2.5 dark:border-navy-800/80">
                     <div
-                        className="flex items-center gap-1.5 text-xs text-navy-500 dark:text-navy-400"
+                        className="flex items-center gap-1 text-[13px] text-navy-500 dark:text-navy-400"
                         role="img"
                         aria-label={`Rating ${product.rating} bintang, ${product.reviewsCount} ulasan`}
                     >
@@ -129,16 +128,16 @@ export default function ProductCard({ product, shop }: ProductCardProps) {
                         <span className="text-navy-300 dark:text-navy-600" aria-hidden="true">
                             |
                         </span>
-                        <span className="truncate text-xs">
+                        <span className="truncate">
                             {product.reviewsCount} Ulasan
                         </span>
                     </div>
 
                     <Link
                         href={`/products/${product.id}`}
-                        className="shadow-3xs rounded-xl bg-pastel-coral px-3.5 py-1.5 text-xs font-bold tracking-wider text-white uppercase transition-all hover:bg-pastel-coral/90"
+                        className="shadow-3xs flex min-h-[44px] items-center justify-center rounded-xl bg-pastel-coral px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all hover:bg-pastel-coral/90"
                     >
-                        Beli
+                        Detail
                     </Link>
                 </footer>
             </div>

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.5
  */
 
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
 import React, { useState, useMemo, useEffect } from 'react';
 import Hero from '@/components/Hero';
@@ -124,34 +124,42 @@ export default function Welcome({
                                 <ShoppingBag className="h-5 w-5 text-pastel-teal" />
                                 <span>Katalog Produk Kreatif Warga</span>
                             </h2>
-                            <p className="text-xs font-normal text-navy-500 dark:text-navy-400">
+                            <p className="text-sm font-normal text-navy-500 dark:text-navy-400">
                                 Membeli produk lokal membantu perputaran ekonomi
                                 mandiri {settings.villageName}.
                             </p>
                         </div>
 
-                        <div className="rounded-xl border border-navy-200/60 bg-white px-3 py-1.5 text-xs font-bold tracking-wider text-navy-500 uppercase shadow-2xs dark:border-navy-800 dark:bg-navy-900 dark:text-navy-300">
+                        <div className="rounded-xl border border-navy-200/60 bg-white px-3 py-1.5 text-[13px] font-bold tracking-wider text-navy-500 uppercase shadow-2xs dark:border-navy-800 dark:bg-navy-900 dark:text-navy-300">
                             Menampilkan {paginatedProducts.length} dari {filteredProducts.length} Produk Relevan
                         </div>
                     </div>
 
+                    {/* Aria Live Announcement Region */}
+                    <div aria-live="polite" className="sr-only">
+                        {filteredProducts.length === 0
+                            ? 'Tidak ada produk ditemukan'
+                            : `Menampilkan ${paginatedProducts.length} dari ${filteredProducts.length} produk`}
+                    </div>
+
                     {filteredProducts.length === 0 ? (
-                        <div className="mx-auto max-w-lg rounded-3xl border border-navy-200/60 bg-white p-16 text-center shadow-2xs dark:border-navy-800 dark:bg-navy-900/90">
+                        <div className="mx-auto max-w-lg rounded-3xl border border-navy-200/60 bg-white p-12 text-center shadow-2xs sm:p-16 dark:border-navy-800 dark:bg-navy-900/90">
                             <ShoppingBag className="mx-auto mb-4 h-12 w-12 text-navy-300 dark:text-navy-600" />
-                            <h3 className="text-sm font-extrabold text-navy-800 dark:text-navy-100">
+                            <h3 className="text-base font-extrabold text-navy-800 dark:text-navy-100">
                                 Produk Tidak Ditemukan
                             </h3>
-                            <p className="mt-1 text-xs text-navy-500 dark:text-navy-400">
+                            <p className="mt-1 text-sm text-navy-500 dark:text-navy-400">
                                 Kami tidak menemukan produk yang cocok dengan
                                 pencarian Anda. Silakan cari dengan kata kunci
                                 lain atau pilih semua kategori.
                             </p>
                             <button
+                                type="button"
                                 onClick={() => {
                                     setSearchQuery('');
                                     setSelectedCategory('all');
                                 }}
-                                className="mt-4 cursor-pointer rounded-xl bg-pastel-teal px-5 py-2.5 text-xs font-extrabold tracking-wider text-white uppercase shadow-2xs transition-all hover:bg-pastel-teal/90"
+                                className="mt-5 inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-xl bg-pastel-teal px-6 py-2.5 text-xs font-extrabold tracking-wider text-white uppercase shadow-2xs transition-all hover:bg-pastel-teal/90"
                             >
                                 Reset Semua Filter
                             </button>
@@ -178,7 +186,6 @@ export default function Welcome({
                             {totalPages > 1 && (() => {
                                 const scrollToCatalog = () => document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
 
-                                // Build page numbers with ellipsis: [1, '...', 4, 5, 6, '...', 20]
                                 const pages: (number | '...')[] = [];
                                 const delta = 1;
                                 const rangeStart = Math.max(2, currentPage - delta);
@@ -192,17 +199,18 @@ export default function Welcome({
 
                                 return (
                                 <div className="flex flex-col items-center justify-between gap-4 border-t border-navy-100 pt-6 sm:flex-row dark:border-navy-800">
-                                    <div className="text-xs font-bold text-navy-500 dark:text-navy-400">
+                                    <div className="text-sm font-bold text-navy-500 dark:text-navy-400">
                                         Halaman {currentPage} dari {totalPages} ({filteredProducts.length} Produk Total)
                                     </div>
                                     <div className="flex flex-wrap items-center justify-center gap-1.5">
                                         <button
+                                            type="button"
                                             disabled={currentPage === 1}
                                             onClick={() => {
                                                 setCurrentPage((prev) => Math.max(prev - 1, 1));
                                                 scrollToCatalog();
                                             }}
-                                            className="cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-1.5 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40 dark:border-navy-800 dark:bg-navy-900 dark:text-navy-200 dark:hover:border-pastel-teal dark:hover:text-pastel-teal"
+                                            className="min-h-[44px] cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-2 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40 dark:border-navy-800 dark:bg-navy-900 dark:text-navy-200 dark:hover:border-pastel-teal dark:hover:text-pastel-teal"
                                         >
                                             &laquo; Prev
                                         </button>
@@ -217,11 +225,12 @@ export default function Welcome({
                                             ) : (
                                                 <button
                                                     key={page}
+                                                    type="button"
                                                     onClick={() => {
                                                         setCurrentPage(page);
                                                         scrollToCatalog();
                                                     }}
-                                                    className={`h-8 w-8 cursor-pointer rounded-xl text-xs font-extrabold transition-all ${
+                                                    className={`h-10 w-10 cursor-pointer rounded-xl text-xs font-extrabold transition-all ${
                                                         page === currentPage
                                                             ? 'bg-pastel-teal text-white shadow-2xs'
                                                             : 'border border-navy-200 bg-white text-navy-700 hover:border-pastel-teal hover:text-pastel-teal dark:border-navy-800 dark:bg-navy-900 dark:text-navy-200 dark:hover:border-pastel-teal dark:hover:text-pastel-teal'
@@ -232,12 +241,13 @@ export default function Welcome({
                                             ),
                                         )}
                                         <button
+                                            type="button"
                                             disabled={currentPage === totalPages}
                                             onClick={() => {
                                                 setCurrentPage((prev) => Math.min(prev + 1, totalPages));
                                                 scrollToCatalog();
                                             }}
-                                            className="cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-1.5 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40 dark:border-navy-800 dark:bg-navy-900 dark:text-navy-200 dark:hover:border-pastel-teal dark:hover:text-pastel-teal"
+                                            className="min-h-[44px] cursor-pointer rounded-xl border border-navy-200 bg-white px-3 py-2 text-xs font-extrabold text-navy-700 transition-all hover:border-pastel-teal hover:text-pastel-teal disabled:cursor-not-allowed disabled:opacity-40 dark:border-navy-800 dark:bg-navy-900 dark:text-navy-200 dark:hover:border-pastel-teal dark:hover:text-pastel-teal"
                                         >
                                             Next &raquo;
                                         </button>
@@ -272,12 +282,11 @@ export default function Welcome({
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {shops.slice(0, 3).map((shop) => (
-                            <div
+                            <Link
                                 key={shop.id}
-                                onClick={() =>
-                                    router.visit(`/shops/${shop.id}`)
-                                }
-                                className="flex cursor-pointer gap-4 rounded-2xl border border-navy-200/60 bg-white p-4 shadow-2xs transition-all hover:border-pastel-teal hover:shadow-md dark:border-navy-800 dark:bg-navy-900/90 dark:hover:border-pastel-teal"
+                                href={`/shops/${shop.id}`}
+                                prefetch="hover"
+                                className="flex gap-4 rounded-2xl border border-navy-200/60 bg-white p-4 shadow-2xs transition-all hover:border-pastel-teal hover:shadow-md dark:border-navy-800 dark:bg-navy-900/90 dark:hover:border-pastel-teal"
                             >
                                 <img
                                     src={shop.logo}
@@ -290,7 +299,7 @@ export default function Welcome({
                                 />
                                 <div className="min-w-0 flex-1 space-y-1">
                                     <div className="flex min-w-0 items-center gap-1.5" title={shop.name}>
-                                        <span className="block truncate text-xs font-bold text-navy-900 dark:text-navy-100">
+                                        <span className="block truncate text-sm font-bold text-navy-900 dark:text-navy-100">
                                             {shop.name}
                                         </span>
                                         {shop.isVerified && (
@@ -300,11 +309,11 @@ export default function Welcome({
                                     <span className="font-mono text-xs font-bold tracking-wider text-navy-400 uppercase dark:text-navy-400">
                                         {shop.category}
                                     </span>
-                                    <p className="line-clamp-2 pt-0.5 text-xs leading-relaxed text-navy-500 dark:text-navy-400">
+                                    <p className="line-clamp-2 pt-0.5 text-[13px] leading-relaxed text-navy-500 dark:text-navy-400">
                                         {shop.description}
                                     </p>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </div>
