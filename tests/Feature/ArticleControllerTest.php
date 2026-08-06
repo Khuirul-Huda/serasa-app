@@ -68,9 +68,30 @@ test('admin can toggle article publish status', function () {
     expect($article->fresh()->is_published)->toBeFalse();
 });
 
+test('admin can access article create page', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $response = $this->actingAs($admin)->get(route('admin.articles.create'));
+    $response->assertOk();
+});
+
+test('admin can access article edit page', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $article = Article::factory()->create();
+
+    $response = $this->actingAs($admin)->get(route('admin.articles.edit', $article->id));
+    $response->assertOk();
+});
+
 test('non-admin user cannot access admin article routes', function () {
     $user = User::factory()->create(['role' => 'user']);
     $article = Article::factory()->create();
+
+    $this->actingAs($user)->get(route('admin.articles.create'))
+        ->assertForbidden();
+
+    $this->actingAs($user)->get(route('admin.articles.edit', $article->id))
+        ->assertForbidden();
 
     $this->actingAs($user)->post(route('admin.articles.store'), [
         'title' => 'Judul Tes',

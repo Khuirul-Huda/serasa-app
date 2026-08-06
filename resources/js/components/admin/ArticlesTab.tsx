@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useForm, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import {
     Newspaper,
     Plus,
@@ -12,18 +12,14 @@ import {
     CheckCircle2,
     FileText,
     Search,
-    X,
     Eye,
     EyeOff,
     ExternalLink,
-    Sparkles,
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     Table,
     TableHeader,
@@ -43,101 +39,18 @@ const DEFAULT_CATEGORIES = ['Berita', 'Pengumuman', 'Inovasi', 'Edukasi'];
 export default function ArticlesTab({ articles }: ArticlesTabProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
-    
-    // Modal states
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingArticle, setEditingArticle] = useState<ArticleItem | null>(null);
     const [articleToDelete, setArticleToDelete] = useState<ArticleItem | null>(null);
-    const [customCategoryInput, setCustomCategoryInput] = useState('');
-    const [isCustomCategory, setIsCustomCategory] = useState(false);
-
-    // Inertia Form
-    const { data, setData, reset, processing, errors } = useForm({
-        title: '',
-        category: 'Berita',
-        coverImage: '',
-        excerpt: '',
-        content: '',
-        isPublished: true,
-    });
-
-    const openCreateModal = () => {
-        setEditingArticle(null);
-        reset();
-        setIsCustomCategory(false);
-        setCustomCategoryInput('');
-        setIsModalOpen(true);
-    };
-
-    const openEditModal = (article: ArticleItem) => {
-        setEditingArticle(article);
-        const isStandard = DEFAULT_CATEGORIES.includes(article.category);
-        setIsCustomCategory(!isStandard);
-        if (!isStandard) {
-            setCustomCategoryInput(article.category);
-        }
-        setData({
-            title: article.title,
-            category: isStandard ? article.category : 'custom',
-            coverImage: article.coverImage || '',
-            excerpt: article.excerpt || '',
-            content: article.content,
-            isPublished: article.isPublished,
-        });
-        setIsModalOpen(false);
-        // timeout to allow form reset before setting editing values
-        setTimeout(() => setIsModalOpen(true), 50);
-    };
-
-    const handleFormSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const finalCategory = isCustomCategory
-            ? customCategoryInput.trim() || 'Berita'
-            : data.category;
-
-        const payload = {
-            title: data.title,
-            category: finalCategory,
-            cover_image: data.coverImage,
-            excerpt: data.excerpt,
-            content: data.content,
-            is_published: data.isPublished,
-        };
-
-        if (editingArticle) {
-            router.put(`/admin/articles/${editingArticle.id}`, payload, {
-                onSuccess: () => {
-                    toast.success('Artikel berhasil diperbarui!');
-                    setIsModalOpen(false);
-                    reset();
-                },
-                onError: () => {
-                    toast.error('Gagal memperbarui artikel. Periksa input Anda.');
-                },
-            });
-        } else {
-            router.post('/admin/articles', payload, {
-                onSuccess: () => {
-                    toast.success('Artikel berhasil diterbitkan!');
-                    setIsModalOpen(false);
-                    reset();
-                },
-                onError: () => {
-                    toast.error('Gagal membuat artikel. Periksa input Anda.');
-                },
-            });
-        }
-    };
 
     const handleTogglePublish = (article: ArticleItem) => {
-        router.post(`/admin/articles/${article.id}/toggle-publish`, {}, {
-            onSuccess: () => {
-                toast.success(
-                    `Status artikel "${article.title}" berhasil diubah.`,
-                );
+        router.post(
+            `/admin/articles/${article.id}/toggle-publish`,
+            {},
+            {
+                onSuccess: () => {
+                    toast.success(`Status artikel "${article.title}" berhasil diubah.`);
+                },
             },
-        });
+        );
     };
 
     const confirmDeleteArticle = () => {
@@ -163,7 +76,8 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
     const filteredArticles = articles.filter((article) => {
         const matchesSearch =
             article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (article.excerpt && article.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (article.excerpt &&
+                article.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
             article.category.toLowerCase().includes(searchQuery.toLowerCase());
 
         const matchesCategory =
@@ -189,13 +103,13 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
                     </p>
                 </div>
 
-                <Button
-                    onClick={openCreateModal}
+                <Link
+                    href="/admin/articles/create"
                     className="shadow-3xs flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-pastel-teal px-5 text-xs font-extrabold tracking-wider text-white uppercase transition-all hover:bg-pastel-teal/90 sm:w-auto sm:text-sm"
                 >
                     <Plus className="h-4 w-4 text-white" />
                     <span>Tulis Artikel Baru</span>
-                </Button>
+                </Link>
             </div>
 
             {/* Metric Cards */}
@@ -257,8 +171,11 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
                 </div>
 
                 <div className="flex items-center gap-2 overflow-x-auto">
-                    <span className="text-xs font-bold text-navy-500 uppercase dark:text-navy-400">Kategori:</span>
+                    <span className="text-xs font-bold text-navy-500 uppercase dark:text-navy-400">
+                        Kategori:
+                    </span>
                     <button
+                        type="button"
                         onClick={() => setSelectedCategoryFilter('all')}
                         className={`rounded-lg px-3 py-1.5 text-xs font-extrabold uppercase transition-all ${
                             selectedCategoryFilter === 'all'
@@ -271,6 +188,7 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
                     {DEFAULT_CATEGORIES.map((cat) => (
                         <button
                             key={cat}
+                            type="button"
                             onClick={() => setSelectedCategoryFilter(cat)}
                             className={`rounded-lg px-3 py-1.5 text-xs font-extrabold uppercase transition-all ${
                                 selectedCategoryFilter === cat
@@ -300,7 +218,10 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
                         <TableBody>
                             {filteredArticles.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="p-8 text-center text-xs text-navy-400 dark:text-navy-500 sm:text-sm">
+                                    <TableCell
+                                        colSpan={5}
+                                        className="p-8 text-center text-xs text-navy-400 dark:text-navy-500 sm:text-sm"
+                                    >
                                         Belum ada artikel yang sesuai kriteria.
                                     </TableCell>
                                 </TableRow>
@@ -343,7 +264,7 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
 
                                         {/* Category */}
                                         <TableCell className="p-4">
-                                            <span className="inline-block rounded-md bg-pastel-lavender-light border border-pastel-lavender/30 px-2.5 py-1 text-xs font-bold text-navy-800 dark:bg-navy-800 dark:text-pastel-lavender dark:border-navy-700">
+                                            <span className="inline-block rounded-md border border-pastel-lavender/30 bg-pastel-lavender-light px-2.5 py-1 text-xs font-bold text-navy-800 dark:border-navy-700 dark:bg-navy-800 dark:text-pastel-lavender">
                                                 {article.category}
                                             </span>
                                         </TableCell>
@@ -351,6 +272,7 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
                                         {/* Status */}
                                         <TableCell className="p-4">
                                             <button
+                                                type="button"
                                                 onClick={() => handleTogglePublish(article)}
                                                 className={`flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1 text-xs font-extrabold tracking-wider uppercase transition-all ${
                                                     article.isPublished
@@ -381,14 +303,15 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
                                         {/* Actions */}
                                         <TableCell className="p-4 text-right">
                                             <div className="flex items-center justify-end gap-1">
-                                                <button
-                                                    onClick={() => openEditModal(article)}
+                                                <Link
+                                                    href={`/admin/articles/${article.id}/edit`}
                                                     className="cursor-pointer rounded-xl p-2 text-navy-500 transition-colors hover:bg-navy-100 hover:text-pastel-teal dark:text-navy-400 dark:hover:bg-navy-800"
                                                     title="Edit Artikel"
                                                 >
                                                     <Pencil className="h-4 w-4" />
-                                                </button>
+                                                </Link>
                                                 <button
+                                                    type="button"
                                                     onClick={() => setArticleToDelete(article)}
                                                     className="cursor-pointer rounded-xl p-2 text-navy-400 transition-colors hover:bg-pastel-coral-light hover:text-pastel-coral dark:hover:bg-pastel-coral/20"
                                                     title="Hapus Artikel"
@@ -404,164 +327,6 @@ export default function ArticlesTab({ articles }: ArticlesTabProps) {
                     </Table>
                 </div>
             </div>
-
-            {/* Create / Edit Article Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-xs">
-                    <div className="relative w-full max-w-3xl rounded-3xl border border-navy-200/60 bg-white p-6 shadow-xl dark:border-navy-800 dark:bg-navy-900 max-h-[90vh] overflow-y-auto">
-                        <div className="flex items-center justify-between border-b border-navy-100 pb-4 dark:border-navy-800">
-                            <h3 className="flex items-center gap-2 text-lg font-black text-navy-900 uppercase dark:text-white">
-                                <Sparkles className="h-5 w-5 text-pastel-teal" />
-                                {editingArticle ? 'Edit Artikel Desa' : 'Tulis Artikel Baru'}
-                            </h3>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="rounded-xl p-1 text-navy-400 hover:bg-navy-100 dark:hover:bg-navy-800"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleFormSubmit} className="mt-4 space-y-4 text-xs sm:text-sm">
-                            {/* Judul Artikel */}
-                            <div className="space-y-1.5">
-                                <Label className="block font-bold text-navy-700 uppercase dark:text-navy-300">
-                                    Judul Artikel *
-                                </Label>
-                                <Input
-                                    type="text"
-                                    required
-                                    placeholder="Contoh: Peresmian Sentra Pengolahan Susu Sapi Murni Desa Samirono"
-                                    value={data.title}
-                                    onChange={(e) => setData('title', e.target.value)}
-                                    className="rounded-xl border-navy-200/60 focus-visible:border-pastel-teal dark:border-navy-700 dark:bg-navy-950 dark:text-white"
-                                />
-                                {errors.title && <p className="text-xs text-red-500">{errors.title}</p>}
-                            </div>
-
-                            {/* Kategori */}
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div className="space-y-1.5">
-                                    <Label className="block font-bold text-navy-700 uppercase dark:text-navy-300">
-                                        Kategori *
-                                    </Label>
-                                    <select
-                                        value={isCustomCategory ? 'custom' : data.category}
-                                        onChange={(e) => {
-                                            if (e.target.value === 'custom') {
-                                                setIsCustomCategory(true);
-                                            } else {
-                                                setIsCustomCategory(false);
-                                                setData('category', e.target.value);
-                                            }
-                                        }}
-                                        className="w-full rounded-xl border border-navy-200/60 bg-white p-2.5 text-xs text-navy-900 focus:border-pastel-teal focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-white sm:text-sm"
-                                    >
-                                        {DEFAULT_CATEGORIES.map((cat) => (
-                                            <option key={cat} value={cat}>
-                                                {cat}
-                                            </option>
-                                        ))}
-                                        <option value="custom">+ Kategori Lainnya...</option>
-                                    </select>
-                                </div>
-
-                                {isCustomCategory && (
-                                    <div className="space-y-1.5">
-                                        <Label className="block font-bold text-navy-700 uppercase dark:text-navy-300">
-                                            Nama Kategori Custom *
-                                        </Label>
-                                        <Input
-                                            type="text"
-                                            required
-                                            placeholder="Contoh: Pariwisata & Budaya"
-                                            value={customCategoryInput}
-                                            onChange={(e) => setCustomCategoryInput(e.target.value)}
-                                            className="rounded-xl border-navy-200/60 focus-visible:border-pastel-teal dark:border-navy-700 dark:bg-navy-950 dark:text-white"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Cover Image URL */}
-                            <div className="space-y-1.5">
-                                <Label className="block font-bold text-navy-700 uppercase dark:text-navy-300">
-                                    URL Gambar Sampul (Opsional)
-                                </Label>
-                                <Input
-                                    type="url"
-                                    placeholder="https://images.unsplash.com/photo-..."
-                                    value={data.coverImage}
-                                    onChange={(e) => setData('coverImage', e.target.value)}
-                                    className="rounded-xl border-navy-200/60 focus-visible:border-pastel-teal dark:border-navy-700 dark:bg-navy-950 dark:text-white"
-                                />
-                            </div>
-
-                            {/* Excerpt */}
-                            <div className="space-y-1.5">
-                                <Label className="block font-bold text-navy-700 uppercase dark:text-navy-300">
-                                    Ringkasan Singkat / Excerpt (Opsional)
-                                </Label>
-                                <textarea
-                                    rows={2}
-                                    placeholder="Ringkasan 1-2 kalimat mengenai isi berita/artikel..."
-                                    value={data.excerpt}
-                                    onChange={(e) => setData('excerpt', e.target.value)}
-                                    className="w-full rounded-xl border border-navy-200/60 bg-white p-3 text-xs text-navy-900 focus:border-pastel-teal focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-white sm:text-sm"
-                                />
-                            </div>
-
-                            {/* Content */}
-                            <div className="space-y-1.5">
-                                <Label className="block font-bold text-navy-700 uppercase dark:text-navy-300">
-                                    Isi Artikel Lengkap * (Mendukung Format HTML/Paragraf)
-                                </Label>
-                                <textarea
-                                    rows={8}
-                                    required
-                                    placeholder="Tuliskan isi berita atau artikel secara lengkap di sini. Gunakan tag <p>, <h3>, <ul> untuk perapian..."
-                                    value={data.content}
-                                    onChange={(e) => setData('content', e.target.value)}
-                                    className="w-full rounded-xl border border-navy-200/60 bg-white p-3 font-mono text-xs text-navy-900 focus:border-pastel-teal focus:outline-none dark:border-navy-700 dark:bg-navy-950 dark:text-white sm:text-sm"
-                                />
-                            </div>
-
-                            {/* Publish Switch */}
-                            <div className="flex items-center gap-3 pt-2">
-                                <input
-                                    type="checkbox"
-                                    id="isPublished"
-                                    checked={data.isPublished}
-                                    onChange={(e) => setData('isPublished', e.target.checked)}
-                                    className="h-4 w-4 rounded-sm border-navy-300 text-pastel-teal focus:ring-pastel-teal"
-                                />
-                                <Label htmlFor="isPublished" className="cursor-pointer font-bold text-navy-800 dark:text-navy-200">
-                                    Terbitkan langsung ke halaman publik warga
-                                </Label>
-                            </div>
-
-                            {/* Footer Buttons */}
-                            <div className="flex items-center justify-end gap-3 border-t border-navy-100 pt-4 dark:border-navy-800">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="cursor-pointer rounded-xl dark:border-navy-700 dark:bg-navy-800 dark:text-navy-300"
-                                >
-                                    Batal
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="cursor-pointer rounded-xl bg-pastel-teal text-white hover:bg-pastel-teal/90"
-                                >
-                                    {editingArticle ? 'Simpan Perubahan' : 'Terbitkan Artikel'}
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
 
             {/* Confirm Delete Dialog */}
             <ConfirmDialog

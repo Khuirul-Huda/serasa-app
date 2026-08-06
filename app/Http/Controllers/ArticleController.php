@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Setting;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -46,6 +48,32 @@ class ArticleController extends Controller
         ]);
     }
 
+    public function create(): Response
+    {
+        $categories = Article::distinct()->pluck('category')->toArray();
+        if (empty($categories)) {
+            $categories = ['Berita', 'Pengumuman', 'Inovasi', 'Edukasi'];
+        }
+
+        return Inertia::render('admin/articles/editor', [
+            'article' => null,
+            'categories' => array_values(array_unique(array_merge(['Berita', 'Pengumuman', 'Inovasi', 'Edukasi'], $categories))),
+            'settings' => array_merge($this->getAppSettings(), Setting::getAllAsArray()),
+        ]);
+    }
+
+    public function edit(string $id): Response
+    {
+        $article = Article::findOrFail($id);
+        $categories = Article::distinct()->pluck('category')->toArray();
+
+        return Inertia::render('admin/articles/editor', [
+            'article' => $article,
+            'categories' => array_values(array_unique(array_merge(['Berita', 'Pengumuman', 'Inovasi', 'Edukasi'], $categories))),
+            'settings' => array_merge($this->getAppSettings(), Setting::getAllAsArray()),
+        ]);
+    }
+
     public function show(string $slug): Response
     {
         $article = Article::where('slug', $slug)->firstOrFail();
@@ -69,7 +97,7 @@ class ArticleController extends Controller
             'title' => 'required|string|max:255',
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
-            'cover_image' => 'nullable|url|max:1000',
+            'cover_image' => 'nullable|string|max:1000',
             'category' => 'required|string|max:100',
             'is_published' => 'boolean',
         ]);
@@ -106,7 +134,7 @@ class ArticleController extends Controller
             'title' => 'required|string|max:255',
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
-            'cover_image' => 'nullable|url|max:1000',
+            'cover_image' => 'nullable|string|max:1000',
             'category' => 'required|string|max:100',
             'is_published' => 'boolean',
         ]);
@@ -132,6 +160,8 @@ class ArticleController extends Controller
             'published_at' => ($validated['is_published'] && ! $article->published_at) ? now() : $article->published_at,
         ]);
 
+        $this->cleanupOrphanedImages();
+
         return redirect()->back()->with('success', 'Artikel berhasil diperbarui!');
     }
 
@@ -139,6 +169,8 @@ class ArticleController extends Controller
     {
         $article = Article::findOrFail($id);
         $article->delete();
+
+        $this->cleanupOrphanedImages();
 
         return redirect()->back()->with('success', 'Artikel berhasil dihapus!');
     }
@@ -153,5 +185,42 @@ class ArticleController extends Controller
         $article->save();
 
         return redirect()->back()->with('success', 'Status publikasi artikel diperbarui!');
+    }
+
+    public function uploadImage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+        ]);
+
+        $path = $request->file('image')->store('articles', 'public');
+
+        return response()->json([
+            'url' => Storage::url($path),
+        ]);
+    }
+
+    private function cleanupOrphanedImages(): void
+    {
+        $disk = Storage::disk('public');
+        $allStoredFiles = $disk->files('articles');
+
+        if (empty($allStoredFiles)) {
+            return;
+        }
+
+        $allArticles = Article::all();
+        $combinedContent = '';
+
+        foreach ($allArticles as $art) {
+            $combinedContent .= ' '.$art->content.' '.$art->cover_image;
+        }
+
+        foreach ($allStoredFiles as $file) {
+            $filename = basename($file);
+            if (! str_contains($combinedContent, $file) && ! str_contains($combinedContent, $filename)) {
+                $disk->delete($file);
+            }
+        }
     }
 }

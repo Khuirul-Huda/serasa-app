@@ -20,6 +20,7 @@ createInertiaApp({
             case name === 'merchant-dashboard':
             case name === 'admin-dashboard':
             case name.startsWith('articles/'):
+            case name.startsWith('admin/articles'):
             case name.startsWith('settings/'):
                 return null;
             case name.startsWith('auth/'):

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ArticleController::index
-* @see app/Http/Controllers/ArticleController.php:15
+* @see app/Http/Controllers/ArticleController.php:17
 * @route '/articles'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\ArticleController::index
-* @see app/Http/Controllers/ArticleController.php:15
+* @see app/Http/Controllers/ArticleController.php:17
 * @route '/articles'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ArticleController::index
-* @see app/Http/Controllers/ArticleController.php:15
+* @see app/Http/Controllers/ArticleController.php:17
 * @route '/articles'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ArticleController::index
-* @see app/Http/Controllers/ArticleController.php:15
+* @see app/Http/Controllers/ArticleController.php:17
 * @route '/articles'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ArticleController::index
-* @see app/Http/Controllers/ArticleController.php:15
+* @see app/Http/Controllers/ArticleController.php:17
 * @route '/articles'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\ArticleController::index
-* @see app/Http/Controllers/ArticleController.php:15
+* @see app/Http/Controllers/ArticleController.php:17
 * @route '/articles'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ArticleController::index
-* @see app/Http/Controllers/ArticleController.php:15
+* @see app/Http/Controllers/ArticleController.php:17
 * @route '/articles'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\ArticleController::show
-* @see app/Http/Controllers/ArticleController.php:49
+* @see app/Http/Controllers/ArticleController.php:77
 * @route '/articles/{slug}'
 */
 export const show = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\ArticleController::show
-* @see app/Http/Controllers/ArticleController.php:49
+* @see app/Http/Controllers/ArticleController.php:77
 * @route '/articles/{slug}'
 */
 show.url = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -124,7 +124,7 @@ show.url = (args: { slug: string | number } | [slug: string | number ] | string 
 
 /**
 * @see \App\Http\Controllers\ArticleController::show
-* @see app/Http/Controllers/ArticleController.php:49
+* @see app/Http/Controllers/ArticleController.php:77
 * @route '/articles/{slug}'
 */
 show.get = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -134,7 +134,7 @@ show.get = (args: { slug: string | number } | [slug: string | number ] | string 
 
 /**
 * @see \App\Http\Controllers\ArticleController::show
-* @see app/Http/Controllers/ArticleController.php:49
+* @see app/Http/Controllers/ArticleController.php:77
 * @route '/articles/{slug}'
 */
 show.head = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -144,7 +144,7 @@ show.head = (args: { slug: string | number } | [slug: string | number ] | string
 
 /**
 * @see \App\Http\Controllers\ArticleController::show
-* @see app/Http/Controllers/ArticleController.php:49
+* @see app/Http/Controllers/ArticleController.php:77
 * @route '/articles/{slug}'
 */
 const showForm = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -154,7 +154,7 @@ const showForm = (args: { slug: string | number } | [slug: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\ArticleController::show
-* @see app/Http/Controllers/ArticleController.php:49
+* @see app/Http/Controllers/ArticleController.php:77
 * @route '/articles/{slug}'
 */
 showForm.get = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,7 +164,7 @@ showForm.get = (args: { slug: string | number } | [slug: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\ArticleController::show
-* @see app/Http/Controllers/ArticleController.php:49
+* @see app/Http/Controllers/ArticleController.php:77
 * @route '/articles/{slug}'
 */
 showForm.head = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -180,8 +180,244 @@ showForm.head = (args: { slug: string | number } | [slug: string | number ] | st
 show.form = showForm
 
 /**
+* @see \App\Http\Controllers\ArticleController::create
+* @see app/Http/Controllers/ArticleController.php:51
+* @route '/admin/articles/create'
+*/
+export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: create.url(options),
+    method: 'get',
+})
+
+create.definition = {
+    methods: ["get","head"],
+    url: '/admin/articles/create',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ArticleController::create
+* @see app/Http/Controllers/ArticleController.php:51
+* @route '/admin/articles/create'
+*/
+create.url = (options?: RouteQueryOptions) => {
+    return create.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ArticleController::create
+* @see app/Http/Controllers/ArticleController.php:51
+* @route '/admin/articles/create'
+*/
+create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::create
+* @see app/Http/Controllers/ArticleController.php:51
+* @route '/admin/articles/create'
+*/
+create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: create.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::create
+* @see app/Http/Controllers/ArticleController.php:51
+* @route '/admin/articles/create'
+*/
+const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::create
+* @see app/Http/Controllers/ArticleController.php:51
+* @route '/admin/articles/create'
+*/
+createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::create
+* @see app/Http/Controllers/ArticleController.php:51
+* @route '/admin/articles/create'
+*/
+createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+create.form = createForm
+
+/**
+* @see \App\Http\Controllers\ArticleController::edit
+* @see app/Http/Controllers/ArticleController.php:65
+* @route '/admin/articles/{id}/edit'
+*/
+export const edit = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: edit.url(args, options),
+    method: 'get',
+})
+
+edit.definition = {
+    methods: ["get","head"],
+    url: '/admin/articles/{id}/edit',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ArticleController::edit
+* @see app/Http/Controllers/ArticleController.php:65
+* @route '/admin/articles/{id}/edit'
+*/
+edit.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { id: args }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            id: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        id: args.id,
+    }
+
+    return edit.definition.url
+            .replace('{id}', parsedArgs.id.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ArticleController::edit
+* @see app/Http/Controllers/ArticleController.php:65
+* @route '/admin/articles/{id}/edit'
+*/
+edit.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: edit.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::edit
+* @see app/Http/Controllers/ArticleController.php:65
+* @route '/admin/articles/{id}/edit'
+*/
+edit.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: edit.url(args, options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::edit
+* @see app/Http/Controllers/ArticleController.php:65
+* @route '/admin/articles/{id}/edit'
+*/
+const editForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: edit.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::edit
+* @see app/Http/Controllers/ArticleController.php:65
+* @route '/admin/articles/{id}/edit'
+*/
+editForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: edit.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::edit
+* @see app/Http/Controllers/ArticleController.php:65
+* @route '/admin/articles/{id}/edit'
+*/
+editForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: edit.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+edit.form = editForm
+
+/**
+* @see \App\Http\Controllers\ArticleController::uploadImage
+* @see app/Http/Controllers/ArticleController.php:190
+* @route '/admin/articles/upload-image'
+*/
+export const uploadImage = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadImage.url(options),
+    method: 'post',
+})
+
+uploadImage.definition = {
+    methods: ["post"],
+    url: '/admin/articles/upload-image',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\ArticleController::uploadImage
+* @see app/Http/Controllers/ArticleController.php:190
+* @route '/admin/articles/upload-image'
+*/
+uploadImage.url = (options?: RouteQueryOptions) => {
+    return uploadImage.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ArticleController::uploadImage
+* @see app/Http/Controllers/ArticleController.php:190
+* @route '/admin/articles/upload-image'
+*/
+uploadImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadImage.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::uploadImage
+* @see app/Http/Controllers/ArticleController.php:190
+* @route '/admin/articles/upload-image'
+*/
+const uploadImageForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: uploadImage.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\ArticleController::uploadImage
+* @see app/Http/Controllers/ArticleController.php:190
+* @route '/admin/articles/upload-image'
+*/
+uploadImageForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: uploadImage.url(options),
+    method: 'post',
+})
+
+uploadImage.form = uploadImageForm
+
+/**
 * @see \App\Http\Controllers\ArticleController::store
-* @see app/Http/Controllers/ArticleController.php:66
+* @see app/Http/Controllers/ArticleController.php:94
 * @route '/admin/articles'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -196,7 +432,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\ArticleController::store
-* @see app/Http/Controllers/ArticleController.php:66
+* @see app/Http/Controllers/ArticleController.php:94
 * @route '/admin/articles'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -205,7 +441,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ArticleController::store
-* @see app/Http/Controllers/ArticleController.php:66
+* @see app/Http/Controllers/ArticleController.php:94
 * @route '/admin/articles'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -215,7 +451,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\ArticleController::store
-* @see app/Http/Controllers/ArticleController.php:66
+* @see app/Http/Controllers/ArticleController.php:94
 * @route '/admin/articles'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -225,7 +461,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\ArticleController::store
-* @see app/Http/Controllers/ArticleController.php:66
+* @see app/Http/Controllers/ArticleController.php:94
 * @route '/admin/articles'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -237,7 +473,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\ArticleController::update
-* @see app/Http/Controllers/ArticleController.php:101
+* @see app/Http/Controllers/ArticleController.php:129
 * @route '/admin/articles/{id}'
 */
 export const update = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -252,7 +488,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\ArticleController::update
-* @see app/Http/Controllers/ArticleController.php:101
+* @see app/Http/Controllers/ArticleController.php:129
 * @route '/admin/articles/{id}'
 */
 update.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -279,7 +515,7 @@ update.url = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\ArticleController::update
-* @see app/Http/Controllers/ArticleController.php:101
+* @see app/Http/Controllers/ArticleController.php:129
 * @route '/admin/articles/{id}'
 */
 update.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -289,7 +525,7 @@ update.put = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\ArticleController::update
-* @see app/Http/Controllers/ArticleController.php:101
+* @see app/Http/Controllers/ArticleController.php:129
 * @route '/admin/articles/{id}'
 */
 const updateForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -304,7 +540,7 @@ const updateForm = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\ArticleController::update
-* @see app/Http/Controllers/ArticleController.php:101
+* @see app/Http/Controllers/ArticleController.php:129
 * @route '/admin/articles/{id}'
 */
 updateForm.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -321,7 +557,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\ArticleController::destroy
-* @see app/Http/Controllers/ArticleController.php:138
+* @see app/Http/Controllers/ArticleController.php:168
 * @route '/admin/articles/{id}'
 */
 export const destroy = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -336,7 +572,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\ArticleController::destroy
-* @see app/Http/Controllers/ArticleController.php:138
+* @see app/Http/Controllers/ArticleController.php:168
 * @route '/admin/articles/{id}'
 */
 destroy.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -363,7 +599,7 @@ destroy.url = (args: { id: string | number } | [id: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\ArticleController::destroy
-* @see app/Http/Controllers/ArticleController.php:138
+* @see app/Http/Controllers/ArticleController.php:168
 * @route '/admin/articles/{id}'
 */
 destroy.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -373,7 +609,7 @@ destroy.delete = (args: { id: string | number } | [id: string | number ] | strin
 
 /**
 * @see \App\Http\Controllers\ArticleController::destroy
-* @see app/Http/Controllers/ArticleController.php:138
+* @see app/Http/Controllers/ArticleController.php:168
 * @route '/admin/articles/{id}'
 */
 const destroyForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -388,7 +624,7 @@ const destroyForm = (args: { id: string | number } | [id: string | number ] | st
 
 /**
 * @see \App\Http\Controllers\ArticleController::destroy
-* @see app/Http/Controllers/ArticleController.php:138
+* @see app/Http/Controllers/ArticleController.php:168
 * @route '/admin/articles/{id}'
 */
 destroyForm.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -405,7 +641,7 @@ destroy.form = destroyForm
 
 /**
 * @see \App\Http\Controllers\ArticleController::togglePublish
-* @see app/Http/Controllers/ArticleController.php:146
+* @see app/Http/Controllers/ArticleController.php:178
 * @route '/admin/articles/{id}/toggle-publish'
 */
 export const togglePublish = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -420,7 +656,7 @@ togglePublish.definition = {
 
 /**
 * @see \App\Http\Controllers\ArticleController::togglePublish
-* @see app/Http/Controllers/ArticleController.php:146
+* @see app/Http/Controllers/ArticleController.php:178
 * @route '/admin/articles/{id}/toggle-publish'
 */
 togglePublish.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -447,7 +683,7 @@ togglePublish.url = (args: { id: string | number } | [id: string | number ] | st
 
 /**
 * @see \App\Http\Controllers\ArticleController::togglePublish
-* @see app/Http/Controllers/ArticleController.php:146
+* @see app/Http/Controllers/ArticleController.php:178
 * @route '/admin/articles/{id}/toggle-publish'
 */
 togglePublish.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -457,7 +693,7 @@ togglePublish.post = (args: { id: string | number } | [id: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\ArticleController::togglePublish
-* @see app/Http/Controllers/ArticleController.php:146
+* @see app/Http/Controllers/ArticleController.php:178
 * @route '/admin/articles/{id}/toggle-publish'
 */
 const togglePublishForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -467,7 +703,7 @@ const togglePublishForm = (args: { id: string | number } | [id: string | number 
 
 /**
 * @see \App\Http\Controllers\ArticleController::togglePublish
-* @see app/Http/Controllers/ArticleController.php:146
+* @see app/Http/Controllers/ArticleController.php:178
 * @route '/admin/articles/{id}/toggle-publish'
 */
 togglePublishForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -477,6 +713,6 @@ togglePublishForm.post = (args: { id: string | number } | [id: string | number ]
 
 togglePublish.form = togglePublishForm
 
-const ArticleController = { index, show, store, update, destroy, togglePublish }
+const ArticleController = { index, show, create, edit, uploadImage, store, update, destroy, togglePublish }
 
 export default ArticleController

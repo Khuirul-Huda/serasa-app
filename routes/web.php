@@ -58,6 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admin/users/{id}/role', [AdminDashboardController::class, 'updateUserRole'])->name('admin.users.role');
 
         // Admin article routes
+        Route::get('/admin/articles/create', [ArticleController::class, 'create'])->name('admin.articles.create');
+        Route::get('/admin/articles/{id}/edit', [ArticleController::class, 'edit'])->name('admin.articles.edit');
+        Route::post('/admin/articles/upload-image', [ArticleController::class, 'uploadImage'])->name('admin.articles.upload-image');
         Route::post('/admin/articles', [ArticleController::class, 'store'])->name('admin.articles.store');
         Route::put('/admin/articles/{id}', [ArticleController::class, 'update'])->name('admin.articles.update');
         Route::delete('/admin/articles/{id}', [ArticleController::class, 'destroy'])->name('admin.articles.destroy');
