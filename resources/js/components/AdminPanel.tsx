@@ -83,7 +83,7 @@ export default function AdminPanel({
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Inertia Form for app settings
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, post, processing, isDirty, reset } = useForm({
         appName: settings.appName,
         tagline: settings.tagline,
         villageName: settings.villageName,
@@ -496,6 +496,11 @@ export default function AdminPanel({
                     onSubmit={handleConfigSubmit}
                     processing={processing}
                     saveSuccess={saveSuccess}
+                    isDirty={isDirty}
+                    onDiscard={() => {
+                        reset();
+                        toast.info('Perubahan konfigurasi dibatalkan.');
+                    }}
                 />
             )}
 
