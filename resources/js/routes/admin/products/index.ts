@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AdminDashboardController::toggle
-* @see app/Http/Controllers/AdminDashboardController.php:142
+* @see app/Http/Controllers/AdminDashboardController.php:217
 * @route '/admin/products/{id}/toggle'
 */
 export const toggle = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ toggle.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::toggle
-* @see app/Http/Controllers/AdminDashboardController.php:142
+* @see app/Http/Controllers/AdminDashboardController.php:217
 * @route '/admin/products/{id}/toggle'
 */
 toggle.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ toggle.url = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::toggle
-* @see app/Http/Controllers/AdminDashboardController.php:142
+* @see app/Http/Controllers/AdminDashboardController.php:217
 * @route '/admin/products/{id}/toggle'
 */
 toggle.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -53,7 +53,7 @@ toggle.post = (args: { id: string | number } | [id: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::toggle
-* @see app/Http/Controllers/AdminDashboardController.php:142
+* @see app/Http/Controllers/AdminDashboardController.php:217
 * @route '/admin/products/{id}/toggle'
 */
 const toggleForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -63,7 +63,7 @@ const toggleForm = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::toggle
-* @see app/Http/Controllers/AdminDashboardController.php:142
+* @see app/Http/Controllers/AdminDashboardController.php:217
 * @route '/admin/products/{id}/toggle'
 */
 toggleForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -74,8 +74,148 @@ toggleForm.post = (args: { id: string | number } | [id: string | number ] | stri
 toggle.form = toggleForm
 
 /**
+* @see \App\Http\Controllers\AdminDashboardController::store
+* @see app/Http/Controllers/AdminDashboardController.php:146
+* @route '/admin/products'
+*/
+export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
+})
+
+store.definition = {
+    methods: ["post"],
+    url: '/admin/products',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::store
+* @see app/Http/Controllers/AdminDashboardController.php:146
+* @route '/admin/products'
+*/
+store.url = (options?: RouteQueryOptions) => {
+    return store.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::store
+* @see app/Http/Controllers/AdminDashboardController.php:146
+* @route '/admin/products'
+*/
+store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::store
+* @see app/Http/Controllers/AdminDashboardController.php:146
+* @route '/admin/products'
+*/
+const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::store
+* @see app/Http/Controllers/AdminDashboardController.php:146
+* @route '/admin/products'
+*/
+storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+store.form = storeForm
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::update
+* @see app/Http/Controllers/AdminDashboardController.php:183
+* @route '/admin/products/{id}'
+*/
+export const update = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update.url(args, options),
+    method: 'put',
+})
+
+update.definition = {
+    methods: ["put"],
+    url: '/admin/products/{id}',
+} satisfies RouteDefinition<["put"]>
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::update
+* @see app/Http/Controllers/AdminDashboardController.php:183
+* @route '/admin/products/{id}'
+*/
+update.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { id: args }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            id: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        id: args.id,
+    }
+
+    return update.definition.url
+            .replace('{id}', parsedArgs.id.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::update
+* @see app/Http/Controllers/AdminDashboardController.php:183
+* @route '/admin/products/{id}'
+*/
+update.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update.url(args, options),
+    method: 'put',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::update
+* @see app/Http/Controllers/AdminDashboardController.php:183
+* @route '/admin/products/{id}'
+*/
+const updateForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDashboardController::update
+* @see app/Http/Controllers/AdminDashboardController.php:183
+* @route '/admin/products/{id}'
+*/
+updateForm.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+update.form = updateForm
+
+/**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:232
 * @route '/admin/products/{id}'
 */
 export const deleteMethod = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -90,7 +230,7 @@ deleteMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:232
 * @route '/admin/products/{id}'
 */
 deleteMethod.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -117,7 +257,7 @@ deleteMethod.url = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:232
 * @route '/admin/products/{id}'
 */
 deleteMethod.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -127,7 +267,7 @@ deleteMethod.delete = (args: { id: string | number } | [id: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:232
 * @route '/admin/products/{id}'
 */
 const deleteMethodForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -142,7 +282,7 @@ const deleteMethodForm = (args: { id: string | number } | [id: string | number ]
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:232
 * @route '/admin/products/{id}'
 */
 deleteMethodForm.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -159,6 +299,8 @@ deleteMethod.form = deleteMethodForm
 
 const products = {
     toggle: Object.assign(toggle, toggle),
+    store: Object.assign(store, store),
+    update: Object.assign(update, update),
     delete: Object.assign(deleteMethod, deleteMethod),
 }
 

@@ -38,7 +38,8 @@ import {
     Calendar,
     Clock,
 } from 'lucide-react';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { toast } from 'sonner';
 import AppLayout from '@/layouts/app-layout';
 import type { AppSettings, ArticleItem } from '@/types';
@@ -64,8 +65,13 @@ export default function ArticleEditor({
     const [isUploadingInline, setIsUploadingInline] = useState(false);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [imageUrlInput, setImageUrlInput] = useState('');
+    const [mounted, setMounted] = useState(false);
     const coverFileInputRef = useRef<HTMLInputElement>(null);
     const inlineFileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const breadcrumbs = [
         { title: 'Admin Desa', href: '/admin/dashboard' },
@@ -262,12 +268,6 @@ export default function ArticleEditor({
 
         const finalCategory =
             data.category === 'custom' ? customCategory || 'Berita' : data.category;
-
-        const payload = {
-            ...data,
-            content: htmlContent,
-            category: finalCategory,
-        };
 
         if (isEditing && article) {
             put(route('admin.articles.update', article.id), {
@@ -813,9 +813,9 @@ export default function ArticleEditor({
                 </div>
             </div>
 
-            {/* MODAL IMAGE UPLOAD DIALOG FOR TIPTAP */}
-            {isImageModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-fade-in">
+            {/* MODAL IMAGE UPLOAD DIALOG FOR TIPTAP PORTAL */}
+            {isImageModalOpen && mounted && createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-navy-950/70 p-4 backdrop-blur-xs animate-fade-in font-sans text-navy-900 dark:text-navy-100">
                     <div className="relative w-full max-w-md rounded-3xl border border-navy-200/80 bg-white p-6 shadow-2xl dark:border-navy-800 dark:bg-navy-900">
                         <div className="flex items-center justify-between border-b border-navy-100 pb-3 dark:border-navy-800">
                             <h3 className="flex items-center gap-2 text-sm font-black text-navy-900 uppercase dark:text-white">
@@ -892,7 +892,8 @@ export default function ArticleEditor({
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </AppLayout>
     );

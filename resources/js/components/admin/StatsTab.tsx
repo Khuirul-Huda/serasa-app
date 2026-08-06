@@ -64,68 +64,44 @@ export default function StatsTab({
             className="animate-fade-in space-y-6 font-sans text-navy-900"
             id="admin-stats-subtab"
         >
-            {/* 4 Interactive Metric Cards */}
+            {/* 4 Metric Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-                <div
-                    onClick={() =>
-                        onNavigateToShops && onNavigateToShops('all')
-                    }
-                    className="group cursor-pointer transition-all hover:scale-[1.02]"
-                >
+                <div>
                     <MetricCard
                         label="Total UMKM Terdaftar"
                         value={totalShops}
-                        subtitle="Klik untuk kelola semua toko"
                         icon={
-                            <Store className="h-5 w-5 transition-transform group-hover:scale-110" />
+                            <Store className="h-5 w-5 text-pastel-teal" />
                         }
                     />
                 </div>
 
-                <div
-                    onClick={() =>
-                        onNavigateToShops && onNavigateToShops('verified')
-                    }
-                    className="group cursor-pointer transition-all hover:scale-[1.02]"
-                >
+                <div>
                     <MetricCard
                         label="Toko Terverifikasi"
                         value={verifiedShops}
-                        subtitle="Klik untuk filter terverifikasi"
                         icon={
-                            <UserCheck className="h-5 w-5 text-pastel-teal transition-transform group-hover:scale-110" />
+                            <UserCheck className="h-5 w-5 text-pastel-teal" />
                         }
                     />
                 </div>
 
-                <div
-                    onClick={() =>
-                        onNavigateToShops && onNavigateToShops('pending')
-                    }
-                    className="group cursor-pointer transition-all hover:scale-[1.02]"
-                >
+                <div>
                     <MetricCard
                         label="Menunggu Review"
                         value={pendingShops}
-                        subtitle="Klik untuk tindakan verifikasi"
                         icon={
-                            <AlertCircle className="h-5 w-5 text-pastel-peach transition-transform group-hover:scale-110" />
+                            <AlertCircle className="h-5 w-5 text-pastel-peach" />
                         }
                     />
                 </div>
 
-                <div
-                    onClick={() =>
-                        onNavigateToProducts && onNavigateToProducts()
-                    }
-                    className="group cursor-pointer transition-all hover:scale-[1.02]"
-                >
+                <div>
                     <MetricCard
                         label="Total Produk Etalase"
                         value={totalProducts}
-                        subtitle="Klik untuk moderasi produk"
                         icon={
-                            <Package className="h-5 w-5 text-pastel-teal transition-transform group-hover:scale-110" />
+                            <Package className="h-5 w-5 text-pastel-teal" />
                         }
                     />
                 </div>
@@ -235,8 +211,7 @@ export default function StatsTab({
                     </span>
                     <p className="leading-relaxed font-normal text-navy-600">
                         Semua data UMKM dan produk yang terdaftar di etalase ini
-                        disimpan secara otomatis di database. Klik pada kartu
-                        statistik di atas atau gunakan tab navigasi untuk
+                        disimpan secara otomatis di database. Gunakan menu navigasi di bilah sisi (sidebar) untuk
                         langsung melakukan tindakan verifikasi dan moderasi.
                     </p>
                 </div>

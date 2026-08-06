@@ -51,11 +51,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admin/shops/bulk-import', [AdminDashboardController::class, 'bulkImport'])->name('admin.shops.bulk-import');
         Route::post('/admin/settings', [AdminDashboardController::class, 'saveSettings'])->name('admin.settings.save');
         Route::post('/admin/products/{id}/toggle', [AdminDashboardController::class, 'toggleProduct'])->name('admin.products.toggle');
+        Route::post('/admin/products', [AdminDashboardController::class, 'createProduct'])->name('admin.products.store');
+        Route::put('/admin/products/{id}', [AdminDashboardController::class, 'updateProduct'])->name('admin.products.update');
         Route::delete('/admin/products/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.products.delete');
         Route::delete('/admin/reviews/{id}', [AdminDashboardController::class, 'deleteReview'])->name('admin.reviews.delete');
         Route::post('/admin/categories', [AdminDashboardController::class, 'addCategory'])->name('admin.categories.store');
         Route::delete('/admin/categories/{id}', [AdminDashboardController::class, 'deleteCategory'])->name('admin.categories.delete');
         Route::post('/admin/users/{id}/role', [AdminDashboardController::class, 'updateUserRole'])->name('admin.users.role');
+        Route::post('/admin/users', [AdminDashboardController::class, 'createUser'])->name('admin.users.store');
+        Route::post('/admin/shops', [AdminDashboardController::class, 'createShop'])->name('admin.shops.store');
+        Route::put('/admin/shops/{id}', [AdminDashboardController::class, 'updateShop'])->name('admin.shops.update');
 
         // Admin article routes
         Route::get('/admin/articles/create', [ArticleController::class, 'create'])->name('admin.articles.create');

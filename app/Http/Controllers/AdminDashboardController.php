@@ -20,6 +20,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -63,7 +64,8 @@ class AdminDashboardController extends Controller
                 ];
             })->toArray();
 
-        $users = User::select(['id', 'name', 'email', 'role', 'created_at'])
+        $users = User::with('shop')
+            ->select(['id', 'name', 'email', 'role', 'created_at'])
             ->latest()
             ->take(200)
             ->get()
@@ -72,6 +74,8 @@ class AdminDashboardController extends Controller
                 'name' => $u->name,
                 'email' => $u->email,
                 'role' => $u->role,
+                'shopId' => $u->shop?->id,
+                'shopName' => $u->shop?->name,
                 'createdAt' => $u->created_at ? $u->created_at->format('d M Y') : '-',
             ])->toArray();
 
@@ -134,6 +138,77 @@ class AdminDashboardController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    /**
+     * Create a new product.
+     */
+    public function createProduct(Request $request): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $validated = $request->validate([
+            'shop_id' => 'required|exists:shops,id',
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'unit' => 'required|string|max:50',
+            'image' => 'nullable|string|max:1000',
+            'is_available' => 'boolean',
+        ]);
+
+        $id = 'prod-'.Str::slug($validated['name']).'-'.Str::random(4);
+
+        Product::create([
+            'id' => $id,
+            'shop_id' => $validated['shop_id'],
+            'category_id' => $validated['category_id'],
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? '',
+            'price' => $validated['price'],
+            'unit' => $validated['unit'],
+            'image' => $validated['image'] ?? 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+            'rating' => 5.0,
+            'reviews_count' => 0,
+            'is_available' => $validated['is_available'] ?? true,
+        ]);
+
+        return redirect()->back()->with('success', 'Produk UMKM berhasil dibuat!');
+    }
+
+    /**
+     * Update an existing product.
+     */
+    public function updateProduct(Request $request, string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $product = Product::findOrFail($id);
+
+        $validated = $request->validate([
+            'shop_id' => 'required|exists:shops,id',
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'unit' => 'required|string|max:50',
+            'image' => 'nullable|string|max:1000',
+            'is_available' => 'boolean',
+        ]);
+
+        $product->update([
+            'shop_id' => $validated['shop_id'],
+            'category_id' => $validated['category_id'],
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? $product->description,
+            'price' => $validated['price'],
+            'unit' => $validated['unit'],
+            'image' => $validated['image'] ?? $product->image,
+            'is_available' => $validated['is_available'] ?? $product->is_available,
+        ]);
+
+        return redirect()->back()->with('success', 'Data produk berhasil diperbarui!');
     }
 
     /**
@@ -241,6 +316,145 @@ class AdminDashboardController extends Controller
         Cache::forget('app:categories');
 
         return redirect()->back();
+    }
+
+    /**
+     * Create a new user account.
+     */
+    public function createUser(Request $request): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,owner,user',
+        ]);
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
+        ]);
+
+        return redirect()->back()->with('success', 'Akun pengguna berhasil dibuat!');
+    }
+
+    /**
+     * Create a new UMKM shop.
+     */
+    public function createShop(Request $request): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'user_id' => 'nullable|exists:users,id',
+            'category' => 'required|string|max:100',
+            'dusun' => 'nullable|string|max:100',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'description' => 'nullable|string',
+            'image' => 'nullable|string|max:1000',
+            'logo' => 'nullable|string|max:1000',
+            'nib' => 'boolean',
+            'halal' => 'boolean',
+            'pirt' => 'boolean',
+            'is_verified' => 'boolean',
+            'lat' => 'nullable|numeric',
+            'lng' => 'nullable|numeric',
+        ]);
+
+        if (! empty($validated['user_id'])) {
+            $user = User::find($validated['user_id']);
+            if ($user && $user->role === 'user') {
+                $user->update(['role' => 'owner']);
+            }
+        }
+
+        $id = 'shop-'.Str::slug($validated['name']).'-'.Str::random(4);
+
+        Shop::create([
+            'id' => $id,
+            'user_id' => $validated['user_id'] ?? null,
+            'name' => $validated['name'],
+            'owner_name' => $validated['owner_name'],
+            'category' => $validated['category'],
+            'dusun' => $validated['dusun'] ?? 'Dusun Samirono',
+            'address' => $validated['address'] ?? 'Desa Samirono',
+            'phone' => $validated['phone'] ?? '6285725900000',
+            'description' => $validated['description'] ?? '',
+            'image' => $validated['image'] ?? 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+            'logo' => $validated['logo'] ?? 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80',
+            'nib' => $validated['nib'] ?? false,
+            'halal' => $validated['halal'] ?? false,
+            'pirt' => $validated['pirt'] ?? false,
+            'is_verified' => $validated['is_verified'] ?? true,
+            'lat' => $validated['lat'] ?? -7.371239,
+            'lng' => $validated['lng'] ?? 110.456123,
+        ]);
+
+        return redirect()->back()->with('success', 'Toko UMKM berhasil dibuat!');
+    }
+
+    /**
+     * Update an existing UMKM shop.
+     */
+    public function updateShop(Request $request, string $id): RedirectResponse
+    {
+        $this->authorizeAdmin();
+
+        $shop = Shop::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'user_id' => 'nullable|exists:users,id',
+            'category' => 'required|string|max:100',
+            'dusun' => 'nullable|string|max:100',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'description' => 'nullable|string',
+            'image' => 'nullable|string|max:1000',
+            'logo' => 'nullable|string|max:1000',
+            'nib' => 'boolean',
+            'halal' => 'boolean',
+            'pirt' => 'boolean',
+            'is_verified' => 'boolean',
+            'lat' => 'nullable|numeric',
+            'lng' => 'nullable|numeric',
+        ]);
+
+        if (! empty($validated['user_id'])) {
+            $user = User::find($validated['user_id']);
+            if ($user && $user->role === 'user') {
+                $user->update(['role' => 'owner']);
+            }
+        }
+
+        $shop->update([
+            'name' => $validated['name'],
+            'owner_name' => $validated['owner_name'],
+            'user_id' => $validated['user_id'] ?? $shop->user_id,
+            'category' => $validated['category'],
+            'dusun' => $validated['dusun'] ?? $shop->dusun,
+            'address' => $validated['address'] ?? $shop->address,
+            'phone' => $validated['phone'] ?? $shop->phone,
+            'description' => $validated['description'] ?? $shop->description,
+            'image' => $validated['image'] ?? $shop->image,
+            'logo' => $validated['logo'] ?? $shop->logo,
+            'nib' => $validated['nib'] ?? $shop->nib,
+            'halal' => $validated['halal'] ?? $shop->halal,
+            'pirt' => $validated['pirt'] ?? $shop->pirt,
+            'is_verified' => $validated['is_verified'] ?? $shop->is_verified,
+            'lat' => $validated['lat'] ?? $shop->lat,
+            'lng' => $validated['lng'] ?? $shop->lng,
+        ]);
+
+        return redirect()->back()->with('success', 'Data toko UMKM berhasil diperbarui!');
     }
 
     /**

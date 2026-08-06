@@ -461,6 +461,7 @@ export default function AdminPanel({
             {activeSubTab === 'shops' && (
                 <ShopsTab
                     shops={shops}
+                    users={users}
                     searchQuery={searchShopQuery}
                     setSearchQuery={setSearchShopQuery}
                     statusFilter={statusFilter}
@@ -483,7 +484,7 @@ export default function AdminPanel({
                 <CategoriesTab categories={categories} />
             )}
 
-            {activeSubTab === 'users' && <UsersTab users={users} />}
+            {activeSubTab === 'users' && <UsersTab users={users} shops={shops} />}
 
             {activeSubTab === 'articles' && <ArticlesTab articles={articles} />}
 
