@@ -10,8 +10,7 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->string('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('excerpt')->nullable();
