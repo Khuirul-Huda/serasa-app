@@ -31,6 +31,6 @@ export default defineConfig({
             }),
     ].filter(Boolean),
     ssr: {
-        noExternal: ['@inertiajs/react', '@inertiajs/core'],
+        noExternal: true,
     },
 });
