@@ -6,7 +6,7 @@
 import { Head } from '@inertiajs/react';
 import React from 'react';
 import OwnerPanel from '@/components/OwnerPanel';
-import MarketplaceLayout from '@/layouts/marketplace-layout';
+import AppLayout from '@/layouts/app-layout';
 import type { AppSettings, Category, Product, Shop } from '@/types';
 
 interface MerchantDashboardProps {
@@ -22,24 +22,23 @@ export default function MerchantDashboard({
     categories,
     myShop,
     myProducts,
-    products,
 }: MerchantDashboardProps) {
+    const breadcrumbs = [
+        { title: 'Pasar Etalase', href: '/' },
+        { title: 'Kelola Toko Saya', href: '/merchant/dashboard' },
+    ];
+
     return (
-        <MarketplaceLayout
-            settings={settings}
-            categories={categories}
-            products={products}
-            activeTab="merchant"
-        >
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Kelola Toko Saya - ${settings.appName}`} />
 
-            <div className="mx-auto max-w-7xl py-4">
+            <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 font-sans">
                 <OwnerPanel
                     myShop={myShop}
                     myProducts={myProducts}
                     categories={categories}
                 />
             </div>
-        </MarketplaceLayout>
+        </AppLayout>
     );
 }

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.5
  */
 
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import React from 'react';
 import AdminPanel from '@/components/AdminPanel';
-import MarketplaceLayout from '@/layouts/marketplace-layout';
+import AppLayout from '@/layouts/app-layout';
 import type { AppSettings, ArticleItem, Category, Product, Shop } from '@/types';
 
 export interface AdminUser {
@@ -46,16 +46,42 @@ export default function AdminDashboard({
     users = [],
     articles = [],
 }: AdminDashboardProps) {
-    return (
-        <MarketplaceLayout
-            settings={settings}
-            categories={categories}
-            products={products}
-            activeTab="admin"
-        >
-            <Head title={`Panel Admin Desa - ${settings.appName}`} />
+    const page = usePage();
+    const queryTab = new URLSearchParams(
+        page.url.includes('?') ? page.url.split('?')[1] : '',
+    ).get('tab') || 'stats';
 
-            <div className="mx-auto max-w-7xl py-4">
+    const getTabTitle = (tab: string) => {
+        switch (tab) {
+            case 'shops':
+                return 'Kelola UMKM';
+            case 'products':
+                return 'Moderasi Produk';
+            case 'reviews':
+                return 'Ulasan';
+            case 'categories':
+                return 'Sektor';
+            case 'users':
+                return 'Akun';
+            case 'articles':
+                return 'Kabar Desa & Artikel';
+            case 'config':
+                return 'Konfigurasi';
+            default:
+                return 'Statistik';
+        }
+    };
+
+    const breadcrumbs = [
+        { title: 'Admin Desa', href: '/admin/dashboard' },
+        { title: getTabTitle(queryTab), href: `/admin/dashboard?tab=${queryTab}` },
+    ];
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title={`${getTabTitle(queryTab)} - Admin Desa ${settings.appName}`} />
+
+            <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 font-sans">
                 <AdminPanel
                     settings={settings}
                     shops={shops}
@@ -66,7 +92,6 @@ export default function AdminDashboard({
                     articles={articles}
                 />
             </div>
-        </MarketplaceLayout>
+        </AppLayout>
     );
 }
-

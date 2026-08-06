@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useForm, router } from '@inertiajs/react';
+import { useForm, router, usePage } from '@inertiajs/react';
 import {
     ShieldCheck,
     Activity,
@@ -54,7 +54,10 @@ export default function AdminPanel({
     users = [],
     articles = [],
 }: AdminPanelProps) {
-    const [activeSubTab, setActiveSubTab] = useState<
+    const page = usePage();
+    const queryTab = new URLSearchParams(
+        page.url.includes('?') ? page.url.split('?')[1] : '',
+    ).get('tab') as
         | 'stats'
         | 'shops'
         | 'products'
@@ -63,8 +66,9 @@ export default function AdminPanel({
         | 'users'
         | 'articles'
         | 'config'
-    >('stats');
+        | null;
 
+    const activeSubTab = queryTab || 'stats';
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [searchShopQuery, setSearchShopQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<
@@ -341,203 +345,101 @@ export default function AdminPanel({
             className="mx-auto max-w-7xl animate-fade-in space-y-6 py-2 font-sans text-navy-900"
             id="admin-workspace"
         >
-            {/* Admin Banner & Summary Metric Grid */}
-            <div className="shadow-3xs space-y-6 rounded-3xl border border-navy-200/60 bg-white p-6">
-                <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-                    <div className="flex items-center gap-4">
-                        <div className="shadow-3xs flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-pastel-peach/30 bg-pastel-peach-light text-pastel-peach">
-                            <ShieldCheck className="h-8 w-8" />
+            {/* Admin Banner & Summary Metric Grid (Only shown on Statistik / Overview tab) */}
+            {activeSubTab === 'stats' && (
+                <div className="shadow-3xs space-y-6 rounded-3xl border border-navy-200/60 bg-white p-6">
+                    <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+                        <div className="flex items-center gap-4">
+                            <div className="shadow-3xs flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-pastel-peach/30 bg-pastel-peach-light text-pastel-peach">
+                                <ShieldCheck className="h-8 w-8" />
+                            </div>
+
+                            <div className="space-y-1">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <h1 className="text-xl leading-none font-black tracking-tight text-navy-900 uppercase sm:text-2xl">
+                                        Panel Moderasi Admin Desa
+                                    </h1>
+                                    <span className="rounded-lg border border-pastel-teal/20 bg-pastel-teal-light px-3 py-1 text-xs font-black tracking-wider text-pastel-teal uppercase">
+                                        Super Admin
+                                    </span>
+                                </div>
+                                <p className="text-xs font-normal text-navy-500 sm:text-sm">
+                                    Pusat kendali verifikasi UMKM, moderasi produk &
+                                    ulasan, serta manajemen pengguna{' '}
+                                    {settings.appName}.
+                                </p>
+                            </div>
                         </div>
 
-                        <div className="space-y-1">
-                            <div className="flex flex-wrap items-center gap-2">
-                                <h1 className="text-xl leading-none font-black tracking-tight text-navy-900 uppercase sm:text-2xl">
-                                    Panel Moderasi Admin Desa
-                                </h1>
-                                <span className="rounded-lg border border-pastel-teal/20 bg-pastel-teal-light px-3 py-1 text-xs font-black tracking-wider text-pastel-teal uppercase">
-                                    Super Admin
+                        <button
+                            onClick={() => setIsImportModalOpen(true)}
+                            className="shadow-3xs flex shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-pastel-teal px-4 py-2.5 text-xs font-extrabold tracking-wider text-white uppercase transition-all hover:bg-pastel-teal/90"
+                        >
+                            <FileSpreadsheet className="h-4 w-4" />
+                            <span>Impor Data Excel UMKM</span>
+                        </button>
+                    </div>
+
+                    {/* Admin Quick Metric Cards */}
+                    <div className="grid grid-cols-2 gap-4 border-t border-navy-100 pt-2 md:grid-cols-4">
+                        <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
+                            <div>
+                                <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
+                                    Total UMKM Warga
+                                </span>
+                                <span className="mt-0.5 block text-lg font-black text-navy-900 sm:text-xl">
+                                    {totalShops} Toko
                                 </span>
                             </div>
-                            <p className="text-xs font-normal text-navy-500 sm:text-sm">
-                                Pusat kendali verifikasi UMKM, moderasi produk &
-                                ulasan, serta manajemen pengguna{' '}
-                                {settings.appName}.
-                            </p>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-teal/20 bg-pastel-teal-light text-pastel-teal">
+                                <Store className="h-5 w-5" />
+                            </div>
                         </div>
-                    </div>
 
-                    <button
-                        onClick={() => setIsImportModalOpen(true)}
-                        className="shadow-3xs flex shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-pastel-teal px-4 py-2.5 text-xs font-extrabold tracking-wider text-white uppercase transition-all hover:bg-pastel-teal/90"
-                    >
-                        <FileSpreadsheet className="h-4 w-4" />
-                        <span>Impor Data Excel UMKM</span>
-                    </button>
-                </div>
+                        <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
+                            <div>
+                                <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
+                                    Toko Terverifikasi
+                                </span>
+                                <span className="mt-0.5 block text-lg font-black text-pastel-teal sm:text-xl">
+                                    {verifiedShops} Toko
+                                </span>
+                            </div>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-teal/20 bg-pastel-teal-light text-pastel-teal">
+                                <CheckCircle2 className="h-5 w-5" />
+                            </div>
+                        </div>
 
-                {/* Admin Quick Metric Cards */}
-                <div className="grid grid-cols-2 gap-4 border-t border-navy-100 pt-2 md:grid-cols-4">
-                    <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
-                        <div>
-                            <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
-                                Total UMKM Warga
-                            </span>
-                            <span className="mt-0.5 block text-lg font-black text-navy-900 sm:text-xl">
-                                {totalShops} Toko
-                            </span>
+                        <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
+                            <div>
+                                <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
+                                    Menunggu Review
+                                </span>
+                                <span className="mt-0.5 block text-lg font-black text-pastel-peach sm:text-xl">
+                                    {pendingShops} Toko
+                                </span>
+                            </div>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-peach/30 bg-pastel-peach-light text-pastel-peach">
+                                <AlertCircle className="h-5 w-5" />
+                            </div>
                         </div>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-teal/20 bg-pastel-teal-light text-pastel-teal">
-                            <Store className="h-5 w-5" />
-                        </div>
-                    </div>
 
-                    <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
-                        <div>
-                            <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
-                                Toko Terverifikasi
-                            </span>
-                            <span className="mt-0.5 block text-lg font-black text-pastel-teal sm:text-xl">
-                                {verifiedShops} Toko
-                            </span>
-                        </div>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-teal/20 bg-pastel-teal-light text-pastel-teal">
-                            <CheckCircle2 className="h-5 w-5" />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
-                        <div>
-                            <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
-                                Menunggu Review
-                            </span>
-                            <span className="mt-0.5 block text-lg font-black text-pastel-peach sm:text-xl">
-                                {pendingShops} Toko
-                            </span>
-                        </div>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-peach/30 bg-pastel-peach-light text-pastel-peach">
-                            <AlertCircle className="h-5 w-5" />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
-                        <div>
-                            <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
-                                Total Produk
-                            </span>
-                            <span className="mt-0.5 block text-lg font-black text-navy-900 sm:text-xl">
-                                {products.length} Produk
-                            </span>
-                        </div>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-lavender/30 bg-pastel-lavender-light text-pastel-lavender">
-                            <ShoppingBag className="h-5 w-5" />
+                        <div className="flex items-center justify-between rounded-2xl border border-navy-200/50 bg-navy-50/60 p-4">
+                            <div>
+                                <span className="block text-xs font-extrabold tracking-wider text-navy-400 uppercase sm:text-sm">
+                                    Total Produk
+                                </span>
+                                <span className="mt-0.5 block text-lg font-black text-navy-900 sm:text-xl">
+                                    {products.length} Produk
+                                </span>
+                            </div>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-pastel-lavender/30 bg-pastel-lavender-light text-pastel-lavender">
+                                <ShoppingBag className="h-5 w-5" />
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                {/* Underlined Tab Switcher Bar */}
-                <div className="flex shrink-0 space-x-4 overflow-x-auto border-b border-navy-200 pt-2 sm:space-x-6">
-                    <button
-                        onClick={() => setActiveSubTab('stats')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'stats'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <Activity className="h-4 w-4" />
-                        <span>Statistik</span>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveSubTab('shops')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'shops'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <Store className="h-4 w-4" />
-                        <span>Kelola UMKM ({totalShops})</span>
-                        {pendingShops > 0 && (
-                            <span className="ml-0.5 rounded-full bg-pastel-peach px-2 py-0.5 text-xs font-black text-navy-900">
-                                {pendingShops}
-                            </span>
-                        )}
-                    </button>
-
-                    <button
-                        onClick={() => setActiveSubTab('products')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'products'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <Package className="h-4 w-4" />
-                        <span>Moderasi Produk ({products.length})</span>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveSubTab('reviews')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'reviews'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <MessageSquare className="h-4 w-4" />
-                        <span>Ulasan ({reviews.length})</span>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveSubTab('categories')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'categories'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <Layers className="h-4 w-4" />
-                        <span>Sektor ({categories.length})</span>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveSubTab('users')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'users'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <Users className="h-4 w-4" />
-                        <span>Akun ({users.length})</span>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveSubTab('articles')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'articles'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <Newspaper className="h-4 w-4" />
-                        <span>Kabar Desa & Artikel ({articles.length})</span>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveSubTab('config')}
-                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
-                            activeSubTab === 'config'
-                                ? 'border-pastel-teal text-pastel-teal'
-                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
-                        }`}
-                    >
-                        <Settings className="h-4 w-4" />
-                        <span>Konfigurasi</span>
-                    </button>
-                </div>
-            </div>
+            )}
 
             {/* Tab Panels */}
             {activeSubTab === 'stats' && (
