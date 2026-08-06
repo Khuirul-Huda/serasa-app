@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:173
 * @route '/admin/reviews/{id}'
 */
 export const deleteMethod = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -16,7 +16,7 @@ deleteMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:173
 * @route '/admin/reviews/{id}'
 */
 deleteMethod.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ deleteMethod.url = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:173
 * @route '/admin/reviews/{id}'
 */
 deleteMethod.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -53,7 +53,7 @@ deleteMethod.delete = (args: { id: string | number } | [id: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:173
 * @route '/admin/reviews/{id}'
 */
 const deleteMethodForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -68,7 +68,7 @@ const deleteMethodForm = (args: { id: string | number } | [id: string | number ]
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:157
+* @see app/Http/Controllers/AdminDashboardController.php:173
 * @route '/admin/reviews/{id}'
 */
 deleteMethodForm.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

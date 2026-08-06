@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AdminDashboardController::role
-* @see app/Http/Controllers/AdminDashboardController.php:233
+* @see app/Http/Controllers/AdminDashboardController.php:249
 * @route '/admin/users/{id}/role'
 */
 export const role = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ role.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::role
-* @see app/Http/Controllers/AdminDashboardController.php:233
+* @see app/Http/Controllers/AdminDashboardController.php:249
 * @route '/admin/users/{id}/role'
 */
 role.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ role.url = (args: { id: string | number } | [id: string | number ] | string | nu
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::role
-* @see app/Http/Controllers/AdminDashboardController.php:233
+* @see app/Http/Controllers/AdminDashboardController.php:249
 * @route '/admin/users/{id}/role'
 */
 role.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -53,7 +53,7 @@ role.post = (args: { id: string | number } | [id: string | number ] | string | n
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::role
-* @see app/Http/Controllers/AdminDashboardController.php:233
+* @see app/Http/Controllers/AdminDashboardController.php:249
 * @route '/admin/users/{id}/role'
 */
 const roleForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -63,7 +63,7 @@ const roleForm = (args: { id: string | number } | [id: string | number ] | strin
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::role
-* @see app/Http/Controllers/AdminDashboardController.php:233
+* @see app/Http/Controllers/AdminDashboardController.php:249
 * @route '/admin/users/{id}/role'
 */
 roleForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -17,12 +17,14 @@ import {
     MessageSquare,
     Layers,
     Users,
+    Newspaper,
 } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import type { AdminReview, AdminUser } from '@/pages/admin-dashboard';
-import type { AppSettings, Shop, Product, Category } from '@/types';
+import type { AppSettings, Shop, Product, Category, ArticleItem } from '@/types';
+import ArticlesTab from './admin/ArticlesTab';
 import CategoriesTab from './admin/CategoriesTab';
 import ConfigTab from './admin/ConfigTab';
 import type { ParsedImportRow } from './admin/ImportModal';
@@ -40,6 +42,7 @@ interface AdminPanelProps {
     categories: Category[];
     reviews?: AdminReview[];
     users?: AdminUser[];
+    articles?: ArticleItem[];
 }
 
 export default function AdminPanel({
@@ -49,6 +52,7 @@ export default function AdminPanel({
     categories,
     reviews = [],
     users = [],
+    articles = [],
 }: AdminPanelProps) {
     const [activeSubTab, setActiveSubTab] = useState<
         | 'stats'
@@ -57,6 +61,7 @@ export default function AdminPanel({
         | 'reviews'
         | 'categories'
         | 'users'
+        | 'articles'
         | 'config'
     >('stats');
 
@@ -509,6 +514,18 @@ export default function AdminPanel({
                     </button>
 
                     <button
+                        onClick={() => setActiveSubTab('articles')}
+                        className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
+                            activeSubTab === 'articles'
+                                ? 'border-pastel-teal text-pastel-teal'
+                                : 'border-transparent text-navy-400 hover:border-navy-300 hover:text-navy-700'
+                        }`}
+                    >
+                        <Newspaper className="h-4 w-4" />
+                        <span>Kabar Desa & Artikel ({articles.length})</span>
+                    </button>
+
+                    <button
                         onClick={() => setActiveSubTab('config')}
                         className={`flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-1 pb-3 text-xs font-black tracking-wider uppercase transition-all sm:text-sm ${
                             activeSubTab === 'config'
@@ -565,6 +582,8 @@ export default function AdminPanel({
             )}
 
             {activeSubTab === 'users' && <UsersTab users={users} />}
+
+            {activeSubTab === 'articles' && <ArticlesTab articles={articles} />}
 
             {activeSubTab === 'config' && (
                 <ConfigTab

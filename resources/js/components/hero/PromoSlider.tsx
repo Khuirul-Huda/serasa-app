@@ -14,7 +14,6 @@ interface PromoSliderProps {
 
 export default function PromoSlider({ slides, onSelectQuery }: PromoSliderProps) {
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
     const touchStartX = useRef(0);
     const touchEndX = useRef(0);
 
@@ -27,13 +26,13 @@ export default function PromoSlider({ slides, onSelectQuery }: PromoSliderProps)
     }, [slides.length]);
 
     useEffect(() => {
-        if (slides.length <= 1 || isPaused) return;
+        if (slides.length <= 1) return;
         const slideInterval = setInterval(() => {
             handleNextSlide();
         }, 5500);
 
         return () => clearInterval(slideInterval);
-    }, [slides.length, isPaused, handleNextSlide]);
+    }, [slides.length, handleNextSlide]);
 
     if (!slides || slides.length === 0) {
         return null;
@@ -86,7 +85,7 @@ export default function PromoSlider({ slides, onSelectQuery }: PromoSliderProps)
                         referrerPolicy="no-referrer"
                     />
 
-                    <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-tr from-navy-900 via-navy-900/75 to-transparent p-5 text-white sm:p-8">
+                    <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-tr from-navy-900 via-navy-900/75 to-transparent px-12 py-4 sm:px-16 sm:py-6 text-white">
                         <div className="max-w-lg space-y-1.5 sm:space-y-2">
                             {slide.badge && (
                                 <span className="inline-block rounded-md bg-pastel-peach px-2.5 py-0.5 text-[10px] font-black tracking-wider text-navy-900 uppercase sm:px-3 sm:py-1 sm:text-xs">
@@ -141,7 +140,7 @@ export default function PromoSlider({ slides, onSelectQuery }: PromoSliderProps)
                         <ChevronRight className="h-5 w-5" />
                     </button>
 
-                    <div className="absolute bottom-3 left-5 z-20 flex items-center gap-2 sm:bottom-4 sm:left-8">
+                    <div className="absolute bottom-3 right-4 z-20 flex items-center gap-1.5 sm:bottom-4 sm:right-6 sm:gap-2">
                         {slides.map((_, i) => (
                             <button
                                 key={i}
@@ -155,15 +154,6 @@ export default function PromoSlider({ slides, onSelectQuery }: PromoSliderProps)
                                 aria-label={`Pilih slide ${i + 1}`}
                             />
                         ))}
-
-                        <button
-                            type="button"
-                            onClick={() => setIsPaused(!isPaused)}
-                            className="ml-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xs text-white backdrop-blur-xs transition-all hover:bg-white/40 sm:h-10 sm:w-10"
-                            aria-label={isPaused ? 'Lanjutkan auto-slide' : 'Jeda auto-slide'}
-                        >
-                            {isPaused ? '▶' : '⏸'}
-                        </button>
                     </div>
                 </>
             )}

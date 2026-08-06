@@ -7,7 +7,7 @@ import { Head } from '@inertiajs/react';
 import React from 'react';
 import AdminPanel from '@/components/AdminPanel';
 import MarketplaceLayout from '@/layouts/marketplace-layout';
-import type { AppSettings, Category, Product, Shop } from '@/types';
+import type { AppSettings, ArticleItem, Category, Product, Shop } from '@/types';
 
 export interface AdminUser {
     id: number;
@@ -34,6 +34,7 @@ interface AdminDashboardProps {
     categories: Category[];
     reviews?: AdminReview[];
     users?: AdminUser[];
+    articles?: ArticleItem[];
 }
 
 export default function AdminDashboard({
@@ -43,6 +44,7 @@ export default function AdminDashboard({
     categories,
     reviews = [],
     users = [],
+    articles = [],
 }: AdminDashboardProps) {
     return (
         <MarketplaceLayout
@@ -61,8 +63,10 @@ export default function AdminDashboard({
                     categories={categories}
                     reviews={reviews}
                     users={users}
+                    articles={articles}
                 />
             </div>
         </MarketplaceLayout>
     );
 }
+

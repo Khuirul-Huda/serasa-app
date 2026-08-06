@@ -5,9 +5,10 @@ import products from './products'
 import reviews from './reviews'
 import categories from './categories'
 import users from './users'
+import articles from './articles'
 /**
 * @see \App\Http\Controllers\AdminDashboardController::dashboard
-* @see app/Http/Controllers/AdminDashboardController.php:31
+* @see app/Http/Controllers/AdminDashboardController.php:32
 * @route '/admin/dashboard'
 */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -22,7 +23,7 @@ dashboard.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::dashboard
-* @see app/Http/Controllers/AdminDashboardController.php:31
+* @see app/Http/Controllers/AdminDashboardController.php:32
 * @route '/admin/dashboard'
 */
 dashboard.url = (options?: RouteQueryOptions) => {
@@ -31,7 +32,7 @@ dashboard.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::dashboard
-* @see app/Http/Controllers/AdminDashboardController.php:31
+* @see app/Http/Controllers/AdminDashboardController.php:32
 * @route '/admin/dashboard'
 */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -41,7 +42,7 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::dashboard
-* @see app/Http/Controllers/AdminDashboardController.php:31
+* @see app/Http/Controllers/AdminDashboardController.php:32
 * @route '/admin/dashboard'
 */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -51,7 +52,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::dashboard
-* @see app/Http/Controllers/AdminDashboardController.php:31
+* @see app/Http/Controllers/AdminDashboardController.php:32
 * @route '/admin/dashboard'
 */
 const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -61,7 +62,7 @@ const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> 
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::dashboard
-* @see app/Http/Controllers/AdminDashboardController.php:31
+* @see app/Http/Controllers/AdminDashboardController.php:32
 * @route '/admin/dashboard'
 */
 dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -71,7 +72,7 @@ dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::dashboard
-* @see app/Http/Controllers/AdminDashboardController.php:31
+* @see app/Http/Controllers/AdminDashboardController.php:32
 * @route '/admin/dashboard'
 */
 dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -94,6 +95,7 @@ const admin = {
     reviews: Object.assign(reviews, reviews),
     categories: Object.assign(categories, categories),
     users: Object.assign(users, users),
+    articles: Object.assign(articles, articles),
 }
 
 export default admin

@@ -1,5 +1,5 @@
 import { Link, usePage, router } from '@inertiajs/react';
-import { Store, ShoppingBag, MapPin } from 'lucide-react';
+import { Store, ShoppingBag, MapPin, Newspaper } from 'lucide-react';
 import React from 'react';
 import type { AppSettings } from '@/types';
 
@@ -79,6 +79,20 @@ export default function MobileMenu({
                 >
                     <MapPin className="h-4 w-4 text-pastel-teal" />
                     <span>Peta Geografis Desa</span>
+                </Link>
+
+                <Link
+                    href="/articles"
+                    onClick={onClose}
+                    prefetch="hover"
+                    className={`flex w-full cursor-pointer items-center gap-3 rounded-xl px-4 py-3 text-left text-xs font-bold tracking-wider uppercase transition-all ${
+                        activeTab === 'articles' || activeTab === 'detail'
+                            ? 'border border-pastel-teal/15 bg-pastel-teal-light font-extrabold text-pastel-teal dark:border-navy-700 dark:bg-navy-800 dark:text-pastel-teal'
+                            : 'text-navy-600 hover:bg-navy-50 dark:text-navy-200 dark:hover:bg-navy-800'
+                    }`}
+                >
+                    <Newspaper className="h-4 w-4 text-pastel-teal" />
+                    <span>Kabar & Artikel Desa</span>
                 </Link>
 
                 <div className="my-2 border-t border-navy-100 dark:border-navy-800" />

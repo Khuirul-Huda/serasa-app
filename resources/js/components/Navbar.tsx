@@ -14,7 +14,7 @@ import TopBar from './navbar/TopBar';
 
 interface NavbarProps {
     settings: AppSettings;
-    activeTab: 'katalog' | 'shops' | 'map' | 'merchant' | 'admin' | 'detail';
+    activeTab: 'katalog' | 'shops' | 'map' | 'merchant' | 'admin' | 'detail' | 'articles';
     searchQuery?: string;
     setSearchQuery?: (query: string) => void;
     selectedCategory?: string;
@@ -122,6 +122,17 @@ export default function Navbar({
                                 }`}
                             >
                                 Peta Geografis
+                            </Link>
+                            <Link
+                                href="/articles"
+                                prefetch="hover"
+                                className={`cursor-pointer rounded-lg px-3 py-1.5 text-[10.5px] font-black tracking-wider uppercase transition-all ${
+                                    activeTab === 'articles' || activeTab === 'detail'
+                                        ? 'border border-pastel-teal/15 bg-pastel-teal-light text-pastel-teal dark:border-navy-700 dark:bg-navy-800 dark:text-pastel-teal'
+                                        : 'text-navy-600 hover:bg-navy-50 hover:text-pastel-teal dark:text-navy-300 dark:hover:bg-navy-800 dark:hover:text-pastel-teal'
+                                }`}
+                            >
+                                Kabar Desa
                             </Link>
                         </nav>
                     </div>

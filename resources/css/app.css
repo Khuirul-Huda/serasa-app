@@ -7,7 +7,7 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark, .dark *), @media (prefers-color-scheme: dark));
 
 @theme {
     /* ============================================
@@ -190,6 +190,53 @@
     --sidebar-accent-foreground: oklch(0.28 0.05 250);
     --sidebar-border: oklch(0.88 0.01 250);
     --sidebar-ring: oklch(0.68 0.13 210);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: oklch(0.18 0.02 250);
+        --foreground: oklch(0.94 0.005 250);
+
+        --card: oklch(0.22 0.02 250);
+        --card-foreground: oklch(0.94 0.005 250);
+
+        --popover: oklch(0.22 0.02 250);
+        --popover-foreground: oklch(0.94 0.005 250);
+
+        --primary: oklch(0.72 0.12 210);
+        --primary-foreground: oklch(0.18 0.02 250);
+
+        --secondary: oklch(0.28 0.02 250);
+        --secondary-foreground: oklch(0.94 0.005 250);
+
+        --muted: oklch(0.28 0.02 250);
+        --muted-foreground: oklch(0.62 0.02 250);
+
+        --accent: oklch(0.28 0.02 250);
+        --accent-foreground: oklch(0.94 0.005 250);
+
+        --destructive: oklch(0.55 0.12 25);
+        --destructive-foreground: oklch(0.72 0.14 25);
+
+        --border: oklch(0.3 0.015 250);
+        --input: oklch(0.3 0.015 250);
+        --ring: oklch(0.72 0.12 210);
+
+        --chart-1: oklch(0.72 0.12 210);
+        --chart-2: oklch(0.65 0.13 165);
+        --chart-3: oklch(0.72 0.14 25);
+        --chart-4: oklch(0.75 0.08 60);
+        --chart-5: oklch(0.72 0.08 285);
+
+        --sidebar: oklch(0.22 0.02 250);
+        --sidebar-foreground: oklch(0.94 0.005 250);
+        --sidebar-primary: oklch(0.72 0.12 210);
+        --sidebar-primary-foreground: oklch(0.94 0.005 250);
+        --sidebar-accent: oklch(0.28 0.02 250);
+        --sidebar-accent-foreground: oklch(0.94 0.005 250);
+        --sidebar-border: oklch(0.3 0.015 250);
+        --sidebar-ring: oklch(0.72 0.12 210);
+    }
 }
 
 .dark {

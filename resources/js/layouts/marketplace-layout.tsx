@@ -23,7 +23,7 @@ const defaultSettings: AppSettings = {
 interface MarketplaceLayoutProps {
     children: React.ReactNode;
     settings?: AppSettings;
-    activeTab?: 'katalog' | 'shops' | 'map' | 'merchant' | 'admin' | 'detail';
+    activeTab?: 'katalog' | 'shops' | 'map' | 'merchant' | 'admin' | 'detail' | 'articles';
     categories?: Category[];
     products?: Product[];
     shops?: Shop[];
@@ -131,6 +131,12 @@ export default function MarketplaceLayout({
                                 className="transition-colors hover:text-pastel-teal"
                             >
                                 Peta Desa
+                            </Link>
+                            <Link
+                                href="/articles"
+                                className="transition-colors hover:text-pastel-teal"
+                            >
+                                Kabar Desa
                             </Link>
                             <Link
                                 href="/merchant/dashboard"

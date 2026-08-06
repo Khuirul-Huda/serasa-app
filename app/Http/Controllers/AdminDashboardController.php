@@ -9,6 +9,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\ProcessShopImportAction;
 use App\Http\Requests\SaveSettingsRequest;
+use App\Models\Article;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Review;
@@ -74,6 +75,20 @@ class AdminDashboardController extends Controller
                 'createdAt' => $u->created_at ? $u->created_at->format('d M Y') : '-',
             ])->toArray();
 
+        $articles = Article::latest()->get()->map(fn ($a) => [
+            'id' => $a->id,
+            'userId' => $a->user_id,
+            'title' => $a->title,
+            'slug' => $a->slug,
+            'excerpt' => $a->excerpt,
+            'content' => $a->content,
+            'coverImage' => $a->cover_image,
+            'category' => $a->category,
+            'isPublished' => (bool) $a->is_published,
+            'publishedAt' => $a->published_at ? $a->published_at->format('d M Y, H:i') : null,
+            'createdAt' => $a->created_at ? $a->created_at->format('d M Y') : '-',
+        ])->toArray();
+
         return Inertia::render('admin-dashboard', [
             'settings' => $this->getAppSettings(),
             'shops' => $shops,
@@ -81,6 +96,7 @@ class AdminDashboardController extends Controller
             'categories' => $categories,
             'reviews' => $reviews,
             'users' => $users,
+            'articles' => $articles,
         ]);
     }
 

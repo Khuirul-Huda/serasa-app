@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AdminDashboardController::save
-* @see app/Http/Controllers/AdminDashboardController.php:294
+* @see app/Http/Controllers/AdminDashboardController.php:310
 * @route '/admin/settings'
 */
 export const save = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ save.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::save
-* @see app/Http/Controllers/AdminDashboardController.php:294
+* @see app/Http/Controllers/AdminDashboardController.php:310
 * @route '/admin/settings'
 */
 save.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ save.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::save
-* @see app/Http/Controllers/AdminDashboardController.php:294
+* @see app/Http/Controllers/AdminDashboardController.php:310
 * @route '/admin/settings'
 */
 save.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +35,7 @@ save.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::save
-* @see app/Http/Controllers/AdminDashboardController.php:294
+* @see app/Http/Controllers/AdminDashboardController.php:310
 * @route '/admin/settings'
 */
 const saveForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -45,7 +45,7 @@ const saveForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => (
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::save
-* @see app/Http/Controllers/AdminDashboardController.php:294
+* @see app/Http/Controllers/AdminDashboardController.php:310
 * @route '/admin/settings'
 */
 saveForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

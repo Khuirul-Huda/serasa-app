@@ -13,4 +13,9 @@ class Setting extends Model
     protected $keyType = 'string';
 
     protected $fillable = ['key', 'value'];
+
+    public static function getAllAsArray(): array
+    {
+        return static::pluck('value', 'key')->toArray();
+    }
 }

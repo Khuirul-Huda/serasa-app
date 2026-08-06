@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AdminDashboardController::verify
-* @see app/Http/Controllers/AdminDashboardController.php:90
+* @see app/Http/Controllers/AdminDashboardController.php:106
 * @route '/admin/shops/{id}/verify'
 */
 export const verify = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ verify.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::verify
-* @see app/Http/Controllers/AdminDashboardController.php:90
+* @see app/Http/Controllers/AdminDashboardController.php:106
 * @route '/admin/shops/{id}/verify'
 */
 verify.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ verify.url = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::verify
-* @see app/Http/Controllers/AdminDashboardController.php:90
+* @see app/Http/Controllers/AdminDashboardController.php:106
 * @route '/admin/shops/{id}/verify'
 */
 verify.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -53,7 +53,7 @@ verify.post = (args: { id: string | number } | [id: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::verify
-* @see app/Http/Controllers/AdminDashboardController.php:90
+* @see app/Http/Controllers/AdminDashboardController.php:106
 * @route '/admin/shops/{id}/verify'
 */
 const verifyForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -63,7 +63,7 @@ const verifyForm = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::verify
-* @see app/Http/Controllers/AdminDashboardController.php:90
+* @see app/Http/Controllers/AdminDashboardController.php:106
 * @route '/admin/shops/{id}/verify'
 */
 verifyForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -75,7 +75,7 @@ verify.form = verifyForm
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::permit
-* @see app/Http/Controllers/AdminDashboardController.php:105
+* @see app/Http/Controllers/AdminDashboardController.php:121
 * @route '/admin/shops/{id}/permit'
 */
 export const permit = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -90,7 +90,7 @@ permit.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::permit
-* @see app/Http/Controllers/AdminDashboardController.php:105
+* @see app/Http/Controllers/AdminDashboardController.php:121
 * @route '/admin/shops/{id}/permit'
 */
 permit.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -117,7 +117,7 @@ permit.url = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::permit
-* @see app/Http/Controllers/AdminDashboardController.php:105
+* @see app/Http/Controllers/AdminDashboardController.php:121
 * @route '/admin/shops/{id}/permit'
 */
 permit.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -127,7 +127,7 @@ permit.post = (args: { id: string | number } | [id: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::permit
-* @see app/Http/Controllers/AdminDashboardController.php:105
+* @see app/Http/Controllers/AdminDashboardController.php:121
 * @route '/admin/shops/{id}/permit'
 */
 const permitForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -137,7 +137,7 @@ const permitForm = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::permit
-* @see app/Http/Controllers/AdminDashboardController.php:105
+* @see app/Http/Controllers/AdminDashboardController.php:121
 * @route '/admin/shops/{id}/permit'
 */
 permitForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -149,7 +149,7 @@ permit.form = permitForm
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:278
+* @see app/Http/Controllers/AdminDashboardController.php:294
 * @route '/admin/shops/{id}'
 */
 export const deleteMethod = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -164,7 +164,7 @@ deleteMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:278
+* @see app/Http/Controllers/AdminDashboardController.php:294
 * @route '/admin/shops/{id}'
 */
 deleteMethod.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -191,7 +191,7 @@ deleteMethod.url = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:278
+* @see app/Http/Controllers/AdminDashboardController.php:294
 * @route '/admin/shops/{id}'
 */
 deleteMethod.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -201,7 +201,7 @@ deleteMethod.delete = (args: { id: string | number } | [id: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:278
+* @see app/Http/Controllers/AdminDashboardController.php:294
 * @route '/admin/shops/{id}'
 */
 const deleteMethodForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -216,7 +216,7 @@ const deleteMethodForm = (args: { id: string | number } | [id: string | number ]
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::deleteMethod
-* @see app/Http/Controllers/AdminDashboardController.php:278
+* @see app/Http/Controllers/AdminDashboardController.php:294
 * @route '/admin/shops/{id}'
 */
 deleteMethodForm.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -233,7 +233,7 @@ deleteMethod.form = deleteMethodForm
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::bulkImport
-* @see app/Http/Controllers/AdminDashboardController.php:250
+* @see app/Http/Controllers/AdminDashboardController.php:266
 * @route '/admin/shops/bulk-import'
 */
 export const bulkImport = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -248,7 +248,7 @@ bulkImport.definition = {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::bulkImport
-* @see app/Http/Controllers/AdminDashboardController.php:250
+* @see app/Http/Controllers/AdminDashboardController.php:266
 * @route '/admin/shops/bulk-import'
 */
 bulkImport.url = (options?: RouteQueryOptions) => {
@@ -257,7 +257,7 @@ bulkImport.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::bulkImport
-* @see app/Http/Controllers/AdminDashboardController.php:250
+* @see app/Http/Controllers/AdminDashboardController.php:266
 * @route '/admin/shops/bulk-import'
 */
 bulkImport.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -267,7 +267,7 @@ bulkImport.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::bulkImport
-* @see app/Http/Controllers/AdminDashboardController.php:250
+* @see app/Http/Controllers/AdminDashboardController.php:266
 * @route '/admin/shops/bulk-import'
 */
 const bulkImportForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -277,7 +277,7 @@ const bulkImportForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'
 
 /**
 * @see \App\Http\Controllers\AdminDashboardController::bulkImport
-* @see app/Http/Controllers/AdminDashboardController.php:250
+* @see app/Http/Controllers/AdminDashboardController.php:266
 * @route '/admin/shops/bulk-import'
 */
 bulkImportForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

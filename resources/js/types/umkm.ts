@@ -97,3 +97,39 @@ export interface Review {
 }
 
 export type UserRole = 'guest' | 'owner' | 'admin';
+
+export interface ArticleItem {
+    id: string;
+    userId?: string | null;
+    title: string;
+    slug: string;
+    excerpt?: string | null;
+    content: string;
+    coverImage?: string | null;
+    category: string;
+    isPublished: boolean;
+    publishedAt?: string | null;
+    createdAt?: string;
+}
+
+export interface Article {
+    id: string;
+    user_id?: string | null;
+    title: string;
+    slug: string;
+    excerpt?: string | null;
+    content: string;
+    cover_image?: string | null;
+    category: string;
+    is_published: boolean;
+    published_at?: string | null;
+    created_at?: string;
+    updated_at?: string;
+    author?: {
+        id?: string;
+        name: string;
+        role?: string;
+    } | null;
+}
+
+

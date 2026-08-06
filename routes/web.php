@@ -6,6 +6,7 @@
  */
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ReviewController;
@@ -17,6 +18,8 @@ Route::get('/shops', [MarketplaceController::class, 'shops'])->name('shops.index
 Route::get('/shops/{id}', [MarketplaceController::class, 'shopDetail'])->name('shops.detail');
 Route::get('/products/{id}', [MarketplaceController::class, 'productDetail'])->name('products.detail');
 Route::get('/map', [MarketplaceController::class, 'map'])->name('map.index');
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 Route::post('/products/{id}/reviews', [ReviewController::class, 'store'])
     ->name('reviews.store')
     ->middleware(['auth', 'throttle:10,1']);
@@ -53,6 +56,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admin/categories', [AdminDashboardController::class, 'addCategory'])->name('admin.categories.store');
         Route::delete('/admin/categories/{id}', [AdminDashboardController::class, 'deleteCategory'])->name('admin.categories.delete');
         Route::post('/admin/users/{id}/role', [AdminDashboardController::class, 'updateUserRole'])->name('admin.users.role');
+
+        // Admin article routes
+        Route::post('/admin/articles', [ArticleController::class, 'store'])->name('admin.articles.store');
+        Route::put('/admin/articles/{id}', [ArticleController::class, 'update'])->name('admin.articles.update');
+        Route::delete('/admin/articles/{id}', [ArticleController::class, 'destroy'])->name('admin.articles.destroy');
+        Route::post('/admin/articles/{id}/toggle-publish', [ArticleController::class, 'togglePublish'])->name('admin.articles.toggle-publish');
     });
 });
 

@@ -7,26 +7,32 @@
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>
             (function() {
-                const appearance = '{{ $appearance ?? "system" }}';
-
-                if (appearance === 'system') {
+                try {
+                    const saved = localStorage.getItem('appearance');
                     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-                    if (prefersDark) {
+                    if (saved === 'dark' || (!saved && prefersDark) || (saved === 'system' && prefersDark)) {
                         document.documentElement.classList.add('dark');
+                    } else if (saved === 'light') {
+                        document.documentElement.classList.remove('dark');
                     }
-                }
+                } catch (e) {}
             })();
         </script>
 
         {{-- Inline style to set the HTML background color based on our theme in app.css --}}
         <style>
             html {
-                background-color: oklch(1 0 0);
+                background-color: oklch(0.97 0.003 250);
+            }
+
+            @media (prefers-color-scheme: dark) {
+                html {
+                    background-color: oklch(0.18 0.02 250);
+                }
             }
 
             html.dark {
-                background-color: oklch(0.145 0 0);
+                background-color: oklch(0.18 0.02 250);
             }
         </style>
 
